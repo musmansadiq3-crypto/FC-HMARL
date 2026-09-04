@@ -1,0 +1,125 @@
+============================================================
+FC-HMARL PUBLICATION SCRIPT INTEGRITY SCAN
+Generated: 2026-09-04 05:11:44
+============================================================
+
+------------------------------------------------------------
+SCRIPT: generate_final_forecasting_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 8: np.random.seed(2026)
+Line 11: DATA_PATH = ROOT / "data" / "publication" / "forecasting_figure_data.xlsx"
+Line 40: r"data\publication\forecasting_figure_data.xlsx"
+Line 43: df_forecast = pd.read_excel(DATA_PATH, sheet_name="Actual_vs_Forecast")
+Line 44: df_errors = pd.read_excel(DATA_PATH, sheet_name="Error_Metrics")
+Line 150: pv_actual[measure_idx] + 0.02 * np.random.randn(len(measure_idx)),
+Line 242: load_actual[measure_idx] + 0.02 * np.random.randn(len(measure_idx)),
+Line 332: ev_actual[measure_idx] + 0.015 * np.random.randn(len(measure_idx)),
+Line 438: price_actual[measure_idx] + 0.02 * np.random.randn(len(measure_idx)),
+
+------------------------------------------------------------
+SCRIPT: generate_forecast_confidence_evolution_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 10: DATA_PATH = ROOT / "forecasting" / "confidence_data" / "forecast_confidence_evolution_data.xlsx"
+Line 29: r"forecasting\confidence_data\forecast_confidence_evolution_data.xlsx"
+Line 32: df_errors = pd.read_excel(DATA_PATH, sheet_name="Error_Metrics")
+Line 33: df_confidence = pd.read_excel(DATA_PATH, sheet_name="Confidence_Coefficient")
+
+------------------------------------------------------------
+SCRIPT: generate_forecast_horizon_performance_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 9: DATA_PATH = ROOT / "evaluation" / "data" / "forecast_horizon" / "forecast_horizon_metrics.xlsx"
+Line 20: r"evaluation\data\forecast_horizon\forecast_horizon_metrics.xlsx"
+Line 23: forecast_df = pd.read_excel(DATA_PATH, sheet_name="Forecast_Magnitudes")
+Line 24: error_df = pd.read_excel(DATA_PATH, sheet_name="Forecast_Errors")
+
+------------------------------------------------------------
+SCRIPT: generate_operational_dynamics_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 9: DATA_PATH = ROOT / "evaluation" / "data" / "operational" / "fc_hmarl_operational_dynamics.xlsx"
+Line 84: r"evaluation\data\operational\fc_hmarl_operational_dynamics.xlsx"
+Line 87: df_data = pd.read_excel(DATA_PATH, sheet_name="Noisy_Operational_Data")
+
+------------------------------------------------------------
+SCRIPT: generate_risk_revenue_sensitivity_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 55: np.random.seed(2026)
+Line 76: DATA_PATH = ROOT / "evaluation" / "data" / "risk_economic" / "risk_revenue_sensitivity_data.xlsx"
+Line 85: r"evaluation\data\risk_economic\risk_revenue_sensitivity_data.xlsx"
+Line 88: df_a = pd.read_excel(DATA_PATH, sheet_name="PanelA_Accuracy_Deviation")
+Line 89: df_b = pd.read_excel(DATA_PATH, sheet_name="PanelB_Revenue_Improvement")
+Line 90: df_c = pd.read_excel(DATA_PATH, sheet_name="PanelC_Revenue_Balance")
+Line 91: df_d = pd.read_excel(DATA_PATH, sheet_name="PanelD_Economic_Impact")
+Line 92: df_e = pd.read_excel(DATA_PATH, sheet_name="PanelE_CVaR_Deviation")
+Line 93: df_f = pd.read_excel(DATA_PATH, sheet_name="PanelF_Threshold_Deviation")
+Line 335: deviation_e = deviation_e + np.random.normal(0, 0.3, len(deviation_e))
+Line 337: deviation_cvar_e = deviation_cvar_e + np.random.normal(0, 0.3, len(deviation_cvar_e))
+Line 341: deviation_cvar_e = deviation_cvar_e + np.random.normal(1.5, 0.2, len(deviation_cvar_e))
+
+------------------------------------------------------------
+SCRIPT: generate_step7q_publication_figures.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 88: benchmark = ordered(pd.read_csv(BENCHMARK_FILE))
+Line 89: risk = ordered(pd.read_csv(RISK_FILE))
+
+------------------------------------------------------------
+SCRIPT: generate_training_convergence_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 10: DATA_PATH = ROOT / "evaluation" / "data" / "training_diagnostics" / "fc_hmarl_training_convergence_data.xlsx"
+Line 73: r"evaluation\data\training_diagnostics\fc_hmarl_training_convergence_data.xlsx"
+Line 76: df_rewards = pd.read_excel(DATA_PATH, sheet_name="Training_Rewards")
+Line 77: df_loss = pd.read_excel(DATA_PATH, sheet_name="Loss_Entropy")
+Line 153: df_conv = pd.read_excel(DATA_PATH, sheet_name="Convergence_Metrics")
+
+------------------------------------------------------------
+SCRIPT: generate_uncertainty_propagation_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 10: np.random.seed(2026)
+Line 13: DATA_PATH = ROOT / "data" / "publication" / "uncertainty_propagation_figure_data.xlsx"
+Line 104: r"data\publication\uncertainty_propagation_figure_data.xlsx"
+Line 107: df_pi = pd.read_excel(DATA_PATH, sheet_name="Prediction Intervals")
+Line 108: df_um = pd.read_excel(DATA_PATH, sheet_name="Uncertainty Matrix", index_col=0)
+Line 274: + 0.03 * np.random.randn(len(measurement_indices)),
+
+------------------------------------------------------------
+SCRIPT: generate_vpp_case_study_comparison_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 86: DATA_PATH = ROOT / "evaluation" / "data" / "case_studies" / "vpp_case_study_comparison_data.xlsx"
+Line 94: r"evaluation\data\case_studies\vpp_case_study_comparison_data.xlsx"
+Line 97: df_a = pd.read_excel(DATA_PATH, sheet_name="Economic", index_col=0)
+Line 98: df_b = pd.read_excel(DATA_PATH, sheet_name="Efficiency", index_col=0)
+Line 99: df_c = pd.read_excel(DATA_PATH, sheet_name="Aggregate_Scores", index_col=0)
+
+------------------------------------------------------------
+SCRIPT: generate_vpp_economic_operational_figure.py
+------------------------------------------------------------
+STATUS: FOUND
+Line 9: DATA_PATH = ROOT / "evaluation" / "data" / "vpp_performance" / "vpp_economic_operational_performance.xlsx"
+Line 66: r"evaluation\data\vpp_performance\vpp_economic_operational_performance.xlsx"
+Line 69: df = pd.read_excel(DATA_PATH)
+
+============================================================
+INTERPRETATION
+============================================================
+This scan does NOT automatically classify a script as valid or invalid.
+
+The purpose is to identify:
+1. Excel/CSV input paths.
+2. Random-number generation.
+3. Synthetic/fake/dummy/mock/fallback data.
+4. Training-convergence episode markers 1506 and 1312.
+5. Other data-generation behavior requiring manual provenance review.
+
+Randomness used only for visual layout is different from randomness
+used to alter scientific values and must be inspected separately.
+
+Historical/manuscript-supporting figures may be retained in the repository,
+but they must not automatically be described as final V3 outputs.

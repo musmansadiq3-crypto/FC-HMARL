@@ -1,0 +1,10 @@
+Table — Agent-level performance of the final FC-HMARL controller on the unseen TEST split
+
+        Controller level    Mean return  Std. deviation  Median return  Minimum return  Maximum return
+         MG1 local agent  -1,623.931078      284.834065  -1,579.613178   -2,471.398074   -1,165.591322
+         MG2 local agent  -2,029.661696      353.857916  -1,974.362789   -3,025.841438   -1,447.720220
+         MG3 local agent  -1,493.630088      267.430245  -1,453.076534   -2,294.639659   -1,074.033222
+         MG4 local agent  -1,754.557366      302.280842  -1,706.771608   -2,647.806640   -1,256.748842
+         MG5 local agent  -2,091.786866      387.393914  -2,032.098743   -3,200.079377   -1,467.198661
+ Upper-level coordinator  -8,579.436712    1,606.230745  -8,347.498391  -13,241.504415   -5,881.940677
+Complete FC-HMARL system -17,573.003806    3,199.954778 -17,100.055266  -26,881.269603  -12,410.019166

@@ -1,0 +1,27 @@
+Table — Economic and operational performance of FC-HMARL on the unseen TEST split
+
+            Category         Performance index          Mean  Std. deviation        Median        Minimum       Maximum    Unit
+            Economic        Grid purchase cost  8,950.812884    1,594.048071  8,707.636808   6,431.474507 13,597.003814 USD/day
+            Economic         Grid sale revenue     19.152478       47.083319      0.000000       0.000000    365.244831 USD/day
+            Economic           Reserve revenue    356.032769        2.505759    356.599203     347.232242    359.674013 USD/day
+            Economic           Net market cost  8,575.627636    1,606.230745  8,343.689315   5,878.131601 13,237.695340 USD/day
+            Economic             Market profit -8,575.627636    1,606.230745 -8,343.689315 -13,237.695340 -5,878.131601 USD/day
+    Grid interaction               Grid import 47,084.772950    5,453.358572 47,182.744802  35,149.315343 61,132.852180 kWh/day
+    Grid interaction               Grid export    146.364612      359.477000      0.000000       0.000000  2,635.069246 kWh/day
+    Grid interaction          Peak grid import  3,155.289877      336.256782  3,151.266290   2,170.136321  3,988.901490      kW
+    Grid interaction          Peak grid export     52.996994      159.939633      0.000000       0.000000  1,290.674448      kW
+             Reserve         Requested reserve  7,120.655388       50.115175  7,131.984069   6,944.644847  7,193.480266 kWh/day
+             Reserve          Feasible reserve  7,120.655388       50.115175  7,131.984069   6,944.644847  7,193.480266 kWh/day
+             Reserve         Curtailed reserve      0.000000        0.000000      0.000000       0.000000      0.000000 kWh/day
+                BESS    BESS energy throughput  2,137.710502        0.224703  2,137.718700   2,137.007550  2,138.159774 kWh/day
+      Energy sharing         Scheduled sharing    127.342998       75.625427    109.431379      18.409292    449.117964 kWh/day
+      Energy sharing          Received sharing    124.796138       74.112918    107.242751      18.041106    440.135604 kWh/day
+      Energy sharing              Sharing loss      2.546860        1.512509      2.188628       0.368186      8.982359 kWh/day
+Physical feasibility    Mean balance violation      0.000000        0.000000      0.000000       0.000000      0.000000 kW/step
+Physical feasibility Maximum balance violation      0.000000        0.000000      0.000000       0.000000      0.000000      kW
+
+Power-balance violation steps: 0
+Transformer violation steps: 0
+SOC lower-bound violations: 0
+SOC upper-bound violations: 0
+Maximum reserve accounting difference: 0.000000000000e+00

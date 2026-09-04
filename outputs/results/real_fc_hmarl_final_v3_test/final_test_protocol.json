@@ -1,0 +1,14 @@
+{
+    "train_split_role": "RL policy learning",
+    "validation_split_role": "forecasting-method selection, Phi calibration, checkpoint selection",
+    "test_split_role": "one-time final evaluation only",
+    "locked_checkpoint_episode": 200,
+    "checkpoint_selection_source": "validation",
+    "deterministic_actions": true,
+    "gradient_updates": false,
+    "replay_writes": false,
+    "checkpoint_ranking_on_test": false,
+    "checkpoint_reselection_after_test": false,
+    "test_windows_evaluated": 1268,
+    "all_available_test_windows": 1268
+}

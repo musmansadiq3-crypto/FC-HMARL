@@ -1,0 +1,33 @@
+{
+    "method": "seasonal_residual_transformer",
+    "random_seed": 42,
+    "input_window": 168,
+    "forecast_horizon": 24,
+    "features": [
+        "pv_power_kw",
+        "load_kw",
+        "ev_power_kw",
+        "price_usd_per_kwh"
+    ],
+    "seasonal_baseline": {
+        "pv_power_kw": "daily_t_minus_24",
+        "load_kw": "daily_t_minus_24",
+        "ev_power_kw": "weekly_t_minus_168",
+        "price_usd_per_kwh": "daily_t_minus_24"
+    },
+    "model": {
+        "hidden_dimension": 128,
+        "attention_heads": 4,
+        "encoder_layers": 2,
+        "feedforward_dimension": 256,
+        "dropout": 0.1,
+        "activation": "gelu"
+    },
+    "training": {
+        "learning_rate": 0.0001,
+        "weight_decay": 1e-05,
+        "batch_size": 64,
+        "maximum_epochs": 100,
+        "early_stopping_patience": 15
+    }
+}

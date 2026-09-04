@@ -1,0 +1,15 @@
+{
+    "alpha": 0.95,
+    "fc_vs_passive_cost_var_reduction_percent": 17.0202009109213,
+    "fc_vs_passive_cost_cvar_reduction_percent": 16.965726323014945,
+    "fc_vs_rule_cost_var_reduction_percent": 15.154768844077324,
+    "fc_vs_rule_cost_cvar_reduction_percent": 14.941131857117218,
+    "fc_vs_passive_cost_std_reduction_percent": 0.5975327254173909,
+    "fc_vs_rule_cost_std_reduction_percent": -0.036038430127332585,
+    "fc_vs_passive_worst_cost_reduction_percent": 16.521762921159237,
+    "fc_vs_rule_worst_cost_reduction_percent": 14.514033313645214,
+    "fc_vs_passive_worst_return_improvement": 2550.569301418611,
+    "fc_vs_rule_worst_return_improvement": 1964.0649062030789,
+    "fc_vs_passive_lower_tail_return_cvar_improvement": 2615.2535759961356,
+    "fc_vs_rule_lower_tail_return_cvar_improvement": 2027.7134144225784
+}

@@ -1,0 +1,86 @@
+FC-HMARL FORECASTING DATASET METADATA
+=====================================
+
+Input source:
+D:\Molvi paper review\FC_HMARL\data\processed\FC_HMARL_Unified_Forecasting_8760.csv
+
+Total hours:
+8760
+
+Targets:
+1. pv_power_kw
+2. load_kw
+3. ev_power_kw
+4. price_usd_per_kwh
+
+PV conversion:
+Reference capacity = 1.0 kW
+STC irradiance = 1000.0 W/m2
+P_pv = P_rated * clip(GHI / STC_irradiance, 0, 1)
+
+IMPORTANT:
+The GHI-to-PV conversion is a reconstruction choice and not
+claimed to be the exact lost implementation.
+
+Three-sigma threshold:
+3.0
+
+Filtering:
+Values outside mean +/- 3 sigma were flagged and replaced
+temporarily with NaN.
+
+Missing/outlier reconstruction:
+Chronological linear interpolation, followed by edge
+forward/backward filling if required.
+
+Chronological split:
+Training   = 6132 hours
+Validation = 1314 hours
+Testing    = 1314 hours
+
+Ratios:
+Training   = 0.7
+Validation = 0.15
+Testing    = 0.15
+
+Scaling:
+Min-max normalization fitted on TRAINING DATA ONLY.
+
+Input window:
+168 hours
+
+Forecast horizon:
+24 hours
+
+Number of features:
+4
+
+Feature ordering:
+['pv_power_kw', 'load_kw', 'ev_power_kw', 'price_usd_per_kwh']
+
+Training sequences:
+5941
+
+Validation sequences:
+1291
+
+Test sequences:
+1291
+
+Source provenance:
+PV:
+NSRDB 2022.
+
+Load:
+Pecan Street source observations 2014-2018, representative
+profile mapped to common simulation calendar.
+
+EV:
+ACN-Data Caltech 2018-2020, representative annual profile.
+
+Price:
+PJM-RTO Day-Ahead 2019 annual chronological profile.
+
+The common calendar is an alignment/simulation calendar.
+It does NOT mean that every source was physically observed
+during 2022.

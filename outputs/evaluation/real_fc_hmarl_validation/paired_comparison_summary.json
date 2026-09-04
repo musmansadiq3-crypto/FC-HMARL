@@ -1,0 +1,10 @@
+{
+    "first_checkpoint": 500,
+    "second_checkpoint": 1000,
+    "number_of_validation_episodes": 30,
+    "mean_return_difference": 13.217323534109406,
+    "median_return_difference": 2.854271204790166,
+    "std_return_difference": 39.86637734935054,
+    "second_checkpoint_better_count": 29,
+    "second_checkpoint_better_fraction": 0.9666666666666667
+}

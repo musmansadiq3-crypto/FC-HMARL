@@ -1,0 +1,64 @@
+# ============================================================
+# FC-HMARL Git Ignore
+# ============================================================
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest / test caches
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter temporary files
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE temporary settings
+.vscode/
+.idea/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# ------------------------------------------------------------
+# PRIVATE CREDENTIALS - NEVER UPLOAD
+# ------------------------------------------------------------
+.env
+.env.*
+secrets.json
+secrets.yaml
+secrets.yml
+credentials.json
+credentials.yaml
+credentials.yml
+api_keys.json
+api_keys.yaml
+api_keys.yml
+acn_token.txt
+token.txt
+
+# Private keys
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Git temporary files
+*.orig

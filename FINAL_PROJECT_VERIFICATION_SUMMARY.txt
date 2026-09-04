@@ -1,0 +1,26 @@
+﻿FC-HMARL FINAL SUBMISSION VERIFICATION
+Date: 2026-09-04 05:06:59
+
+Passed checks: 67
+Failed checks: 0
+
+Full software test result:
+993 passed, 22 warnings
+
+Final model:
+FC-HMARL V3
+
+Training:
+5000 episodes
+
+Checkpoint selection:
+VALIDATION-based
+
+Frozen final checkpoint:
+200
+
+Final evaluation:
+Locked TEST evaluation
+
+Verification status:
+PASS

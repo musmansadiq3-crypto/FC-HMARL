@@ -1,0 +1,11 @@
+metric,value
+episode_hours,24.0
+number_of_microgrids,5.0
+local_state_dimension,101.0
+coordinator_state_dimension,99.0
+predictive_state_dimension,96.0
+scalar_causal_confidence,0.8241741133467352
+total_load_energy_proxy_kwh,63959.82548067497
+total_ev_energy_proxy_kwh,15153.924440300483
+sum_local_rewards,-17854.164285510757
+sum_coordinator_reward,-17858.384106790436

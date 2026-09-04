@@ -1,0 +1,200 @@
+# ============================================================
+# FC-HMARL FIVE-MICROGRID VPP SYSTEM CONFIGURATION
+# ============================================================
+#
+# Source:
+# Manuscript Table 2 - Configuration Parameters of the
+# Five-Microgrid VPP Test System
+#
+# This file defines the physical VPP configuration.
+# ============================================================
+
+project:
+  name: "FC-HMARL"
+  description: "Forecast-Confidence-Aware Hierarchical Multi-Agent Reinforcement Learning for VPP Operation"
+
+# ------------------------------------------------------------
+# SIMULATION TIME SETTINGS
+# ------------------------------------------------------------
+
+simulation:
+  time_resolution_hours: 1
+  episode_length_hours: 24
+  scheduling_horizon_hours: 24
+
+
+# ------------------------------------------------------------
+# VPP CONFIGURATION
+# ------------------------------------------------------------
+
+vpp:
+  num_microgrids: 5
+
+  total_pv_capacity_kw: 2800
+  total_bess_capacity_kwh: 5600
+  total_number_of_evs: 1150
+  total_peak_load_kw: 4050
+
+
+# ------------------------------------------------------------
+# MICROGRID 1
+# ------------------------------------------------------------
+
+microgrids:
+
+  MG1:
+    id: 1
+    name: "MG1"
+
+    pv_capacity_kw: 500
+
+    bess:
+      capacity_kwh: 1000
+      rated_power_kw: 250
+
+    ev:
+      number_of_evs: 200
+
+    load:
+      peak_load_kw: 750
+
+    transformer:
+      rating_kva: 1000
+
+
+# ------------------------------------------------------------
+# MICROGRID 2
+# ------------------------------------------------------------
+
+  MG2:
+    id: 2
+    name: "MG2"
+
+    pv_capacity_kw: 600
+
+    bess:
+      capacity_kwh: 1200
+      rated_power_kw: 300
+
+    ev:
+      number_of_evs: 250
+
+    load:
+      peak_load_kw: 850
+
+    transformer:
+      rating_kva: 1250
+
+
+# ------------------------------------------------------------
+# MICROGRID 3
+# ------------------------------------------------------------
+
+  MG3:
+    id: 3
+    name: "MG3"
+
+    pv_capacity_kw: 450
+
+    bess:
+      capacity_kwh: 900
+      rated_power_kw: 250
+
+    ev:
+      number_of_evs: 180
+
+    load:
+      peak_load_kw: 700
+
+    transformer:
+      rating_kva: 1000
+
+
+# ------------------------------------------------------------
+# MICROGRID 4
+# ------------------------------------------------------------
+
+  MG4:
+    id: 4
+    name: "MG4"
+
+    pv_capacity_kw: 550
+
+    bess:
+      capacity_kwh: 1100
+      rated_power_kw: 300
+
+    ev:
+      number_of_evs: 220
+
+    load:
+      peak_load_kw: 800
+
+    transformer:
+      rating_kva: 1250
+
+
+# ------------------------------------------------------------
+# MICROGRID 5
+# ------------------------------------------------------------
+
+  MG5:
+    id: 5
+    name: "MG5"
+
+    pv_capacity_kw: 700
+
+    bess:
+      capacity_kwh: 1400
+      rated_power_kw: 350
+
+    ev:
+      number_of_evs: 300
+
+    load:
+      peak_load_kw: 950
+
+    transformer:
+      rating_kva: 1500
+# ============================================================
+# INTERNAL ENERGY-SHARING NETWORK
+# ============================================================
+#
+# Manuscript basis:
+#   a_ij = 1 if MG_i and MG_j can exchange power
+#   a_ij = 0 otherwise
+#
+# IMPORTANT:
+# The manuscript defines the connectivity formulation but does not
+# provide an explicit numerical 5x5 matrix or pairwise transfer
+# ratings in the recovered tables.
+#
+# Therefore, the following topology is a RECONSTRUCTION CHOICE
+# used to make the implementation executable and testable.
+# ============================================================
+
+energy_sharing_network:
+
+  source: "reconstruction_choice"
+
+  description: >
+    Fully connected five-microgrid test topology.
+    Replace if the original numerical topology is recovered.
+
+  efficiency: 0.98
+
+  connectivity_matrix:
+    - [0, 1, 1, 1, 1]
+    - [1, 0, 1, 1, 1]
+    - [1, 1, 0, 1, 1]
+    - [1, 1, 1, 0, 1]
+    - [1, 1, 1, 1, 0]
+
+  # Pairwise transfer capacities are reconstruction parameters.
+  # All active directional links are initially assigned 250 kW.
+  maximum_power_matrix_kw:
+    - [0,   250, 250, 250, 250]
+    - [250, 0,   250, 250, 250]
+    - [250, 250, 0,   250, 250]
+    - [250, 250, 250, 0,   250]
+    - [250, 250, 250, 250, 0]

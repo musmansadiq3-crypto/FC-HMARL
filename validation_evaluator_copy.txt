@@ -1,0 +1,2093 @@
+# ============================================================
+# FC-HMARL
+# STEP 7L-C
+# FIXED VALIDATION EVALUATION OF SAVED CHECKPOINTS
+# ============================================================
+#
+# PURPOSE
+# -------
+# Compare FC-HMARL checkpoints on the SAME fixed validation
+# episodes using deterministic SAC actions.
+#
+# Default comparison:
+#
+#     Episode-100 checkpoint
+#     Episode-200 checkpoint
+#
+# No learning occurs in this script.
+# No TEST data are loaded.
+#
+# Forecast selection:
+#     PV    -> daily seasonal
+#     Load  -> Transformer
+#     EV    -> Transformer
+#     Price -> daily seasonal
+#
+# Confidence:
+#     Validation-calibrated causal Phi
+#
+# ============================================================
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import torch
+
+
+# ============================================================
+# EXISTING PROJECT MODULES
+# ============================================================
+
+from marl.state_builder import (
+    StateBuilderConfig,
+    HierarchicalStateBuilder,
+)
+
+from marl.rewards import (
+    RewardConfig,
+    HierarchicalRewardBuilder,
+)
+
+from marl.action_mapper import (
+    ActionMapperConfig,
+    FCHMARLActionMapper,
+)
+
+from marl.vpp_training_bridge import (
+    FCHMARLVPPTrainingBridge,
+    VPPTrainingBridgeConfig,
+    VPPExogenousInput,
+    HierarchicalActionBundle,
+)
+
+from train import (
+    build_local_agents,
+    build_coordinator_agent,
+    resolve_device,
+    set_global_seed,
+)
+
+from train_real_fc_hmarl import (
+    build_real_vpp_environment,
+    build_per_ev_charging_requests,
+    safe_fraction,
+
+    NUMBER_OF_MICROGRIDS,
+    EPISODE_LENGTH,
+
+    EV_COUNTS,
+    EV_CHARGER_POWER_KW,
+    EV_SIMULTANEOUS_FRACTION,
+
+    PEAK_LOAD_KW,
+    TRANSFORMER_KVA,
+
+    BESS_MAXIMUM_SOC,
+
+    TRAIN_LOAD_MAX,
+    TRAIN_EV_MIN,
+    TRAIN_EV_MAX,
+    TRAIN_PRICE_MIN,
+    TRAIN_PRICE_MAX,
+
+    MINIMUM_BUY_PRICE,
+    MAXIMUM_BUY_PRICE,
+    MINIMUM_SELL_PRICE,
+    MAXIMUM_SELL_PRICE,
+
+    BATTERY_DEGRADATION_COST,
+    IMBALANCE_PENALTY_PER_KW,
+)
+
+
+# ============================================================
+# PATHS
+# ============================================================
+
+PROJECT_ROOT = Path(
+    r"D:\Molvi paper review\FC_HMARL"
+)
+
+SEQUENCE_FILE = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "forecasting"
+    / "forecasting_sequences.npz"
+)
+
+VALIDATION_TRANSFORMER_FILE = (
+    PROJECT_ROOT
+    / "outputs"
+    / "forecasting"
+    / "causal_confidence"
+    / "validation_transformer_predictions.npz"
+)
+
+CAUSAL_CONFIDENCE_FILE = (
+    PROJECT_ROOT
+    / "outputs"
+    / "forecasting"
+    / "causal_confidence"
+    / "causal_confidence_24h.csv"
+)
+
+SCALER_FILE = (
+    PROJECT_ROOT
+    / "data"
+    / "processed"
+    / "forecasting"
+    / "forecasting_scaler.csv"
+)
+
+CHECKPOINT_DIRECTORY = (
+    PROJECT_ROOT
+    / "outputs"
+    / "checkpoints"
+    / "real_fc_hmarl"
+)
+
+OUTPUT_DIRECTORY = (
+    PROJECT_ROOT
+    / "outputs"
+    / "evaluation"
+    / "real_fc_hmarl_validation"
+)
+
+
+# ============================================================
+# FIXED EVALUATION SETTINGS
+# ============================================================
+
+NUMBER_OF_VALIDATION_EPISODES = 30
+RANDOM_SEED = 42
+
+FORECAST_HORIZON = 24
+FORECAST_FEATURES = 4
+
+# Immediate control action corresponds to horizon 1.
+USE_LEAD_ONE_CONFIDENCE = True
+
+
+# ============================================================
+# UTILITIES
+# ============================================================
+
+def section(title: str) -> None:
+
+    print()
+    print("=" * 80)
+    print(title)
+    print("=" * 80)
+
+
+def inverse_transform(
+    normalized,
+    minimums,
+    ranges,
+):
+
+    normalized = np.asarray(
+        normalized,
+        dtype=float,
+    )
+
+    return (
+        normalized
+        * ranges
+        + minimums
+    )
+
+
+# ============================================================
+# LOAD VALIDATION DATA
+# ============================================================
+
+class ValidationData:
+
+    def __init__(self):
+
+        section(
+            "LOADING VALIDATION DATA"
+        )
+
+        # ----------------------------------------------------
+        # Sequence archive
+        # ----------------------------------------------------
+
+        sequences = np.load(
+            SEQUENCE_FILE,
+            allow_pickle=True,
+        )
+
+        self.X_val = np.asarray(
+            sequences["X_val"],
+            dtype=np.float32,
+        )
+
+        self.y_val = np.asarray(
+            sequences["y_val"],
+            dtype=np.float32,
+        )
+
+        self.idx_val = np.asarray(
+            sequences["idx_val"],
+        )
+
+        self.feature_names = np.asarray(
+            sequences["feature_names"],
+        )
+
+
+        print(
+            f"X_val       : {self.X_val.shape}"
+        )
+
+        print(
+            f"y_val       : {self.y_val.shape}"
+        )
+
+
+        # ----------------------------------------------------
+        # Transformer validation predictions
+        # ----------------------------------------------------
+
+        transformer = np.load(
+            VALIDATION_TRANSFORMER_FILE,
+            allow_pickle=True,
+        )
+
+        self.transformer_normalized = np.asarray(
+            transformer[
+                "predictions_normalized"
+            ],
+            dtype=np.float32,
+        )
+
+        self.transformer_original = np.asarray(
+            transformer[
+                "predictions_original"
+            ],
+            dtype=np.float32,
+        )
+
+
+        print(
+            "Transformer : "
+            f"{self.transformer_normalized.shape}"
+        )
+
+
+        # ----------------------------------------------------
+        # Training scaler
+        # ----------------------------------------------------
+
+        scaler_df = pd.read_csv(
+            SCALER_FILE
+        )
+
+        self.minimums = (
+            scaler_df["train_min"]
+            .to_numpy(dtype=float)
+        )
+
+        self.maximums = (
+            scaler_df["train_max"]
+            .to_numpy(dtype=float)
+        )
+
+        self.ranges = (
+            scaler_df["train_range"]
+            .to_numpy(dtype=float)
+        )
+
+
+        # ----------------------------------------------------
+        # Build validation-selected hybrid forecast
+        # ----------------------------------------------------
+        #
+        # Daily seasonal forecast:
+        #
+        # The previous 24 hours are the last 24 samples in
+        # the 168-hour input window.
+        # ----------------------------------------------------
+
+        daily = (
+            self.X_val[:, -24:, :]
+            .copy()
+        )
+
+
+        hybrid = np.empty_like(
+            daily,
+            dtype=np.float32,
+        )
+
+        # PV -> daily seasonal
+        hybrid[:, :, 0] = (
+            daily[:, :, 0]
+        )
+
+        # Load -> Transformer
+        hybrid[:, :, 1] = (
+            self.transformer_normalized[
+                :, :, 1
+            ]
+        )
+
+        # EV -> Transformer
+        hybrid[:, :, 2] = (
+            self.transformer_normalized[
+                :, :, 2
+            ]
+        )
+
+        # Price -> daily seasonal
+        hybrid[:, :, 3] = (
+            daily[:, :, 3]
+        )
+
+
+        self.forecast_normalized = (
+            np.clip(
+                hybrid,
+                0.0,
+                None,
+            )
+            .astype(np.float32)
+        )
+
+
+        # ----------------------------------------------------
+        # Inverse-transform forecast
+        # ----------------------------------------------------
+
+        self.forecast_original = (
+            inverse_transform(
+                self.forecast_normalized,
+                self.minimums,
+                self.ranges,
+            )
+            .astype(np.float32)
+        )
+
+
+        # ----------------------------------------------------
+        # Actual current realization
+        #
+        # Only y_val[:,0,:] is used as the current physical
+        # realization at each rolling decision.
+        # ----------------------------------------------------
+
+        self.current_actual_normalized = (
+            self.y_val[:, 0, :]
+            .astype(np.float32)
+        )
+
+        self.current_actual_original = (
+            inverse_transform(
+                self.current_actual_normalized,
+                self.minimums,
+                self.ranges,
+            )
+            .astype(np.float32)
+        )
+
+
+        # ----------------------------------------------------
+        # Causal confidence
+        # ----------------------------------------------------
+
+        confidence_df = pd.read_csv(
+            CAUSAL_CONFIDENCE_FILE
+        )
+
+        if "Phi_causal" not in (
+            confidence_df.columns
+        ):
+
+            raise RuntimeError(
+                "Phi_causal column was not found."
+            )
+
+
+        self.phi = (
+            confidence_df[
+                "Phi_causal"
+            ]
+            .to_numpy(dtype=np.float32)
+        )
+
+
+        if self.phi.shape != (24,):
+
+            raise RuntimeError(
+                "Causal Phi must contain 24 values."
+            )
+
+
+        # ----------------------------------------------------
+        # S_pred = Phi * Z_hat
+        # ----------------------------------------------------
+
+        self.predictive_state = (
+            self.forecast_normalized
+            * self.phi[
+                None,
+                :,
+                None,
+            ]
+        ).astype(
+            np.float32
+        )
+
+
+        self.predictive_state_flat = (
+            self.predictive_state.reshape(
+                len(self.predictive_state),
+                -1,
+            )
+            .astype(np.float32)
+        )
+
+
+        if (
+            self.predictive_state_flat.shape[1]
+            != 96
+        ):
+
+            raise RuntimeError(
+                "Expected 96-dimensional S_pred."
+            )
+
+
+        self.number_of_samples = len(
+            self.X_val
+        )
+
+
+        print(
+            "Hybrid forecast : "
+            f"{self.forecast_normalized.shape}"
+        )
+
+        print(
+            "Predictive state: "
+            f"{self.predictive_state.shape}"
+        )
+
+        print(
+            "Flat S_pred     : "
+            f"{self.predictive_state_flat.shape}"
+        )
+
+        print(
+            f"Lead-1 Phi      : "
+            f"{self.phi[0]:.8f}"
+        )
+
+        print(
+            f"Mean Phi        : "
+            f"{self.phi.mean():.8f}"
+        )
+
+
+# ============================================================
+# FIXED VALIDATION EPISODE SCHEDULE
+# ============================================================
+
+def build_fixed_episode_starts(
+    data: ValidationData,
+    number_of_episodes: int,
+    seed: int,
+):
+
+    maximum_start = (
+        data.number_of_samples
+        - EPISODE_LENGTH
+    )
+
+
+    if maximum_start < 0:
+
+        raise RuntimeError(
+            "Not enough validation samples."
+        )
+
+
+    candidate_starts = np.arange(
+        maximum_start + 1,
+        dtype=int,
+    )
+
+
+    rng = np.random.default_rng(
+        seed
+    )
+
+
+    if (
+        number_of_episodes
+        > len(candidate_starts)
+    ):
+
+        raise ValueError(
+            "Requested more validation episodes "
+            "than available starting positions."
+        )
+
+
+    starts = rng.choice(
+        candidate_starts,
+        size=number_of_episodes,
+        replace=False,
+    )
+
+
+    starts = np.sort(
+        starts
+    )
+
+
+    return starts.astype(int)
+
+
+# ============================================================
+# VALIDATION EXOGENOUS PROVIDER
+# ============================================================
+
+class ValidationExogenousProvider:
+
+    def __init__(
+        self,
+        data: ValidationData,
+        episode_starts,
+    ):
+
+        self.data = data
+
+        self.episode_starts = np.asarray(
+            episode_starts,
+            dtype=int,
+        )
+
+
+    def get_index(
+        self,
+        episode: int,
+        step: int,
+    ) -> int:
+
+        episode_index = int(
+            episode
+        ) - 1
+
+        if not (
+            0
+            <= episode_index
+            < len(self.episode_starts)
+        ):
+
+            raise IndexError(
+                "Invalid validation episode."
+            )
+
+
+        if not (
+            0
+            <= int(step)
+            < EPISODE_LENGTH
+        ):
+
+            raise IndexError(
+                "Invalid validation step."
+            )
+
+
+        return (
+            int(
+                self.episode_starts[
+                    episode_index
+                ]
+            )
+            + int(step)
+        )
+
+
+    def __call__(
+        self,
+        episode: int,
+        step: int,
+    ) -> VPPExogenousInput:
+
+        index = self.get_index(
+            episode,
+            step,
+        )
+
+
+        actual = (
+            self.data
+            .current_actual_original[
+                index
+            ]
+        )
+
+
+        pv_reference = float(
+            actual[0]
+        )
+
+        load_reference = float(
+            actual[1]
+        )
+
+        ev_reference = float(
+            actual[2]
+        )
+
+        price_reference = float(
+            actual[3]
+        )
+
+
+        # ====================================================
+        # PV
+        # ====================================================
+
+        irradiance = float(
+            np.clip(
+                pv_reference * 1000.0,
+                0.0,
+                1000.0,
+            )
+        )
+
+        irradiances = np.full(
+            NUMBER_OF_MICROGRIDS,
+            irradiance,
+            dtype=float,
+        )
+
+
+        # ====================================================
+        # LOAD
+        #
+        # IMPORTANT:
+        # Fixed TRAINING scale only.
+        # No validation-day maximum is used.
+        # ====================================================
+
+        load_shape = safe_fraction(
+            load_reference,
+            0.0,
+            TRAIN_LOAD_MAX,
+        )
+
+        loads = (
+            PEAK_LOAD_KW
+            * load_shape
+        )
+
+
+        # ====================================================
+        # EV
+        # ====================================================
+
+        ev_shape = safe_fraction(
+            ev_reference,
+            TRAIN_EV_MIN,
+            TRAIN_EV_MAX,
+        )
+
+
+        maximum_ev_power = (
+            EV_COUNTS.astype(float)
+            * EV_CHARGER_POWER_KW
+            * EV_SIMULTANEOUS_FRACTION
+        )
+
+
+        aggregate_ev_power = (
+            maximum_ev_power
+            * ev_shape
+        )
+
+
+        per_ev_requests = (
+            build_per_ev_charging_requests(
+                aggregate_ev_power
+            )
+        )
+
+
+        # ====================================================
+        # PRICES
+        # ====================================================
+
+        price_shape = safe_fraction(
+            price_reference,
+            TRAIN_PRICE_MIN,
+            TRAIN_PRICE_MAX,
+        )
+
+
+        buy_price = (
+            MINIMUM_BUY_PRICE
+            + price_shape
+            * (
+                MAXIMUM_BUY_PRICE
+                - MINIMUM_BUY_PRICE
+            )
+        )
+
+
+        sell_price = (
+            MINIMUM_SELL_PRICE
+            + price_shape
+            * (
+                MAXIMUM_SELL_PRICE
+                - MINIMUM_SELL_PRICE
+            )
+        )
+
+
+        buy_prices = np.full(
+            NUMBER_OF_MICROGRIDS,
+            buy_price,
+            dtype=float,
+        )
+
+        sell_prices = np.full(
+            NUMBER_OF_MICROGRIDS,
+            sell_price,
+            dtype=float,
+        )
+
+
+        # ====================================================
+        # PREDICTIVE STATE
+        # ====================================================
+
+        predictive_state = (
+            self.data
+            .predictive_state[
+                index
+            ]
+            .copy()
+        )
+
+
+        # ====================================================
+        # SCALAR CAUSAL CONFIDENCE
+        # ====================================================
+
+        if USE_LEAD_ONE_CONFIDENCE:
+
+            scalar_confidence = float(
+                self.data.phi[0]
+            )
+
+        else:
+
+            scalar_confidence = float(
+                self.data.phi.mean()
+            )
+
+
+        return VPPExogenousInput(
+
+            time=
+                float(step),
+
+            loads_kw=
+                loads,
+
+            irradiances_w_m2=
+                irradiances,
+
+            buy_prices_usd_per_kwh=
+                buy_prices,
+
+            sell_prices_usd_per_kwh=
+                sell_prices,
+
+            predictive_state=
+                predictive_state,
+
+            confidence=
+                scalar_confidence,
+
+            market_price=
+                price_reference,
+
+            ev_requested_charging_powers_kw=
+                per_ev_requests,
+        )
+
+
+# ============================================================
+# BUILD VALIDATION BRIDGE
+# ============================================================
+
+def build_validation_bridge(
+    data,
+    episode_starts,
+):
+
+    environment = (
+        build_real_vpp_environment()
+    )
+
+
+    state_builder = (
+        HierarchicalStateBuilder(
+
+            StateBuilderConfig(
+
+                number_of_microgrids=
+                    NUMBER_OF_MICROGRIDS,
+
+                forecast_horizon=
+                    24,
+
+                forecast_features=
+                    4,
+
+                flatten_predictive_state=
+                    True,
+
+                dtype=
+                    "float32",
+            )
+        )
+    )
+
+
+    reward_builder = (
+        HierarchicalRewardBuilder(
+
+            RewardConfig(
+
+                beta_soc=
+                    1.0,
+
+                beta_grid=
+                    1.0,
+
+                risk_aversion=
+                    1.0,
+            )
+        )
+    )
+
+
+    provider = (
+        ValidationExogenousProvider(
+
+            data=
+                data,
+
+            episode_starts=
+                episode_starts,
+        )
+    )
+
+
+    action_mapper = (
+        FCHMARLActionMapper(
+
+            ActionMapperConfig(
+
+                use_dynamic_bess_feasibility=
+                    True,
+
+                coordinator_controls_grid=
+                    False,
+
+                coordinator_controls_reserve=
+                    True,
+
+                coordinator_controls_sharing=
+                    True,
+
+                reserve_fraction_of_bess_rating=
+                    1.0,
+
+                action_tolerance=
+                    1e-8,
+            )
+        )
+    )
+
+
+    bridge_config = (
+        VPPTrainingBridgeConfig(
+
+            maximum_socs=
+                np.full(
+                    NUMBER_OF_MICROGRIDS,
+                    BESS_MAXIMUM_SOC,
+                    dtype=float,
+                ),
+
+            maximum_grid_exchanges_kw=
+                TRANSFORMER_KVA.copy(),
+
+            battery_degradation_cost_per_kwh=
+                BATTERY_DEGRADATION_COST,
+
+            imbalance_penalty_per_kw=
+                IMBALANCE_PENALTY_PER_KW,
+
+            timestep_hours=
+                1.0,
+
+            number_of_microgrids=
+                NUMBER_OF_MICROGRIDS,
+        )
+    )
+
+
+    bridge = (
+        FCHMARLVPPTrainingBridge(
+
+            environment=
+                environment,
+
+            state_builder=
+                state_builder,
+
+            reward_builder=
+                reward_builder,
+
+            exogenous_provider=
+                provider,
+
+            action_mapper=
+                action_mapper,
+
+            config=
+                bridge_config,
+        )
+    )
+
+
+    return bridge
+
+
+# ============================================================
+# LOAD POLICY CHECKPOINT
+# ============================================================
+
+def load_policy(
+    checkpoint_episode: int,
+    device: str,
+    seed: int,
+):
+
+    local_agents = build_local_agents(
+
+        seed=
+            seed,
+
+        smoke_test=
+            False,
+
+        device=
+            device,
+    )
+
+
+    coordinator_agent = (
+        build_coordinator_agent(
+
+            seed=
+                seed,
+
+            smoke_test=
+                False,
+
+            device=
+                device,
+        )
+    )
+
+
+    for i, agent in enumerate(
+        local_agents,
+        start=1,
+    ):
+
+        checkpoint = (
+            CHECKPOINT_DIRECTORY
+            / (
+                f"local_agent_{i}_"
+                f"episode_{checkpoint_episode}.pt"
+            )
+        )
+
+
+        if not checkpoint.exists():
+
+            raise FileNotFoundError(
+                f"Missing checkpoint:\n{checkpoint}"
+            )
+
+
+        agent.load(
+            checkpoint,
+            load_optimizers=False,
+        )
+
+
+    coordinator_checkpoint = (
+        CHECKPOINT_DIRECTORY
+        / (
+            f"coordinator_episode_"
+            f"{checkpoint_episode}.pt"
+        )
+    )
+
+
+    if not (
+        coordinator_checkpoint.exists()
+    ):
+
+        raise FileNotFoundError(
+            f"Missing checkpoint:\n"
+            f"{coordinator_checkpoint}"
+        )
+
+
+    coordinator_agent.load(
+        coordinator_checkpoint,
+        load_optimizers=False,
+    )
+
+
+    for agent in local_agents:
+
+        if hasattr(
+            agent,
+            "set_training_mode",
+        ):
+
+            agent.set_training_mode(
+                False
+            )
+
+
+    if hasattr(
+        coordinator_agent,
+        "set_training_mode",
+    ):
+
+        coordinator_agent.set_training_mode(
+            False
+        )
+
+
+    return (
+        local_agents,
+        coordinator_agent,
+    )
+
+
+# ============================================================
+# SELECT DETERMINISTIC ACTIONS
+# ============================================================
+
+def select_deterministic_actions(
+    local_agents,
+    coordinator_agent,
+    observation,
+):
+
+    local_actions = []
+
+
+    for agent, state in zip(
+        local_agents,
+        observation.local_states,
+    ):
+
+        action = agent.select_action(
+
+            state,
+
+            deterministic=True,
+        )
+
+        local_actions.append(
+            np.asarray(
+                action,
+                dtype=np.float32,
+            )
+        )
+
+
+    coordinator_action = (
+        coordinator_agent.select_action(
+
+            observation.coordinator_state,
+
+            deterministic=True,
+        )
+    )
+
+
+    return HierarchicalActionBundle(
+
+        local_actions=
+            local_actions,
+
+        coordinator_action=
+            np.asarray(
+                coordinator_action,
+                dtype=np.float32,
+            ),
+    )
+
+
+# ============================================================
+# RUN ONE FIXED VALIDATION EPISODE
+# ============================================================
+
+def evaluate_one_episode(
+    bridge,
+    local_agents,
+    coordinator_agent,
+    episode_number,
+):
+
+    observation = bridge.reset(
+        episode=episode_number
+    )
+
+
+    total_return = 0.0
+
+    coordinator_return = 0.0
+
+    local_returns = np.zeros(
+        NUMBER_OF_MICROGRIDS,
+        dtype=float,
+    )
+
+
+    physical_balance_violations = 0
+    transformer_violations = 0
+
+
+    steps = 0
+
+
+    with torch.no_grad():
+
+        for step in range(
+            EPISODE_LENGTH
+        ):
+
+            actions = (
+                select_deterministic_actions(
+
+                    local_agents=
+                        local_agents,
+
+                    coordinator_agent=
+                        coordinator_agent,
+
+                    observation=
+                        observation,
+                )
+            )
+
+
+            result = bridge.step(
+                actions
+            )
+
+
+            local_reward_vector = np.asarray(
+                result.local_rewards,
+                dtype=float,
+            )
+
+
+            coordinator_reward = float(
+                result.coordinator_reward
+            )
+
+
+            step_total_return = (
+                float(
+                    local_reward_vector.sum()
+                )
+                + coordinator_reward
+            )
+
+
+            total_return += (
+                step_total_return
+            )
+
+            coordinator_return += (
+                coordinator_reward
+            )
+
+            local_returns += (
+                local_reward_vector
+            )
+
+
+            info = result.info
+
+
+            # ------------------------------------------------
+            # Read physical feasibility diagnostics if they
+            # exist in bridge output.
+            # ------------------------------------------------
+
+            if isinstance(
+                info,
+                dict,
+            ):
+
+                constraints = info.get(
+                    "constraints",
+                    {}
+                )
+
+
+                if isinstance(
+                    constraints,
+                    dict,
+                ):
+
+                    if not constraints.get(
+                        "all_power_balanced",
+                        True,
+                    ):
+
+                        physical_balance_violations += 1
+
+
+                    if not constraints.get(
+                        "all_transformers_feasible",
+                        True,
+                    ):
+
+                        transformer_violations += 1
+
+
+            observation = (
+                result.next_observation
+            )
+
+            steps += 1
+
+
+            if result.done:
+
+                break
+
+
+    return {
+
+        "episode":
+            int(episode_number),
+
+        "steps":
+            int(steps),
+
+        "total_return":
+            float(total_return),
+
+        "coordinator_return":
+            float(coordinator_return),
+
+        "sum_local_return":
+            float(local_returns.sum()),
+
+        "mean_local_return":
+            float(local_returns.mean()),
+
+        "mg1_return":
+            float(local_returns[0]),
+
+        "mg2_return":
+            float(local_returns[1]),
+
+        "mg3_return":
+            float(local_returns[2]),
+
+        "mg4_return":
+            float(local_returns[3]),
+
+        "mg5_return":
+            float(local_returns[4]),
+
+        "power_balance_violation_steps":
+            int(
+                physical_balance_violations
+            ),
+
+        "transformer_violation_steps":
+            int(
+                transformer_violations
+            ),
+    }
+
+
+# ============================================================
+# EVALUATE ONE CHECKPOINT
+# ============================================================
+
+def evaluate_checkpoint(
+    checkpoint_episode,
+    data,
+    episode_starts,
+    device,
+    seed,
+):
+
+    section(
+        f"EVALUATING CHECKPOINT "
+        f"{checkpoint_episode}"
+    )
+
+
+    local_agents, coordinator_agent = (
+        load_policy(
+
+            checkpoint_episode=
+                checkpoint_episode,
+
+            device=
+                device,
+
+            seed=
+                seed,
+        )
+    )
+
+
+    bridge = build_validation_bridge(
+
+        data=
+            data,
+
+        episode_starts=
+            episode_starts,
+    )
+
+
+    records = []
+
+
+    for episode_number in range(
+        1,
+        len(episode_starts) + 1,
+    ):
+
+        result = evaluate_one_episode(
+
+            bridge=
+                bridge,
+
+            local_agents=
+                local_agents,
+
+            coordinator_agent=
+                coordinator_agent,
+
+            episode_number=
+                episode_number,
+        )
+
+
+        result[
+            "checkpoint_episode"
+        ] = checkpoint_episode
+
+
+        result[
+            "validation_start_index"
+        ] = int(
+            episode_starts[
+                episode_number - 1
+            ]
+        )
+
+
+        records.append(
+            result
+        )
+
+
+        print(
+            f"Validation episode "
+            f"{episode_number:2d}/"
+            f"{len(episode_starts)} "
+            f"| Return: "
+            f"{result['total_return']:.6f}"
+        )
+
+
+    return pd.DataFrame(
+        records
+    )
+
+
+# ============================================================
+# SUMMARY
+# ============================================================
+
+def summarize_checkpoint(
+    dataframe,
+):
+
+    returns = (
+        dataframe[
+            "total_return"
+        ]
+        .to_numpy(dtype=float)
+    )
+
+
+    return {
+
+        "checkpoint_episode":
+            int(
+                dataframe[
+                    "checkpoint_episode"
+                ]
+                .iloc[0]
+            ),
+
+        "validation_episodes":
+            int(len(dataframe)),
+
+        "mean_return":
+            float(
+                np.mean(returns)
+            ),
+
+        "std_return":
+            float(
+                np.std(
+                    returns,
+                    ddof=0,
+                )
+            ),
+
+        "median_return":
+            float(
+                np.median(returns)
+            ),
+
+        "minimum_return":
+            float(
+                np.min(returns)
+            ),
+
+        "maximum_return":
+            float(
+                np.max(returns)
+            ),
+
+        "mean_coordinator_return":
+            float(
+                dataframe[
+                    "coordinator_return"
+                ]
+                .mean()
+            ),
+
+        "mean_local_return":
+            float(
+                dataframe[
+                    "mean_local_return"
+                ]
+                .mean()
+            ),
+
+        "power_balance_violation_steps":
+            int(
+                dataframe[
+                    "power_balance_violation_steps"
+                ]
+                .sum()
+            ),
+
+        "transformer_violation_steps":
+            int(
+                dataframe[
+                    "transformer_violation_steps"
+                ]
+                .sum()
+            ),
+    }
+
+
+# ============================================================
+# PAIRED COMPARISON
+# ============================================================
+
+def build_paired_comparison(
+    first_df,
+    second_df,
+    first_checkpoint,
+    second_checkpoint,
+):
+
+    first = (
+        first_df
+        .sort_values("episode")
+        .reset_index(drop=True)
+    )
+
+    second = (
+        second_df
+        .sort_values("episode")
+        .reset_index(drop=True)
+    )
+
+
+    if len(first) != len(second):
+
+        raise RuntimeError(
+            "Checkpoint episode counts differ."
+        )
+
+
+    comparison = pd.DataFrame({
+
+        "validation_episode":
+            first["episode"],
+
+        "validation_start_index":
+            first[
+                "validation_start_index"
+            ],
+
+        f"return_checkpoint_{first_checkpoint}":
+            first["total_return"],
+
+        f"return_checkpoint_{second_checkpoint}":
+            second["total_return"],
+    })
+
+
+    comparison[
+        "return_difference"
+    ] = (
+
+        comparison[
+            f"return_checkpoint_"
+            f"{second_checkpoint}"
+        ]
+
+        -
+
+        comparison[
+            f"return_checkpoint_"
+            f"{first_checkpoint}"
+        ]
+    )
+
+
+    comparison[
+        f"checkpoint_{second_checkpoint}_better"
+    ] = (
+
+        comparison[
+            "return_difference"
+        ]
+
+        > 0.0
+    )
+
+
+    return comparison
+
+
+# ============================================================
+# COMMAND LINE
+# ============================================================
+
+def parse_arguments():
+
+    parser = argparse.ArgumentParser()
+
+
+    parser.add_argument(
+
+        "--checkpoints",
+
+        nargs="+",
+
+        type=int,
+
+        default=[
+            100,
+            200,
+        ],
+    )
+
+
+    parser.add_argument(
+
+        "--validation-episodes",
+
+        type=int,
+
+        default=
+            NUMBER_OF_VALIDATION_EPISODES,
+    )
+
+
+    parser.add_argument(
+
+        "--seed",
+
+        type=int,
+
+        default=
+            RANDOM_SEED,
+    )
+
+
+    parser.add_argument(
+
+        "--device",
+
+        type=str,
+
+        default="cpu",
+
+        choices=[
+            "cpu",
+            "cuda",
+            "auto",
+        ],
+    )
+
+
+    return parser.parse_args()
+
+
+# ============================================================
+# MAIN
+# ============================================================
+
+def main():
+
+    args = parse_arguments()
+
+
+    section(
+        "FC-HMARL STEP 7L-C - FIXED VALIDATION"
+    )
+
+
+    if len(args.checkpoints) < 1:
+
+        raise ValueError(
+            "At least one checkpoint is required."
+        )
+
+
+    device = resolve_device(
+        args.device
+    )
+
+
+    set_global_seed(
+        args.seed
+    )
+
+
+    print(
+        f"Checkpoints         : "
+        f"{args.checkpoints}"
+    )
+
+    print(
+        f"Validation episodes : "
+        f"{args.validation_episodes}"
+    )
+
+    print(
+        f"Evaluation actions  : "
+        f"DETERMINISTIC"
+    )
+
+    print(
+        f"Seed                : "
+        f"{args.seed}"
+    )
+
+    print(
+        f"Device              : "
+        f"{device}"
+    )
+
+    print(
+        "TEST data used      : NO"
+    )
+
+
+    # ========================================================
+    # LOAD DATA
+    # ========================================================
+
+    data = ValidationData()
+
+
+    # ========================================================
+    # FIXED STARTS
+    # ========================================================
+
+    episode_starts = (
+        build_fixed_episode_starts(
+
+            data=
+                data,
+
+            number_of_episodes=
+                args.validation_episodes,
+
+            seed=
+                args.seed,
+        )
+    )
+
+
+    section(
+        "FIXED VALIDATION EPISODE STARTS"
+    )
+
+
+    print(
+        episode_starts
+    )
+
+
+    OUTPUT_DIRECTORY.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+
+    pd.DataFrame({
+
+        "validation_episode":
+            np.arange(
+                1,
+                len(episode_starts) + 1,
+            ),
+
+        "start_index":
+            episode_starts,
+
+    }).to_csv(
+
+        OUTPUT_DIRECTORY
+        / "fixed_validation_episode_starts.csv",
+
+        index=False,
+    )
+
+
+    # ========================================================
+    # EVALUATE CHECKPOINTS
+    # ========================================================
+
+    checkpoint_results = {}
+
+    summaries = []
+
+
+    for checkpoint in (
+        args.checkpoints
+    ):
+
+        dataframe = (
+            evaluate_checkpoint(
+
+                checkpoint_episode=
+                    checkpoint,
+
+                data=
+                    data,
+
+                episode_starts=
+                    episode_starts,
+
+                device=
+                    device,
+
+                seed=
+                    args.seed,
+            )
+        )
+
+
+        checkpoint_results[
+            checkpoint
+        ] = dataframe
+
+
+        dataframe.to_csv(
+
+            OUTPUT_DIRECTORY
+            / (
+                f"checkpoint_"
+                f"{checkpoint}_"
+                f"validation_results.csv"
+            ),
+
+            index=False,
+        )
+
+
+        summaries.append(
+            summarize_checkpoint(
+                dataframe
+            )
+        )
+
+
+    summary_df = pd.DataFrame(
+        summaries
+    )
+
+
+    summary_df.to_csv(
+
+        OUTPUT_DIRECTORY
+        / "checkpoint_validation_summary.csv",
+
+        index=False,
+    )
+
+
+    # ========================================================
+    # PAIRED COMPARISON
+    # ========================================================
+
+    if len(args.checkpoints) >= 2:
+
+        first_checkpoint = (
+            args.checkpoints[0]
+        )
+
+        second_checkpoint = (
+            args.checkpoints[1]
+        )
+
+
+        paired = build_paired_comparison(
+
+            checkpoint_results[
+                first_checkpoint
+            ],
+
+            checkpoint_results[
+                second_checkpoint
+            ],
+
+            first_checkpoint,
+            second_checkpoint,
+        )
+
+
+        paired.to_csv(
+
+            OUTPUT_DIRECTORY
+            / (
+                f"paired_checkpoint_"
+                f"{first_checkpoint}_vs_"
+                f"{second_checkpoint}.csv"
+            ),
+
+            index=False,
+        )
+
+
+        differences = (
+            paired[
+                "return_difference"
+            ]
+            .to_numpy(dtype=float)
+        )
+
+
+        second_better_count = int(
+            np.sum(
+                differences > 0.0
+            )
+        )
+
+
+        paired_summary = {
+
+            "first_checkpoint":
+                first_checkpoint,
+
+            "second_checkpoint":
+                second_checkpoint,
+
+            "number_of_validation_episodes":
+                len(paired),
+
+            "mean_return_difference":
+                float(
+                    np.mean(differences)
+                ),
+
+            "median_return_difference":
+                float(
+                    np.median(differences)
+                ),
+
+            "std_return_difference":
+                float(
+                    np.std(differences)
+                ),
+
+            "second_checkpoint_better_count":
+                second_better_count,
+
+            "second_checkpoint_better_fraction":
+                float(
+                    second_better_count
+                    / len(paired)
+                ),
+        }
+
+
+        with open(
+
+            OUTPUT_DIRECTORY
+            / "paired_comparison_summary.json",
+
+            "w",
+            encoding="utf-8",
+
+        ) as file:
+
+            json.dump(
+                paired_summary,
+                file,
+                indent=4,
+            )
+
+
+    # ========================================================
+    # FINAL RESULTS
+    # ========================================================
+
+    section(
+        "FIXED VALIDATION RESULTS"
+    )
+
+
+    print(
+        summary_df.to_string(
+            index=False
+        )
+    )
+
+
+    if len(args.checkpoints) >= 2:
+
+        print()
+
+        print(
+            f"Checkpoint "
+            f"{second_checkpoint} vs "
+            f"{first_checkpoint}:"
+        )
+
+        print(
+            f"Mean paired return difference : "
+            f"{np.mean(differences):.6f}"
+        )
+
+        print(
+            f"Median paired difference      : "
+            f"{np.median(differences):.6f}"
+        )
+
+        print(
+            f"Better validation episodes    : "
+            f"{second_better_count}/"
+            f"{len(paired)}"
+        )
+
+
+        if np.mean(differences) > 0:
+
+            print(
+                f"[OK] Checkpoint "
+                f"{second_checkpoint} has a higher "
+                f"mean paired validation return."
+            )
+
+        else:
+
+            print(
+                f"[NOTE] Checkpoint "
+                f"{second_checkpoint} does not have "
+                f"a higher mean paired validation "
+                f"return."
+            )
+
+
+    print()
+
+    print(
+        "[OK] Deterministic policy evaluation used."
+    )
+
+    print(
+        "[OK] Identical validation periods used "
+        "for every checkpoint."
+    )
+
+    print(
+        "[OK] Validation-selected forecast mapping used."
+    )
+
+    print(
+        "[OK] Validation-calibrated causal Phi used."
+    )
+
+    print(
+        "[OK] No TEST data were loaded."
+    )
+
+
+    print()
+
+    print(
+        f"Evaluation directory:\n"
+        f"{OUTPUT_DIRECTORY}"
+    )
+
+
+# ============================================================
+# ENTRY POINT
+# ============================================================
+
+if __name__ == "__main__":
+
+    main()

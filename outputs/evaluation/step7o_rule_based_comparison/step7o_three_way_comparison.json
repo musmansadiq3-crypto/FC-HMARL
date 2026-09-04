@@ -1,0 +1,12 @@
+{
+    "fc_vs_passive_return_delta": 2483.964505552871,
+    "fc_vs_rule_return_delta": 1985.011407408485,
+    "fc_vs_passive_grid_import_reduction_percent": 4.169418987283714,
+    "fc_vs_rule_grid_import_reduction_percent": 1.4166357212038854,
+    "fc_vs_passive_market_cost_reduction_percent": 22.09653693759852,
+    "fc_vs_rule_market_cost_reduction_percent": 19.898805414924578,
+    "fc_vs_passive_peak_import_reduction_percent": 0.7244831952547398,
+    "fc_vs_rule_peak_import_reduction_percent": 0.4588418688742339,
+    "fc_better_than_passive_episodes": 30,
+    "fc_better_than_rule_episodes": 30
+}

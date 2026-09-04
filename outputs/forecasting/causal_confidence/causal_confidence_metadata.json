@@ -1,0 +1,20 @@
+{
+    "selection_basis": "validation MAE only",
+    "test_used_for_selection": false,
+    "confidence_calibration": "mean absolute normalized validation forecast error by forecast horizon",
+    "confidence_is_causal": true,
+    "confidence_horizon": 24,
+    "selected_methods": {
+        "pv_power_kw": "daily_seasonal",
+        "load_kw": "transformer",
+        "ev_power_kw": "transformer",
+        "price_usd_per_kwh": "daily_seasonal"
+    },
+    "equations": {
+        "epsilon_RL": "sqrt(e_PV^2 + e_Load^2)",
+        "omega_RL": "exp(-epsilon_RL)",
+        "epsilon_EM": "sqrt(e_EV^2 + e_Price^2)",
+        "Phi": "exp(-(epsilon_RL + epsilon_EM))"
+    },
+    "note": "Test actual values are not used to calculate causal confidence."
+}

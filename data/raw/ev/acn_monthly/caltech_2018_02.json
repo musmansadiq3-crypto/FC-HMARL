@@ -1,0 +1,15 @@
+{
+  "_meta": {
+    "site": "caltech",
+    "year": 2018,
+    "month": 2,
+    "start_utc": "2018-02-01T00:00:00+00:00",
+    "end_utc_exclusive": "2018-03-01T00:00:00+00:00",
+    "api_endpoint": "https://ev.caltech.edu/api/v1/sessions/caltech",
+    "expected_total": 0,
+    "downloaded_sessions": 0,
+    "download_complete": true,
+    "downloaded_at_utc": "2026-08-31T12:24:04.775781+00:00"
+  },
+  "_items": []
+}

@@ -1,0 +1,3 @@
+Comparison,Return improvement,Market-cost reduction (%),Grid-import reduction (%),Peak-import reduction (%)
+FC-HMARL vs passive grid-only,747.482251,6.334160,2.264766,0.574919
+FC-HMARL vs rule-based BESS EMS,262.671468,3.620893,-0.503240,0.388424

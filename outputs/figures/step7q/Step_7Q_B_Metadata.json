@@ -1,0 +1,16 @@
+{
+    "checkpoint": 1000,
+    "test_episodes_considered": 30,
+    "seed": 42,
+    "device": "cpu",
+    "selection_rule": "FC-HMARL episode with return closest to TEST median",
+    "test_episode": 26,
+    "start_index": 1041,
+    "episode_return": -16679.665875284554,
+    "median_return": -16541.95254165803,
+    "distance_to_median": 137.71333362652513,
+    "selected_start_verified": 1041,
+    "hours_recorded": 24,
+    "learning": false,
+    "deterministic_actions": true
+}

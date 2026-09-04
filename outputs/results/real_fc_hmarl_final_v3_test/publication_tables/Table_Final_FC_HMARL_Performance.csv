@@ -1,0 +1,15 @@
+Category,Performance index,Final TEST result,Unit
+Evaluation protocol,Locked checkpoint,200,episode
+Evaluation protocol,TEST windows evaluated,1268,24-h windows
+Learning performance,Mean TEST return,"-17,573.003806",reward
+Learning performance,TEST return standard deviation,"3,199.954778",reward
+Learning performance,Median TEST return,"-17,100.055266",reward
+Economic,Mean net market cost,"8,575.628",USD/day
+Grid interaction,Mean grid import,"47,084.773",kWh/day
+Grid interaction,Mean grid export,146.365,kWh/day
+BESS operation,Mean BESS throughput,"2,137.711",kWh/day
+Energy sharing,Mean scheduled energy sharing,127.343,kWh/day
+Physical feasibility,Mean power-balance violation,0.000000000,kW/step
+Physical feasibility,Transformer violation steps,0,steps
+Physical feasibility,SOC lower-bound violations,0,events
+Physical feasibility,SOC upper-bound violations,0,events

@@ -1,0 +1,16 @@
+{
+    "number_of_local_agents": 5,
+    "maximum_episodes": 10,
+    "steps_per_episode": 24,
+    "updates_per_step": 1,
+    "global_step": 240,
+    "completed_episodes": 10,
+    "training_history": {
+        "number_of_episodes": 10,
+        "total_steps": 240,
+        "final_return": -77638.09683680229,
+        "mean_return": -93553.50999759612,
+        "maximum_return": -25379.403794464542,
+        "minimum_return": -354015.9474760451
+    }
+}

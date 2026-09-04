@@ -1,0 +1,283 @@
+============================================================
+FC-HMARL FINAL SUBMISSION MANIFEST
+Generated: 2026-09-04 04:58:36
+Project: D:\Molvi paper review\FC_HMARL
+============================================================
+
+[PYTHON ENVIRONMENT]
+Python 3.13.9
+PyTorch: 2.13.0+cpu
+CUDA available: False
+
+[CORE SOURCE MODULES]
+
+--- agents ---
+coordinator_agent.py
+local_agent.py
+networks.py
+replay_buffer.py
+sac_agent.py
+__init__.py
+
+--- environment ---
+bess.py
+constraints.py
+energy_sharing.py
+ev_fleet.py
+market.py
+microgrid.py
+pv.py
+vpp_env.py
+__init__.py
+
+--- forecasting ---
+confidence.py
+dataset.py
+model.py
+predictor.py
+preprocessing.py
+trainer.py
+uncertainty.py
+__init__.py
+
+--- marl ---
+action_mapper.py
+environment_adapter.py
+hierarchical_controller.py
+rewards.py
+state_builder.py
+training_loop.py
+vpp_training_bridge.py
+__init__.py
+
+--- risk ---
+cvar.py
+risk_penalty.py
+__init__.py
+
+--- evaluation ---
+economic_metrics.py
+forecasting_metrics.py
+operational_metrics.py
+scalability.py
+training_history_logger.py
+__init__.py
+
+--- configs ---
+forecasting_config.yaml
+market_config.yaml
+marl_config.yaml
+system_config.yaml
+
+--- tests ---
+test_action_mapper.py
+test_bess.py
+test_confidence.py
+test_coordinator.py
+test_dataset.py
+test_energy_sharing.py
+test_environment.py
+test_environment_adapter.py
+test_ev.py
+test_hierarchical_controller.py
+test_local_agent.py
+test_market.py
+test_model.py
+test_networks.py
+test_power_balance.py
+test_predictor.py
+test_preprocessing.py
+test_pv.py
+test_real_vpp_training_bridge.py
+test_replay_buffer.py
+test_reserve_feasibility.py
+test_rewards.py
+test_sac_agent.py
+test_state_builder.py
+test_trainer.py
+test_training_loop.py
+test_transformer_grid_feasibility.py
+test_uncertainty.py
+test_vpp_env.py
+test_vpp_training_bridge.py
+
+[FINAL V3 TRAINING RESULTS]
+real_fc_hmarl_final_v3_training_summary.json
+training_convergence.png
+training_history.csv
+training_return_components.png
+training_update_counts.png
+
+[FINAL VALIDATION RESULTS]
+selected_validation_checkpoint.json
+validation_checkpoint_ranking.csv
+validation_checkpoint_results.csv
+
+[FINAL TEST / BENCHMARK / ABLATION]
+
+--- real_fc_hmarl_final_v3 ---
+real_fc_hmarl_final_v3_training_summary.json
+training_convergence.png
+training_history.csv
+training_return_components.png
+training_update_counts.png
+
+--- real_fc_hmarl_final_v3_ablation ---
+final_v3_ablation_episode_results.csv
+final_v3_ablation_metadata.json
+final_v3_ablation_paired_comparisons.csv
+final_v3_ablation_summary.csv
+
+--- real_fc_hmarl_final_v3_benchmark ---
+final_v3_benchmark_comparison.json
+final_v3_benchmark_episode_results.csv
+final_v3_benchmark_protocol.json
+final_v3_benchmark_summary.csv
+
+--- real_fc_hmarl_final_v3_smoke ---
+real_fc_hmarl_final_v3_smoke_summary.json
+training_convergence.png
+training_history.csv
+training_return_components.png
+training_update_counts.png
+
+--- real_fc_hmarl_final_v3_test ---
+final_test_episode_results.csv
+final_test_protocol.json
+final_test_summary.csv
+final_test_summary.json
+
+--- real_fc_hmarl_final_v3_validation ---
+selected_validation_checkpoint.json
+validation_checkpoint_ranking.csv
+validation_checkpoint_results.csv
+
+[RL DATA ARCHIVES]
+real_rl_test_archive.npz
+real_rl_test_metadata.json
+real_rl_test_methods.csv
+real_rl_test_summary.csv
+real_rl_training_archive.npz
+real_rl_training_metadata.json
+real_rl_training_methods.csv
+real_rl_training_summary.csv
+real_rl_validation_archive.npz
+real_rl_validation_metadata.json
+real_rl_validation_methods.csv
+real_rl_validation_summary.csv
+
+[PUBLICATION FIGURES]
+.gitkeep
+FC_HMARL_Forecasting_Performance_FINAL.pdf
+FC_HMARL_Forecasting_Performance_FINAL.png
+FC_HMARL_Forecasting_Performance_FINAL.svg
+Figure1_Expanded_Bars.pdf
+Figure1_Expanded_Bars.png
+Figure1_Expanded_Bars.svg
+Figure2_Uncertainty_Propagation.pdf
+Figure2_Uncertainty_Propagation.png
+Figure2_Uncertainty_Propagation.svg
+Figure3_Training_Convergence.pdf
+Figure3_Training_Convergence.png
+Figure3_Training_Convergence.svg
+Figure6_Forecasting_Performance.pdf
+Figure6_Forecasting_Performance.png
+Figure6_Forecasting_Performance.svg
+Figure7_Operational_Dynamics.pdf
+Figure7_Operational_Dynamics.png
+Figure7_Operational_Dynamics.svg
+Figure8_Risk_Revenue_Sensitivity.pdf
+Figure8_Risk_Revenue_Sensitivity.png
+Figure8_Risk_Revenue_Sensitivity.svg
+VPP_Case_Study_Comparison.pdf
+VPP_Case_Study_Comparison.png
+VPP_Case_Study_Comparison.svg
+VPP_Economic_Operational_Performance.pdf
+VPP_Economic_Operational_Performance.png
+VPP_Economic_Operational_Performance.svg
+
+[EXCEL SUPPORTING DATA]
+evaluation\data\case_studies\01_case_studies_source_snapshot.xlsx
+evaluation\data\case_studies\02_case_studies_cleaned_dataset.xlsx
+evaluation\data\case_studies\03_case_studies_summary_statistics.xlsx
+evaluation\data\case_studies\04_case_studies_validation_report.xlsx
+evaluation\data\case_studies\vpp_case_study_comparison_data.xlsx
+evaluation\data\forecast_horizon\01_forecast_horizon_source_snapshot.xlsx
+evaluation\data\forecast_horizon\02_forecast_horizon_cleaned_dataset.xlsx
+evaluation\data\forecast_horizon\03_forecast_horizon_summary_statistics.xlsx
+evaluation\data\forecast_horizon\04_forecast_horizon_validation_report.xlsx
+evaluation\data\forecast_horizon\forecast_horizon_metrics.xlsx
+evaluation\data\operational\01_operational_source_snapshot.xlsx
+evaluation\data\operational\02_operational_cleaned_dataset.xlsx
+evaluation\data\operational\03_operational_summary_statistics.xlsx
+evaluation\data\operational\04_operational_validation_report.xlsx
+evaluation\data\operational\fc_hmarl_operational_dynamics.xlsx
+evaluation\data\risk_economic\01_risk_economic_source_snapshot.xlsx
+evaluation\data\risk_economic\02_risk_economic_cleaned_dataset.xlsx
+evaluation\data\risk_economic\03_risk_economic_summary_statistics.xlsx
+evaluation\data\risk_economic\04_risk_economic_validation_report.xlsx
+evaluation\data\risk_economic\risk_revenue_sensitivity_data.xlsx
+evaluation\data\training_diagnostics\01_training_diagnostics_source_snapshot.xlsx
+evaluation\data\training_diagnostics\02_training_diagnostics_cleaned_dataset.xlsx
+evaluation\data\training_diagnostics\03_training_diagnostics_summary_statistics.xlsx
+evaluation\data\training_diagnostics\04_training_diagnostics_validation_report.xlsx
+evaluation\data\training_diagnostics\fc_hmarl_training_convergence_data.xlsx
+evaluation\data\vpp_performance\01_vpp_performance_source_snapshot.xlsx
+evaluation\data\vpp_performance\02_vpp_performance_cleaned_dataset.xlsx
+evaluation\data\vpp_performance\03_vpp_performance_summary_statistics.xlsx
+evaluation\data\vpp_performance\04_vpp_performance_validation_report.xlsx
+evaluation\data\vpp_performance\vpp_economic_operational_performance.xlsx
+forecasting\confidence_data\01_confidence_data_source_snapshot.xlsx
+forecasting\confidence_data\02_confidence_data_cleaned_dataset.xlsx
+forecasting\confidence_data\03_confidence_data_summary_statistics.xlsx
+forecasting\confidence_data\04_confidence_data_validation_report.xlsx
+forecasting\confidence_data\forecast_confidence_evolution_data.xlsx
+data\Publication\01_publication_source_snapshot.xlsx
+data\Publication\02_publication_cleaned_dataset.xlsx
+data\Publication\03_publication_summary_statistics.xlsx
+data\Publication\04_publication_validation_report.xlsx
+data\Publication\forecasting_figure_data.xlsx
+data\Publication\uncertainty_propagation_figure_data.xlsx
+
+[TEST INVENTORY]
+test_action_mapper.py
+test_bess.py
+test_confidence.py
+test_coordinator.py
+test_dataset.py
+test_energy_sharing.py
+test_environment.py
+test_environment_adapter.py
+test_ev.py
+test_hierarchical_controller.py
+test_local_agent.py
+test_market.py
+test_model.py
+test_networks.py
+test_power_balance.py
+test_predictor.py
+test_preprocessing.py
+test_pv.py
+test_real_vpp_training_bridge.py
+test_replay_buffer.py
+test_reserve_feasibility.py
+test_rewards.py
+test_sac_agent.py
+test_state_builder.py
+test_trainer.py
+test_training_loop.py
+test_transformer_grid_feasibility.py
+test_uncertainty.py
+test_vpp_env.py
+test_vpp_training_bridge.py
+
+[VERIFIED TEST STATUS]
+Full verification record: 993 tests passed.
+
+[DEVELOPMENT RECORD]
+DEVELOPMENT_HISTORY.md
+final_project_structure.txt
+
+============================================================
+END OF MANIFEST
+============================================================

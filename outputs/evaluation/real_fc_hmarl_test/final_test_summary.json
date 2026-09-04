@@ -1,0 +1,13 @@
+{
+    "checkpoint_episode": 1000,
+    "test_episodes": 30,
+    "mean_return": -16817.25650505125,
+    "std_return": 3236.851713056684,
+    "median_return": -16541.95254165803,
+    "minimum_return": -23660.448169298557,
+    "maximum_return": -11447.092798935306,
+    "mean_coordinator_return": -7519.605071386594,
+    "mean_local_return": -1859.530286732931,
+    "power_balance_violation_steps": 0,
+    "transformer_violation_steps": 0
+}

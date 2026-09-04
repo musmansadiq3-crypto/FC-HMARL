@@ -1,0 +1,20 @@
+{
+    "checkpoint": 1000,
+    "policy_status": "old_pre_correction_policy",
+    "representative_test_episode": 26,
+    "test_start_index": 1041,
+    "old_episode_return": -16679.665875284554,
+    "corrected_environment_episode_return": -18415.692784749073,
+    "reserve_requested_sum_kw_samples": 20.09774965206732,
+    "reserve_feasible_sum_kw_samples": 20.09774965206732,
+    "reserve_curtailed_sum_kw_samples": 0.0,
+    "reserve_revenue_usd": 1.004887482603366,
+    "headroom_excess_mg_hours": 0,
+    "reserve_at_minimum_soc_mg_hours": 0,
+    "all_power_balanced": true,
+    "all_transformers_feasible": true,
+    "reserve_headroom_test_passed": true,
+    "minimum_soc_reserve_test_passed": true,
+    "overall_physical_validation_passed": true,
+    "warning": "Economic return is diagnostic only because checkpoint 1000 was trained before reserve correction."
+}

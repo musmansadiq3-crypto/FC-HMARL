@@ -1,0 +1,25 @@
+FC-HMARL STEP 7B FORECASTING EVALUATION
+============================================================
+
+Prediction tensor: (1291, 24, 4)
+Target tensor: (1291, 24, 4)
+
+OVERALL METRICS
+------------------------------------------------------------
+pv_power_kw: MAE=0.07660358, RMSE=0.11034376, R2=0.693621, NMAE=60.6642%, NRMSE=87.3839%, MAPE=192.1353%, sMAPE=137.9502%
+load_kw: MAE=0.06661249, RMSE=0.08602107, R2=0.552568, NMAE=14.9207%, NRMSE=19.2681%, MAPE=14.5451%, sMAPE=15.5898%
+ev_power_kw: MAE=3.84668318, RMSE=5.32013145, R2=0.656742, NMAE=47.7762%, NRMSE=66.0766%, MAPE=420.1678%, sMAPE=84.9689%
+price_usd_per_kwh: MAE=0.00407235, RMSE=0.00530752, R2=0.515927, NMAE=15.8286%, NRMSE=20.6296%, MAPE=16.7015%, sMAPE=15.3142%
+
+SPECIAL EVALUATION
+------------------------------------------------------------
+PV daylight threshold = 0.05 kW
+PV daylight: MAE=0.10353516, RMSE=0.14095971, R2=0.424235, MAPE=58.5693%
+EV active threshold = 1.0 kW
+EV active: MAE=4.09737749, RMSE=5.53920112, R2=0.634877, MAPE=77.4480%
+
+IMPORTANT INTERPRETATION
+------------------------------------------------------------
+Raw MAPE is unreliable when actual PV or EV values are zero or close to zero.
+Therefore MAE, RMSE, R2, normalized errors, sMAPE, and active-period metrics must be considered together.
+No forecasting model was retrained in Step 7B.

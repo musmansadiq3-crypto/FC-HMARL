@@ -1,0 +1,7 @@
+agent,replay_file,reward_key,valid_transitions,episode_reward_sum,episode_reward_mean,episode_reward_min,episode_reward_max,worst_step_1_based,action_key,done_key
+local_3,D:\Molvi paper review\FC_HMARL\outputs\checkpoints\real_fc_hmarl_reserve_corrected\local_agent_3_episode_100.replay.npz,rewards,2400,-453369.72092437744,-18890.405038515728,-450958.5625,-74.12041473388672,1,actions,dones
+coordinator,D:\Molvi paper review\FC_HMARL\outputs\checkpoints\real_fc_hmarl_reserve_corrected\coordinator_episode_100.replay.npz,rewards,2400,-14848.836547851562,-618.7015228271484,-913.76904296875,-435.49560546875,17,actions,dones
+local_5,D:\Molvi paper review\FC_HMARL\outputs\checkpoints\real_fc_hmarl_reserve_corrected\local_agent_5_episode_100.replay.npz,rewards,2400,-3510.1995239257812,-146.25831349690756,-219.97286987304688,-87.3599853515625,17,actions,dones
+local_2,D:\Molvi paper review\FC_HMARL\outputs\checkpoints\real_fc_hmarl_reserve_corrected\local_agent_2_episode_100.replay.npz,rewards,2400,-3188.4978408813477,-132.8540767033895,-193.3651580810547,-91.2353515625,17,actions,dones
+local_1,D:\Molvi paper review\FC_HMARL\outputs\checkpoints\real_fc_hmarl_reserve_corrected\local_agent_1_episode_100.replay.npz,rewards,2400,-2869.33992767334,-119.55583031972249,-185.6902618408203,-80.81542205810547,19,actions,dones
+local_4,D:\Molvi paper review\FC_HMARL\outputs\checkpoints\real_fc_hmarl_reserve_corrected\local_agent_4_episode_100.replay.npz,rewards,2400,-2687.287181854248,-111.970299243927,-179.12037658691406,-5.684139251708984,17,actions,dones

@@ -1,0 +1,3110 @@
+============================================================
+FC-HMARL FINAL ARTIFACT PROVENANCE AUDIT
+Generated: 2026-09-04 05:09:55
+Project: D:\Molvi paper review\FC_HMARL
+============================================================
+
+[SUMMARY]
+CACHE: 84
+FINAL: 47
+HISTORICAL: 18
+LARGE: 197
+REVIEW: 62
+SUPPORTING: 32
+
+TOTAL RECORDS: 440
+
+[STATUS DEFINITIONS]
+FINAL      = official final V3 artifact
+SUPPORTING = derived supporting artifact, not an independent model run
+REVIEW     = inspect provenance before manuscript/submission claims
+HISTORICAL = retain as development evidence, not official final output
+CACHE      = automatically generated software artifact
+LARGE      = large file requiring upload-size review
+SECURITY   = possible credential/secret filename requiring review
+
+[DETAILED RECORDS]
+
+Status   : CACHE
+Category : Cache
+Path     : .pytest_cache
+Size KB  : 61.93
+Modified : 08/29/2026 20:44:25
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__
+Size KB  : 243.7
+Modified : 09/04/2026 03:35:34
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__\evaluate_final_v3_benchmark_locked200.cpython-313.pyc
+Size KB  : 29.16
+Modified : 09/04/2026 03:04:48
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__\evaluate_real_fc_hmarl_test.cpython-313.pyc
+Size KB  : 22.09
+Modified : 09/01/2026 19:43:11
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__\evaluate_real_fc_hmarl_test.cpython-313-pytest-8.4.2.pyc
+Size KB  : 22.2
+Modified : 09/04/2026 03:35:34
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__\evaluate_real_fc_hmarl_validation.cpython-313.pyc
+Size KB  : 29.66
+Modified : 09/01/2026 19:26:34
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__\train.cpython-313.pyc
+Size KB  : 30.3
+Modified : 09/01/2026 02:33:19
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__\train_real_fc_hmarl.cpython-313.pyc
+Size KB  : 34.59
+Modified : 09/01/2026 14:37:26
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__\train_real_fc_hmarl_final_v3.cpython-313.pyc
+Size KB  : 39.08
+Modified : 09/04/2026 00:17:02
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : __pycache__\train_real_fc_hmarl_reserve_corrected_v2.cpython-313.pyc
+Size KB  : 36.63
+Modified : 09/01/2026 20:46:17
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : agents\__pycache__
+Size KB  : 124.59
+Modified : 09/01/2026 03:26:16
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : agents\__pycache__\__init__.cpython-313.pyc
+Size KB  : 0.18
+Modified : 08/29/2026 21:59:02
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : agents\__pycache__\coordinator_agent.cpython-313.pyc
+Size KB  : 20.92
+Modified : 08/29/2026 22:19:23
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : agents\__pycache__\local_agent.cpython-313.pyc
+Size KB  : 21.6
+Modified : 08/29/2026 22:11:43
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : agents\__pycache__\networks.cpython-313.pyc
+Size KB  : 21.89
+Modified : 08/29/2026 21:59:02
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : agents\__pycache__\replay_buffer.cpython-313.pyc
+Size KB  : 24.19
+Modified : 08/29/2026 22:02:00
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : agents\__pycache__\sac_agent.cpython-313.pyc
+Size KB  : 35.81
+Modified : 09/01/2026 03:26:16
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__
+Size KB  : 116.19
+Modified : 09/01/2026 21:38:43
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\__init__.cpython-313.pyc
+Size KB  : 0.19
+Modified : 08/29/2026 20:48:35
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\bess.cpython-313.pyc
+Size KB  : 16.23
+Modified : 09/01/2026 20:27:44
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\constraints.cpython-313.pyc
+Size KB  : 10.54
+Modified : 08/29/2026 20:59:12
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\energy_sharing.cpython-313.pyc
+Size KB  : 19.07
+Modified : 08/29/2026 21:03:24
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\ev_fleet.cpython-313.pyc
+Size KB  : 15.69
+Modified : 08/29/2026 20:56:45
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\market.cpython-313.pyc
+Size KB  : 11.29
+Modified : 09/01/2026 20:27:44
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\microgrid.cpython-313.pyc
+Size KB  : 13.12
+Modified : 09/01/2026 21:38:43
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\pv.cpython-313.pyc
+Size KB  : 9.54
+Modified : 08/29/2026 20:53:50
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : environment\__pycache__\vpp_env.cpython-313.pyc
+Size KB  : 20.53
+Modified : 09/01/2026 20:49:57
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : evaluation\__pycache__
+Size KB  : 39.67
+Modified : 09/01/2026 19:39:09
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : evaluation\__pycache__\__init__.cpython-313.pyc
+Size KB  : 0.19
+Modified : 08/30/2026 02:48:15
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : evaluation\__pycache__\economic_metrics.cpython-313.pyc
+Size KB  : 12.31
+Modified : 09/01/2026 19:39:09
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : evaluation\__pycache__\operational_metrics.cpython-313.pyc
+Size KB  : 15.07
+Modified : 09/01/2026 19:37:39
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : evaluation\__pycache__\training_history_logger.cpython-313.pyc
+Size KB  : 12.1
+Modified : 08/30/2026 02:48:15
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__
+Size KB  : 151.28
+Modified : 08/29/2026 21:44:21
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__\__init__.cpython-313.pyc
+Size KB  : 0.19
+Modified : 08/29/2026 21:17:54
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__\confidence.cpython-313.pyc
+Size KB  : 18.9
+Modified : 08/29/2026 21:44:21
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__\dataset.cpython-313.pyc
+Size KB  : 18.23
+Modified : 08/29/2026 21:20:46
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__\model.cpython-313.pyc
+Size KB  : 20.02
+Modified : 08/29/2026 21:29:00
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__\predictor.cpython-313.pyc
+Size KB  : 23.2
+Modified : 08/29/2026 21:37:21
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__\preprocessing.cpython-313.pyc
+Size KB  : 21.48
+Modified : 08/29/2026 21:17:54
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__\trainer.cpython-313.pyc
+Size KB  : 25.62
+Modified : 08/29/2026 21:33:23
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : forecasting\__pycache__\uncertainty.cpython-313.pyc
+Size KB  : 23.66
+Modified : 08/29/2026 21:40:40
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__
+Size KB  : 147
+Modified : 09/03/2026 18:27:50
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__\__init__.cpython-313.pyc
+Size KB  : 0.18
+Modified : 08/29/2026 21:49:53
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__\action_mapper.cpython-313.pyc
+Size KB  : 18.01
+Modified : 09/01/2026 20:27:44
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__\environment_adapter.cpython-313.pyc
+Size KB  : 15.83
+Modified : 08/29/2026 22:28:54
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__\hierarchical_controller.cpython-313.pyc
+Size KB  : 19.83
+Modified : 08/29/2026 21:55:50
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__\rewards.cpython-313.pyc
+Size KB  : 16.77
+Modified : 08/29/2026 21:52:35
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__\state_builder.cpython-313.pyc
+Size KB  : 21.03
+Modified : 08/29/2026 21:49:53
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__\training_loop.cpython-313.pyc
+Size KB  : 32.42
+Modified : 09/01/2026 03:34:47
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : marl\__pycache__\vpp_training_bridge.cpython-313.pyc
+Size KB  : 22.94
+Modified : 09/03/2026 18:27:50
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : risk\__pycache__
+Size KB  : 12.18
+Modified : 09/01/2026 19:41:26
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : risk\__pycache__\cvar.cpython-313.pyc
+Size KB  : 5.79
+Modified : 09/01/2026 19:40:27
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : risk\__pycache__\risk_penalty.cpython-313.pyc
+Size KB  : 6.39
+Modified : 09/01/2026 19:41:26
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__
+Size KB  : 1300.67
+Modified : 09/03/2026 18:27:21
+Notes    : Automatically generated software cache; not research evidence.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_action_mapper.cpython-313-pytest-8.4.2.pyc
+Size KB  : 13.11
+Modified : 08/30/2026 02:02:31
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_bess.cpython-313-pytest-8.4.2.pyc
+Size KB  : 13.58
+Modified : 08/29/2026 20:48:35
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_confidence.cpython-313-pytest-8.4.2.pyc
+Size KB  : 39.57
+Modified : 08/29/2026 21:44:21
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_coordinator.cpython-313-pytest-8.4.2.pyc
+Size KB  : 71.15
+Modified : 08/29/2026 22:19:23
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_dataset.cpython-313-pytest-8.4.2.pyc
+Size KB  : 45.88
+Modified : 08/29/2026 21:20:46
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_energy_sharing.cpython-313-pytest-8.4.2.pyc
+Size KB  : 50.83
+Modified : 08/29/2026 21:03:24
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_environment.cpython-313-pytest-8.4.2.pyc
+Size KB  : 32.46
+Modified : 08/29/2026 21:08:25
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_environment_adapter.cpython-313-pytest-8.4.2.pyc
+Size KB  : 40.04
+Modified : 08/29/2026 22:28:54
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_ev.cpython-313-pytest-8.4.2.pyc
+Size KB  : 46
+Modified : 08/29/2026 20:56:45
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_hierarchical_controller.cpython-313-pytest-8.4.2.pyc
+Size KB  : 43.62
+Modified : 08/29/2026 21:55:50
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_local_agent.cpython-313-pytest-8.4.2.pyc
+Size KB  : 73.19
+Modified : 08/29/2026 22:11:43
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_market.cpython-313-pytest-8.4.2.pyc
+Size KB  : 42.94
+Modified : 08/29/2026 21:05:36
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_model.cpython-313-pytest-8.4.2.pyc
+Size KB  : 36.08
+Modified : 08/29/2026 21:28:58
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_networks.cpython-313-pytest-8.4.2.pyc
+Size KB  : 52.66
+Modified : 08/29/2026 21:59:00
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_power_balance.cpython-313-pytest-8.4.2.pyc
+Size KB  : 41.06
+Modified : 08/29/2026 20:59:12
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_predictor.cpython-313-pytest-8.4.2.pyc
+Size KB  : 50.07
+Modified : 08/29/2026 21:37:20
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_preprocessing.cpython-313-pytest-8.4.2.pyc
+Size KB  : 48.61
+Modified : 08/29/2026 21:17:53
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_pv.cpython-313-pytest-8.4.2.pyc
+Size KB  : 35.11
+Modified : 08/29/2026 20:53:50
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_real_vpp_training_bridge.cpython-313-pytest-8.4.2.pyc
+Size KB  : 42.74
+Modified : 09/03/2026 18:27:21
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_replay_buffer.cpython-313-pytest-8.4.2.pyc
+Size KB  : 56.44
+Modified : 08/29/2026 22:02:00
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_reserve_feasibility.cpython-313-pytest-8.4.2.pyc
+Size KB  : 14.73
+Modified : 09/01/2026 20:27:44
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_rewards.cpython-313-pytest-8.4.2.pyc
+Size KB  : 47.41
+Modified : 08/29/2026 21:52:35
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_sac_agent.cpython-313-pytest-8.4.2.pyc
+Size KB  : 78.53
+Modified : 08/29/2026 22:06:30
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_state_builder.cpython-313-pytest-8.4.2.pyc
+Size KB  : 43.01
+Modified : 08/29/2026 21:49:53
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_trainer.cpython-313-pytest-8.4.2.pyc
+Size KB  : 53.12
+Modified : 08/29/2026 21:33:22
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_training_loop.cpython-313-pytest-8.4.2.pyc
+Size KB  : 54.26
+Modified : 08/29/2026 22:25:28
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_transformer_grid_feasibility.cpython-313-pytest-8.4.2.pyc
+Size KB  : 19.73
+Modified : 09/01/2026 21:38:42
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_uncertainty.cpython-313-pytest-8.4.2.pyc
+Size KB  : 48.68
+Modified : 08/29/2026 21:40:40
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_vpp_env.cpython-313-pytest-8.4.2.pyc
+Size KB  : 35.62
+Modified : 08/29/2026 21:13:04
+Notes    : Automatically generated Python bytecode.
+
+Status   : CACHE
+Category : Cache
+Path     : tests\__pycache__\test_vpp_training_bridge.cpython-313-pytest-8.4.2.pyc
+Size KB  : 30.45
+Modified : 08/30/2026 02:23:39
+Notes    : Automatically generated Python bytecode.
+
+Status   : FINAL
+Category : Benchmark
+Path     : outputs\results\real_fc_hmarl_final_v3_benchmark
+Size KB  : 1073.24
+Modified : 09/04/2026 03:02:36
+Notes    : Final benchmark evaluation under locked TEST conditions.
+
+Status   : FINAL
+Category : Diagnostic Ablation
+Path     : outputs\results\real_fc_hmarl_final_v3_ablation
+Size KB  : 1494.49
+Modified : 09/04/2026 03:24:55
+Notes    : Post-training inference-time diagnostic ablation results.
+
+Status   : FINAL
+Category : Final Script
+Path     : evaluate_final_v3_ablation_locked200.py
+Size KB  : 23.33
+Modified : 09/04/2026 03:04:32
+Notes    : Official diagnostic ablation evaluator.
+
+Status   : FINAL
+Category : Final Script
+Path     : evaluate_final_v3_benchmark_locked200.py
+Size KB  : 26.46
+Modified : 09/04/2026 02:59:06
+Notes    : Official final benchmark evaluator.
+
+Status   : FINAL
+Category : Final Script
+Path     : evaluate_final_v3_test_locked200.py
+Size KB  : 38.5
+Modified : 09/04/2026 02:41:57
+Notes    : Official locked TEST evaluator.
+
+Status   : FINAL
+Category : Final Script
+Path     : train_real_fc_hmarl_final_v3.py
+Size KB  : 55.13
+Modified : 09/03/2026 18:34:20
+Notes    : Official final V3 training launcher.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Benchmark_Mean_Return.pdf
+Size KB  : 17.79
+Modified : 09/04/2026 03:32:24
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Benchmark_Mean_Return.png
+Size KB  : 120.78
+Modified : 09/04/2026 03:32:23
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Benchmark_Net_Market_Cost.pdf
+Size KB  : 20.01
+Modified : 09/04/2026 03:32:24
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Benchmark_Net_Market_Cost.png
+Size KB  : 147.54
+Modified : 09/04/2026 03:32:24
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Benchmark_Operational_Normalized.pdf
+Size KB  : 18.83
+Modified : 09/04/2026 03:32:24
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Benchmark_Operational_Normalized.png
+Size KB  : 144.61
+Modified : 09/04/2026 03:32:24
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Diagnostic_Ablation.pdf
+Size KB  : 18.13
+Modified : 09/04/2026 03:32:24
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Diagnostic_Ablation.png
+Size KB  : 166.87
+Modified : 09/04/2026 03:32:24
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Final_TEST_Grid_Interaction.png
+Size KB  : 189.63
+Modified : 09/04/2026 02:51:07
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Final_TEST_Net_Market_Cost.png
+Size KB  : 230.84
+Modified : 09/04/2026 02:51:07
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Final_TEST_Resource_Utilization.png
+Size KB  : 132.86
+Modified : 09/04/2026 02:51:07
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final TEST Figure
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_figures\Figure_Final_TEST_Return_Distribution.png
+Size KB  : 89.71
+Modified : 09/04/2026 02:51:07
+Notes    : Generated under the final locked TEST result branch.
+
+Status   : FINAL
+Category : Final V3 Training
+Path     : outputs\results\real_fc_hmarl_final_v3
+Size KB  : 1946.68
+Modified : 09/03/2026 23:31:40
+Notes    : Official final V3 training results.
+
+Status   : FINAL
+Category : Final Validation
+Path     : outputs\results\real_fc_hmarl_final_v3_validation
+Size KB  : 39.9
+Modified : 09/04/2026 00:27:24
+Notes    : Official validation-only checkpoint-selection results.
+
+Status   : FINAL
+Category : Locked TEST
+Path     : outputs\results\real_fc_hmarl_final_v3_test
+Size KB  : 1888.41
+Modified : 09/04/2026 02:51:04
+Notes    : Official locked TEST evaluation using frozen checkpoint 200.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_ablation\final_v3_ablation_episode_results.csv
+Size KB  : 1491.82
+Modified : 09/04/2026 03:24:55
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_ablation\final_v3_ablation_paired_comparisons.csv
+Size KB  : 0.42
+Modified : 09/04/2026 03:24:55
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_ablation\final_v3_ablation_summary.csv
+Size KB  : 1.33
+Modified : 09/04/2026 03:24:55
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_benchmark\final_v3_benchmark_episode_results.csv
+Size KB  : 1070.07
+Modified : 09/04/2026 03:02:36
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_benchmark\final_v3_benchmark_summary.csv
+Size KB  : 1.92
+Modified : 09/04/2026 03:02:36
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Economic_Operational_Performance.csv
+Size KB  : 1.7
+Modified : 09/04/2026 02:49:42
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Economic_Operational_Performance.md
+Size KB  : 2.81
+Modified : 09/04/2026 02:49:42
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Economic_Operational_Performance.txt
+Size KB  : 2.66
+Modified : 09/04/2026 02:49:42
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Benchmark_Comparison.csv
+Size KB  : 0.64
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Benchmark_Comparison.md
+Size KB  : 1.66
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Benchmark_Comparison.txt
+Size KB  : 1.25
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Benchmark_Improvements.csv
+Size KB  : 0.24
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Benchmark_Improvements.md
+Size KB  : 0.58
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Benchmark_Improvements.txt
+Size KB  : 0.46
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Diagnostic_Ablation.csv
+Size KB  : 0.77
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Diagnostic_Ablation.md
+Size KB  : 2.12
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_Diagnostic_Ablation.txt
+Size KB  : 1.64
+Modified : 09/04/2026 03:30:11
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_FC_HMARL_Performance.csv
+Size KB  : 0.87
+Modified : 09/04/2026 02:47:01
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_FC_HMARL_Performance.md
+Size KB  : 1.5
+Modified : 09/04/2026 02:47:01
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_Final_FC_HMARL_Performance.txt
+Size KB  : 0.99
+Modified : 09/04/2026 02:47:01
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_MG_Coordinator_Performance.csv
+Size KB  : 0.66
+Modified : 09/04/2026 02:48:19
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_MG_Coordinator_Performance.md
+Size KB  : 1.06
+Modified : 09/04/2026 02:48:19
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : Publication Table
+Path     : outputs\results\real_fc_hmarl_final_v3_test\publication_tables\Table_MG_Coordinator_Performance.txt
+Size KB  : 0.9
+Modified : 09/04/2026 02:48:19
+Notes    : Derived from final V3 TEST, benchmark, or diagnostic evaluation output.
+
+Status   : FINAL
+Category : RL Data
+Path     : outputs\rl_data\real_rl_test_archive.npz
+Size KB  : 1267.17
+Modified : 09/04/2026 02:22:45
+Notes    : TEST archive reserved for locked final evaluation.
+
+Status   : FINAL
+Category : RL Data
+Path     : outputs\rl_data\real_rl_training_archive.npz
+Size KB  : 6033.57
+Modified : 09/01/2026 02:45:06
+Notes    : TRAIN archive used for policy learning.
+
+Status   : FINAL
+Category : RL Data
+Path     : outputs\rl_data\real_rl_validation_archive.npz
+Size KB  : 1314.43
+Modified : 09/04/2026 00:15:18
+Notes    : VALIDATION archive used for checkpoint selection.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : audit_step7r_physical_dispatch.py
+Size KB  : 15.85
+Modified : 09/01/2026 20:16:53
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : audit_step7r_reserve_source.py
+Size KB  : 4.78
+Modified : 09/01/2026 20:19:01
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : diagnose_step7r_g_episode87.py
+Size KB  : 13.54
+Modified : 09/01/2026 20:44:10
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : diagnose_step7r_h_mg3_step1.py
+Size KB  : 11.13
+Modified : 09/01/2026 20:46:03
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : evaluate_fc_hmarl_ablation_fixed.py
+Size KB  : 22.51
+Modified : 09/01/2026 19:44:04
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : evaluate_fc_hmarl_ablation_v2.py
+Size KB  : 22.55
+Modified : 09/01/2026 19:46:34
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : evaluate_final_v3_validation_FIXED.py
+Size KB  : 26.38
+Modified : 09/04/2026 00:19:42
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : evaluate_final_v3_validation_FIXED_V2.py
+Size KB  : 27.16
+Modified : 09/04/2026 00:21:36
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : evaluate_step7n_operational_economic.py
+Size KB  : 11.97
+Modified : 09/01/2026 19:55:50
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : evaluate_step7o_baseline_comparison.py
+Size KB  : 18.56
+Modified : 09/01/2026 20:00:21
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : evaluate_step7o_rule_based_comparison.py
+Size KB  : 15.4
+Modified : 09/01/2026 20:03:11
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : evaluate_step7p_risk_robustness.py
+Size KB  : 10.46
+Modified : 09/01/2026 20:05:42
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : generate_step7q_publication_figures.py
+Size KB  : 5.75
+Modified : 09/01/2026 20:08:16
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : generate_step7q_representative_dispatch.py
+Size KB  : 19.07
+Modified : 09/01/2026 20:12:07
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : inspect_step7n_physical_info.py
+Size KB  : 2.87
+Modified : 09/01/2026 19:53:51
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : train_real_fc_hmarl_reserve_corrected.py
+Size KB  : 50.78
+Modified : 09/01/2026 20:33:19
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : train_real_fc_hmarl_reserve_corrected_v2.py
+Size KB  : 51.87
+Modified : 09/01/2026 20:34:48
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : HISTORICAL
+Category : Development History
+Path     : validate_step7r_corrected_reserve.py
+Size KB  : 15.78
+Modified : 09/01/2026 20:29:05
+Notes    : Retain as development evidence; do not use as the official final V3 evaluation unless separately verified.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : data\raw\load\15minute_data_california\15minute_data_california.csv
+Size KB  : 135936.35
+Modified : 08/04/2026 06:37:59
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : data\raw\price\price_pjm.zip
+Size KB  : 161037.3
+Modified : 08/30/2026 23:46:52
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_3500.replay.npz
+Size KB  : 51457.08
+Modified : 09/01/2026 17:49:28
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_3600.replay.npz
+Size KB  : 52932.51
+Modified : 09/01/2026 17:54:53
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_3700.replay.npz
+Size KB  : 54387.75
+Modified : 09/01/2026 18:00:26
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_3800.replay.npz
+Size KB  : 55870.41
+Modified : 09/01/2026 18:05:45
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_3900.replay.npz
+Size KB  : 57329.81
+Modified : 09/01/2026 18:11:03
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4000.replay.npz
+Size KB  : 58818.81
+Modified : 09/01/2026 18:16:17
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4100.replay.npz
+Size KB  : 60299.71
+Modified : 09/01/2026 18:21:36
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4200.replay.npz
+Size KB  : 61766
+Modified : 09/01/2026 18:26:57
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4300.replay.npz
+Size KB  : 63239.09
+Modified : 09/01/2026 18:32:20
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4400.replay.npz
+Size KB  : 64711.59
+Modified : 09/01/2026 18:37:56
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4500.replay.npz
+Size KB  : 66180.45
+Modified : 09/01/2026 18:43:12
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4600.replay.npz
+Size KB  : 67653.49
+Modified : 09/01/2026 18:48:25
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4700.replay.npz
+Size KB  : 69117.59
+Modified : 09/01/2026 18:53:36
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4800.replay.npz
+Size KB  : 70587.85
+Modified : 09/01/2026 18:58:51
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_4900.replay.npz
+Size KB  : 72049.3
+Modified : 09/01/2026 19:04:20
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\coordinator_episode_5000.replay.npz
+Size KB  : 73522.85
+Modified : 09/01/2026 19:09:47
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_3500.replay.npz
+Size KB  : 52605.24
+Modified : 09/01/2026 17:49:14
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_3600.replay.npz
+Size KB  : 54115.8
+Modified : 09/01/2026 17:54:39
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_3700.replay.npz
+Size KB  : 55609.96
+Modified : 09/01/2026 18:00:12
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_3800.replay.npz
+Size KB  : 57126.46
+Modified : 09/01/2026 18:05:32
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_3900.replay.npz
+Size KB  : 58619.53
+Modified : 09/01/2026 18:10:48
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4000.replay.npz
+Size KB  : 60143.82
+Modified : 09/01/2026 18:16:02
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4100.replay.npz
+Size KB  : 61660.82
+Modified : 09/01/2026 18:21:20
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4200.replay.npz
+Size KB  : 63162.54
+Modified : 09/01/2026 18:26:42
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4300.replay.npz
+Size KB  : 64671.34
+Modified : 09/01/2026 18:32:04
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4400.replay.npz
+Size KB  : 66178.76
+Modified : 09/01/2026 18:37:39
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4500.replay.npz
+Size KB  : 67682.84
+Modified : 09/01/2026 18:42:56
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4600.replay.npz
+Size KB  : 69188.5
+Modified : 09/01/2026 18:48:08
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4700.replay.npz
+Size KB  : 70685.39
+Modified : 09/01/2026 18:53:19
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4800.replay.npz
+Size KB  : 72188.85
+Modified : 09/01/2026 18:58:34
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_4900.replay.npz
+Size KB  : 73682.85
+Modified : 09/01/2026 19:04:02
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_1_episode_5000.replay.npz
+Size KB  : 75189.68
+Modified : 09/01/2026 19:09:28
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_3500.replay.npz
+Size KB  : 52640.15
+Modified : 09/01/2026 17:49:17
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_3600.replay.npz
+Size KB  : 54151.19
+Modified : 09/01/2026 17:54:42
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_3700.replay.npz
+Size KB  : 55646.08
+Modified : 09/01/2026 18:00:15
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_3800.replay.npz
+Size KB  : 57163.42
+Modified : 09/01/2026 18:05:34
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_3900.replay.npz
+Size KB  : 58656.75
+Modified : 09/01/2026 18:10:51
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4000.replay.npz
+Size KB  : 60181.31
+Modified : 09/01/2026 18:16:05
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4100.replay.npz
+Size KB  : 61697.53
+Modified : 09/01/2026 18:21:23
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4200.replay.npz
+Size KB  : 63199.04
+Modified : 09/01/2026 18:26:45
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4300.replay.npz
+Size KB  : 64707.39
+Modified : 09/01/2026 18:32:07
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4400.replay.npz
+Size KB  : 66214.83
+Modified : 09/01/2026 18:37:42
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4500.replay.npz
+Size KB  : 67719.62
+Modified : 09/01/2026 18:42:59
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4600.replay.npz
+Size KB  : 69227.12
+Modified : 09/01/2026 18:48:11
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4700.replay.npz
+Size KB  : 70726.21
+Modified : 09/01/2026 18:53:22
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4800.replay.npz
+Size KB  : 72233.1
+Modified : 09/01/2026 18:58:37
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_4900.replay.npz
+Size KB  : 73731.92
+Modified : 09/01/2026 19:04:05
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_2_episode_5000.replay.npz
+Size KB  : 75242.65
+Modified : 09/01/2026 19:09:31
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_3500.replay.npz
+Size KB  : 52630.16
+Modified : 09/01/2026 17:49:20
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_3600.replay.npz
+Size KB  : 54141.27
+Modified : 09/01/2026 17:54:45
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_3700.replay.npz
+Size KB  : 55636.69
+Modified : 09/01/2026 18:00:18
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_3800.replay.npz
+Size KB  : 57154.07
+Modified : 09/01/2026 18:05:37
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_3900.replay.npz
+Size KB  : 58648.21
+Modified : 09/01/2026 18:10:54
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4000.replay.npz
+Size KB  : 60173.03
+Modified : 09/01/2026 18:16:08
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4100.replay.npz
+Size KB  : 61690.21
+Modified : 09/01/2026 18:21:26
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4200.replay.npz
+Size KB  : 63192.89
+Modified : 09/01/2026 18:26:48
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4300.replay.npz
+Size KB  : 64701.99
+Modified : 09/01/2026 18:32:10
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4400.replay.npz
+Size KB  : 66210.04
+Modified : 09/01/2026 18:37:46
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4500.replay.npz
+Size KB  : 67714.23
+Modified : 09/01/2026 18:43:03
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4600.replay.npz
+Size KB  : 69221.62
+Modified : 09/01/2026 18:48:15
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4700.replay.npz
+Size KB  : 70720.43
+Modified : 09/01/2026 18:53:26
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4800.replay.npz
+Size KB  : 72226.83
+Modified : 09/01/2026 18:58:41
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_4900.replay.npz
+Size KB  : 73723.86
+Modified : 09/01/2026 19:04:09
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_3_episode_5000.replay.npz
+Size KB  : 75233.44
+Modified : 09/01/2026 19:09:35
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_3400.replay.npz
+Size KB  : 51213.8
+Modified : 09/01/2026 17:43:57
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_3500.replay.npz
+Size KB  : 52720.93
+Modified : 09/01/2026 17:49:23
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_3600.replay.npz
+Size KB  : 54233.02
+Modified : 09/01/2026 17:54:48
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_3700.replay.npz
+Size KB  : 55729.14
+Modified : 09/01/2026 18:00:21
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_3800.replay.npz
+Size KB  : 57248.1
+Modified : 09/01/2026 18:05:40
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_3900.replay.npz
+Size KB  : 58743.23
+Modified : 09/01/2026 18:10:57
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4000.replay.npz
+Size KB  : 60269.13
+Modified : 09/01/2026 18:16:11
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4100.replay.npz
+Size KB  : 61786.83
+Modified : 09/01/2026 18:21:30
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4200.replay.npz
+Size KB  : 63290.56
+Modified : 09/01/2026 18:26:52
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4300.replay.npz
+Size KB  : 64800.48
+Modified : 09/01/2026 18:32:14
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4400.replay.npz
+Size KB  : 66309.55
+Modified : 09/01/2026 18:37:49
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4500.replay.npz
+Size KB  : 67815.54
+Modified : 09/01/2026 18:43:06
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4600.replay.npz
+Size KB  : 69324.44
+Modified : 09/01/2026 18:48:18
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4700.replay.npz
+Size KB  : 70824.46
+Modified : 09/01/2026 18:53:29
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4800.replay.npz
+Size KB  : 72331.79
+Modified : 09/01/2026 18:58:44
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_4900.replay.npz
+Size KB  : 73830.26
+Modified : 09/01/2026 19:04:13
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_4_episode_5000.replay.npz
+Size KB  : 75340.99
+Modified : 09/01/2026 19:09:39
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_3400.replay.npz
+Size KB  : 51256.27
+Modified : 09/01/2026 17:44:00
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_3500.replay.npz
+Size KB  : 52763.53
+Modified : 09/01/2026 17:49:26
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_3600.replay.npz
+Size KB  : 54276.1
+Modified : 09/01/2026 17:54:51
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_3700.replay.npz
+Size KB  : 55771.94
+Modified : 09/01/2026 18:00:23
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_3800.replay.npz
+Size KB  : 57290.79
+Modified : 09/01/2026 18:05:42
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_3900.replay.npz
+Size KB  : 58785.71
+Modified : 09/01/2026 18:11:00
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4000.replay.npz
+Size KB  : 60310.8
+Modified : 09/01/2026 18:16:14
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4100.replay.npz
+Size KB  : 61828.12
+Modified : 09/01/2026 18:21:33
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4200.replay.npz
+Size KB  : 63331.06
+Modified : 09/01/2026 18:26:55
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4300.replay.npz
+Size KB  : 64840.78
+Modified : 09/01/2026 18:32:17
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4400.replay.npz
+Size KB  : 66349.79
+Modified : 09/01/2026 18:37:52
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4500.replay.npz
+Size KB  : 67854.69
+Modified : 09/01/2026 18:43:09
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4600.replay.npz
+Size KB  : 69362.45
+Modified : 09/01/2026 18:48:21
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4700.replay.npz
+Size KB  : 70861.89
+Modified : 09/01/2026 18:53:33
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4800.replay.npz
+Size KB  : 72368.12
+Modified : 09/01/2026 18:58:48
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_4900.replay.npz
+Size KB  : 73865.54
+Modified : 09/01/2026 19:04:16
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl\local_agent_5_episode_5000.replay.npz
+Size KB  : 75375.32
+Modified : 09/01/2026 19:09:43
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_3500.replay.npz
+Size KB  : 51471.58
+Modified : 09/03/2026 21:30:13
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_3600.replay.npz
+Size KB  : 52947.79
+Modified : 09/03/2026 21:35:19
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_3700.replay.npz
+Size KB  : 54403.31
+Modified : 09/03/2026 22:04:46
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_3800.replay.npz
+Size KB  : 55885.83
+Modified : 09/03/2026 22:11:22
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_3900.replay.npz
+Size KB  : 57345.19
+Modified : 09/03/2026 22:17:52
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4000.replay.npz
+Size KB  : 58833.96
+Modified : 09/03/2026 22:24:23
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4100.replay.npz
+Size KB  : 60315.55
+Modified : 09/03/2026 22:31:08
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4200.replay.npz
+Size KB  : 61781.87
+Modified : 09/03/2026 22:38:10
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4300.replay.npz
+Size KB  : 63254.69
+Modified : 09/03/2026 22:44:54
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4400.replay.npz
+Size KB  : 64727.21
+Modified : 09/03/2026 22:51:24
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4500.replay.npz
+Size KB  : 66196.02
+Modified : 09/03/2026 22:57:55
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4600.replay.npz
+Size KB  : 67669.21
+Modified : 09/03/2026 23:04:38
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4700.replay.npz
+Size KB  : 69133.17
+Modified : 09/03/2026 23:11:22
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4800.replay.npz
+Size KB  : 70603.94
+Modified : 09/03/2026 23:18:03
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_4900.replay.npz
+Size KB  : 72065.14
+Modified : 09/03/2026 23:24:54
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\coordinator_episode_5000.replay.npz
+Size KB  : 73538.61
+Modified : 09/03/2026 23:31:36
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_3500.replay.npz
+Size KB  : 52581.56
+Modified : 09/03/2026 21:30:00
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_3600.replay.npz
+Size KB  : 54094.71
+Modified : 09/03/2026 21:35:06
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_3700.replay.npz
+Size KB  : 55592.2
+Modified : 09/03/2026 22:04:32
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_3800.replay.npz
+Size KB  : 57111.28
+Modified : 09/03/2026 22:11:08
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_3900.replay.npz
+Size KB  : 58607.18
+Modified : 09/03/2026 22:17:37
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4000.replay.npz
+Size KB  : 60133.67
+Modified : 09/03/2026 22:24:08
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4100.replay.npz
+Size KB  : 61652.4
+Modified : 09/03/2026 22:30:53
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4200.replay.npz
+Size KB  : 63157.01
+Modified : 09/03/2026 22:37:55
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4300.replay.npz
+Size KB  : 64668.14
+Modified : 09/03/2026 22:44:38
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4400.replay.npz
+Size KB  : 66178.58
+Modified : 09/03/2026 22:51:08
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4500.replay.npz
+Size KB  : 67685.86
+Modified : 09/03/2026 22:57:38
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4600.replay.npz
+Size KB  : 69195.7
+Modified : 09/03/2026 23:04:20
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4700.replay.npz
+Size KB  : 70697.38
+Modified : 09/03/2026 23:11:05
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4800.replay.npz
+Size KB  : 72205.75
+Modified : 09/03/2026 23:17:46
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_4900.replay.npz
+Size KB  : 73704.72
+Modified : 09/03/2026 23:24:36
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_1_episode_5000.replay.npz
+Size KB  : 75215.89
+Modified : 09/03/2026 23:31:19
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_3400.replay.npz
+Size KB  : 51309.45
+Modified : 09/03/2026 21:24:57
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_3500.replay.npz
+Size KB  : 52821.94
+Modified : 09/03/2026 21:30:02
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_3600.replay.npz
+Size KB  : 54339.76
+Modified : 09/03/2026 21:35:09
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_3700.replay.npz
+Size KB  : 55840.28
+Modified : 09/03/2026 22:04:35
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_3800.replay.npz
+Size KB  : 57363.02
+Modified : 09/03/2026 22:11:10
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_3900.replay.npz
+Size KB  : 58862.83
+Modified : 09/03/2026 22:17:40
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4000.replay.npz
+Size KB  : 60392.28
+Modified : 09/03/2026 22:24:11
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4100.replay.npz
+Size KB  : 61913.31
+Modified : 09/03/2026 22:30:56
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4200.replay.npz
+Size KB  : 63420.83
+Modified : 09/03/2026 22:37:58
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4300.replay.npz
+Size KB  : 64935.33
+Modified : 09/03/2026 22:44:41
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4400.replay.npz
+Size KB  : 66448.57
+Modified : 09/03/2026 22:51:11
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4500.replay.npz
+Size KB  : 67959.08
+Modified : 09/03/2026 22:57:42
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4600.replay.npz
+Size KB  : 69471.58
+Modified : 09/03/2026 23:04:24
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4700.replay.npz
+Size KB  : 70975.87
+Modified : 09/03/2026 23:11:09
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4800.replay.npz
+Size KB  : 72486.78
+Modified : 09/03/2026 23:17:50
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_4900.replay.npz
+Size KB  : 73989.44
+Modified : 09/03/2026 23:24:39
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_2_episode_5000.replay.npz
+Size KB  : 75503.94
+Modified : 09/03/2026 23:31:23
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_3500.replay.npz
+Size KB  : 52621.25
+Modified : 09/03/2026 21:30:05
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_3600.replay.npz
+Size KB  : 54136.08
+Modified : 09/03/2026 21:35:11
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_3700.replay.npz
+Size KB  : 55635.14
+Modified : 09/03/2026 22:04:38
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_3800.replay.npz
+Size KB  : 57156.27
+Modified : 09/03/2026 22:11:13
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_3900.replay.npz
+Size KB  : 58653.37
+Modified : 09/03/2026 22:17:43
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4000.replay.npz
+Size KB  : 60181.59
+Modified : 09/03/2026 22:24:14
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4100.replay.npz
+Size KB  : 61702.75
+Modified : 09/03/2026 22:30:59
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4200.replay.npz
+Size KB  : 63210.04
+Modified : 09/03/2026 22:38:01
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4300.replay.npz
+Size KB  : 64723
+Modified : 09/03/2026 22:44:44
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4400.replay.npz
+Size KB  : 66234.8
+Modified : 09/03/2026 22:51:14
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4500.replay.npz
+Size KB  : 67743.16
+Modified : 09/03/2026 22:57:45
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4600.replay.npz
+Size KB  : 69253.57
+Modified : 09/03/2026 23:04:27
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4700.replay.npz
+Size KB  : 70755.43
+Modified : 09/03/2026 23:11:12
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4800.replay.npz
+Size KB  : 72264.26
+Modified : 09/03/2026 23:17:53
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_4900.replay.npz
+Size KB  : 73764.19
+Modified : 09/03/2026 23:24:43
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_3_episode_5000.replay.npz
+Size KB  : 75276.33
+Modified : 09/03/2026 23:31:26
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_3500.replay.npz
+Size KB  : 52553.41
+Modified : 09/03/2026 21:30:08
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_3600.replay.npz
+Size KB  : 54067.68
+Modified : 09/03/2026 21:35:14
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_3700.replay.npz
+Size KB  : 55565.81
+Modified : 09/03/2026 22:04:40
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_3800.replay.npz
+Size KB  : 57086.24
+Modified : 09/03/2026 22:11:16
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_3900.replay.npz
+Size KB  : 58583.57
+Modified : 09/03/2026 22:17:46
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4000.replay.npz
+Size KB  : 60112.32
+Modified : 09/03/2026 22:24:17
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4100.replay.npz
+Size KB  : 61632.09
+Modified : 09/03/2026 22:31:02
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4200.replay.npz
+Size KB  : 63139.13
+Modified : 09/03/2026 22:38:04
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4300.replay.npz
+Size KB  : 64652.67
+Modified : 09/03/2026 22:44:48
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4400.replay.npz
+Size KB  : 66166.2
+Modified : 09/03/2026 22:51:17
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4500.replay.npz
+Size KB  : 67675.76
+Modified : 09/03/2026 22:57:49
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4600.replay.npz
+Size KB  : 69188.64
+Modified : 09/03/2026 23:04:31
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4700.replay.npz
+Size KB  : 70692.13
+Modified : 09/03/2026 23:11:16
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4800.replay.npz
+Size KB  : 72203.2
+Modified : 09/03/2026 23:17:57
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_4900.replay.npz
+Size KB  : 73706.15
+Modified : 09/03/2026 23:24:47
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_4_episode_5000.replay.npz
+Size KB  : 75221.16
+Modified : 09/03/2026 23:31:30
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_3500.replay.npz
+Size KB  : 52678.08
+Modified : 09/03/2026 21:30:10
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_3600.replay.npz
+Size KB  : 54190.46
+Modified : 09/03/2026 21:35:17
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_3700.replay.npz
+Size KB  : 55686.21
+Modified : 09/03/2026 22:04:43
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_3800.replay.npz
+Size KB  : 57204.62
+Modified : 09/03/2026 22:11:19
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_3900.replay.npz
+Size KB  : 58699.25
+Modified : 09/03/2026 22:17:49
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4000.replay.npz
+Size KB  : 60224.49
+Modified : 09/03/2026 22:24:20
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4100.replay.npz
+Size KB  : 61741.2
+Modified : 09/03/2026 22:31:05
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4200.replay.npz
+Size KB  : 63243.66
+Modified : 09/03/2026 22:38:07
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4300.replay.npz
+Size KB  : 64752.52
+Modified : 09/03/2026 22:44:51
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4400.replay.npz
+Size KB  : 66260.77
+Modified : 09/03/2026 22:51:20
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4500.replay.npz
+Size KB  : 67765.52
+Modified : 09/03/2026 22:57:52
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4600.replay.npz
+Size KB  : 69272.72
+Modified : 09/03/2026 23:04:34
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4700.replay.npz
+Size KB  : 70770.73
+Modified : 09/03/2026 23:11:19
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4800.replay.npz
+Size KB  : 72275.33
+Modified : 09/03/2026 23:18:00
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_4900.replay.npz
+Size KB  : 73771.34
+Modified : 09/03/2026 23:24:50
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : LARGE
+Category : Large Artifact
+Path     : outputs\checkpoints\real_fc_hmarl_final_v3\local_agent_5_episode_5000.replay.npz
+Size KB  : 75279.35
+Modified : 09/03/2026 23:31:33
+Notes    : File is at least 50 MB. Retain if needed for reproducibility; review upload size before submission.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_final_forecasting_figure.py
+Size KB  : 21.24
+Modified : 09/04/2026 03:55:13
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_forecast_confidence_evolution_figure.py
+Size KB  : 8.47
+Modified : 09/04/2026 04:20:28
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_forecast_horizon_performance_figure.py
+Size KB  : 11.16
+Modified : 09/04/2026 04:13:27
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_operational_dynamics_figure.py
+Size KB  : 19.18
+Modified : 09/04/2026 04:24:26
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_risk_revenue_sensitivity_figure.py
+Size KB  : 24.25
+Modified : 09/04/2026 04:28:02
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_step7q_publication_figures.py
+Size KB  : 5.75
+Modified : 09/01/2026 20:08:16
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_training_convergence_figure.py
+Size KB  : 13.59
+Modified : 09/04/2026 04:47:07
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_uncertainty_propagation_figure.py
+Size KB  : 17.01
+Modified : 09/04/2026 04:02:59
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_vpp_case_study_comparison_figure.py
+Size KB  : 11.17
+Modified : 09/04/2026 04:42:38
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Plotting Script
+Path     : generate_vpp_economic_operational_figure.py
+Size KB  : 15.06
+Modified : 09/04/2026 04:37:42
+Notes    : Verify input workbook path and confirm no synthetic or random publication data are introduced.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : data\Publication\forecasting_figure_data.xlsx
+Size KB  : 22.11
+Modified : 07/26/2026 01:54:11
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : data\Publication\uncertainty_propagation_figure_data.xlsx
+Size KB  : 17.37
+Modified : 07/26/2026 16:29:27
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : evaluation\data\case_studies\vpp_case_study_comparison_data.xlsx
+Size KB  : 10.84
+Modified : 07/30/2026 02:22:00
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : evaluation\data\forecast_horizon\forecast_horizon_metrics.xlsx
+Size KB  : 12.88
+Modified : 09/04/2026 04:15:17
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : evaluation\data\operational\fc_hmarl_operational_dynamics.xlsx
+Size KB  : 47.36
+Modified : 07/26/2026 01:02:35
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : evaluation\data\risk_economic\risk_revenue_sensitivity_data.xlsx
+Size KB  : 14.46
+Modified : 07/26/2026 00:52:25
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : evaluation\data\training_diagnostics\fc_hmarl_training_convergence_data.xlsx
+Size KB  : 713.4
+Modified : 07/26/2026 18:40:04
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : evaluation\data\vpp_performance\vpp_economic_operational_performance.xlsx
+Size KB  : 12.47
+Modified : 07/30/2026 01:53:23
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Primary Excel
+Path     : forecasting\confidence_data\forecast_confidence_evolution_data.xlsx
+Size KB  : 24.25
+Modified : 07/25/2026 20:11:58
+Notes    : Primary plotting/data workbook; verify final-V3 versus historical/manuscript provenance.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\FC_HMARL_Forecasting_Performance_FINAL.pdf
+Size KB  : 39.1
+Modified : 09/04/2026 04:15:27
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\FC_HMARL_Forecasting_Performance_FINAL.png
+Size KB  : 2432.97
+Modified : 09/04/2026 04:15:29
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\FC_HMARL_Forecasting_Performance_FINAL.svg
+Size KB  : 216.32
+Modified : 09/04/2026 04:15:27
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure1_Expanded_Bars.pdf
+Size KB  : 53.61
+Modified : 09/04/2026 04:20:46
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure1_Expanded_Bars.png
+Size KB  : 1238.27
+Modified : 09/04/2026 04:20:47
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure1_Expanded_Bars.svg
+Size KB  : 228.2
+Modified : 09/04/2026 04:20:46
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure2_Uncertainty_Propagation.pdf
+Size KB  : 168
+Modified : 09/04/2026 04:04:39
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure2_Uncertainty_Propagation.png
+Size KB  : 1887.52
+Modified : 09/04/2026 04:04:40
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure2_Uncertainty_Propagation.svg
+Size KB  : 522.78
+Modified : 09/04/2026 04:04:38
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure3_Training_Convergence.pdf
+Size KB  : 1064.78
+Modified : 09/04/2026 04:47:32
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure3_Training_Convergence.png
+Size KB  : 2271.07
+Modified : 09/04/2026 04:47:33
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure3_Training_Convergence.svg
+Size KB  : 3134.65
+Modified : 09/04/2026 04:47:31
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure6_Forecasting_Performance.pdf
+Size KB  : 69.78
+Modified : 09/04/2026 03:55:37
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure6_Forecasting_Performance.png
+Size KB  : 1920.19
+Modified : 09/04/2026 03:55:38
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure6_Forecasting_Performance.svg
+Size KB  : 360.86
+Modified : 09/04/2026 03:55:36
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure7_Operational_Dynamics.pdf
+Size KB  : 71.8
+Modified : 09/04/2026 04:24:41
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure7_Operational_Dynamics.png
+Size KB  : 2566.6
+Modified : 09/04/2026 04:24:42
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure7_Operational_Dynamics.svg
+Size KB  : 329.94
+Modified : 09/04/2026 04:24:41
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure8_Risk_Revenue_Sensitivity.pdf
+Size KB  : 50.13
+Modified : 09/04/2026 04:28:18
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure8_Risk_Revenue_Sensitivity.png
+Size KB  : 2232.55
+Modified : 09/04/2026 04:28:20
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\Figure8_Risk_Revenue_Sensitivity.svg
+Size KB  : 304.58
+Modified : 09/04/2026 04:28:18
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_A1_Benchmark_Comparison.pdf
+Size KB  : 27.15
+Modified : 09/01/2026 20:08:33
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_A1_Benchmark_Comparison.png
+Size KB  : 452.73
+Modified : 09/01/2026 20:08:33
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_A2_Risk_Comparison.pdf
+Size KB  : 25.55
+Modified : 09/01/2026 20:08:34
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_A2_Risk_Comparison.png
+Size KB  : 267.36
+Modified : 09/01/2026 20:08:34
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_B1_Load_PV_EV.pdf
+Size KB  : 23.98
+Modified : 09/01/2026 20:12:25
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_B1_Load_PV_EV.png
+Size KB  : 443.41
+Modified : 09/01/2026 20:12:25
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_B2_Grid_BESS.pdf
+Size KB  : 22.83
+Modified : 09/01/2026 20:12:25
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_B2_Grid_BESS.png
+Size KB  : 323.2
+Modified : 09/01/2026 20:12:25
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_B3_BESS_SOC.pdf
+Size KB  : 22.71
+Modified : 09/01/2026 20:12:26
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_B3_BESS_SOC.png
+Size KB  : 212.94
+Modified : 09/01/2026 20:12:26
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_B4_Sharing_Price.pdf
+Size KB  : 25.42
+Modified : 09/01/2026 20:12:26
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\step7q\Fig_7Q_B4_Sharing_Price.png
+Size KB  : 518.28
+Modified : 09/01/2026 20:12:26
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\VPP_Case_Study_Comparison.pdf
+Size KB  : 88.37
+Modified : 09/04/2026 04:42:56
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\VPP_Case_Study_Comparison.png
+Size KB  : 1517.57
+Modified : 09/04/2026 04:42:57
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\VPP_Case_Study_Comparison.svg
+Size KB  : 535.44
+Modified : 09/04/2026 04:42:55
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\VPP_Economic_Operational_Performance.pdf
+Size KB  : 57.74
+Modified : 09/04/2026 04:37:59
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\VPP_Economic_Operational_Performance.png
+Size KB  : 2353.91
+Modified : 09/04/2026 04:38:00
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Publication Figure
+Path     : outputs\figures\VPP_Economic_Operational_Performance.svg
+Size KB  : 348.87
+Modified : 09/04/2026 04:37:59
+Notes    : Figure exists; verify its generating script and source data.
+
+Status   : REVIEW
+Category : Table Script
+Path     : build_economic_operational_performance_table.py
+Size KB  : 6.69
+Modified : 09/04/2026 02:49:21
+Notes    : Verify table values originate from validated final V3 results.
+
+Status   : REVIEW
+Category : Table Script
+Path     : build_final_benchmark_ablation_tables.py
+Size KB  : 11.93
+Modified : 09/04/2026 03:28:41
+Notes    : Verify table values originate from validated final V3 results.
+
+Status   : REVIEW
+Category : Table Script
+Path     : build_final_fc_hmarl_performance_table.py
+Size KB  : 10.3
+Modified : 09/04/2026 02:46:39
+Notes    : Verify table values originate from validated final V3 results.
+
+Status   : REVIEW
+Category : Table Script
+Path     : build_mg_coordinator_performance_table.py
+Size KB  : 4.07
+Modified : 09/04/2026 02:48:02
+Notes    : Verify table values originate from validated final V3 results.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : data\Publication\01_publication_source_snapshot.xlsx
+Size KB  : 22.11
+Modified : 07/26/2026 01:54:11
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : data\Publication\02_publication_cleaned_dataset.xlsx
+Size KB  : 16.99
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : data\Publication\03_publication_summary_statistics.xlsx
+Size KB  : 7.72
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : data\Publication\04_publication_validation_report.xlsx
+Size KB  : 7.12
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\case_studies\01_case_studies_source_snapshot.xlsx
+Size KB  : 10.84
+Modified : 07/30/2026 02:22:00
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\case_studies\02_case_studies_cleaned_dataset.xlsx
+Size KB  : 6.52
+Modified : 09/04/2026 04:52:37
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\case_studies\03_case_studies_summary_statistics.xlsx
+Size KB  : 6.8
+Modified : 09/04/2026 04:52:37
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\case_studies\04_case_studies_validation_report.xlsx
+Size KB  : 6.86
+Modified : 09/04/2026 04:52:37
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\forecast_horizon\01_forecast_horizon_source_snapshot.xlsx
+Size KB  : 12.88
+Modified : 09/04/2026 04:15:17
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\forecast_horizon\02_forecast_horizon_cleaned_dataset.xlsx
+Size KB  : 7.47
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\forecast_horizon\03_forecast_horizon_summary_statistics.xlsx
+Size KB  : 6.45
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\forecast_horizon\04_forecast_horizon_validation_report.xlsx
+Size KB  : 6.32
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\operational\01_operational_source_snapshot.xlsx
+Size KB  : 47.36
+Modified : 07/26/2026 01:02:35
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\operational\02_operational_cleaned_dataset.xlsx
+Size KB  : 39.9
+Modified : 09/04/2026 04:52:36
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\operational\03_operational_summary_statistics.xlsx
+Size KB  : 5.86
+Modified : 09/04/2026 04:52:36
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\operational\04_operational_validation_report.xlsx
+Size KB  : 5.62
+Modified : 09/04/2026 04:52:36
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\risk_economic\01_risk_economic_source_snapshot.xlsx
+Size KB  : 14.46
+Modified : 07/26/2026 00:52:25
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\risk_economic\02_risk_economic_cleaned_dataset.xlsx
+Size KB  : 8.85
+Modified : 09/04/2026 04:52:36
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\risk_economic\03_risk_economic_summary_statistics.xlsx
+Size KB  : 9.49
+Modified : 09/04/2026 04:52:36
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\risk_economic\04_risk_economic_validation_report.xlsx
+Size KB  : 9.45
+Modified : 09/04/2026 04:52:37
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\training_diagnostics\01_training_diagnostics_source_snapshot.xlsx
+Size KB  : 713.4
+Modified : 07/26/2026 18:40:04
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\training_diagnostics\02_training_diagnostics_cleaned_dataset.xlsx
+Size KB  : 713.21
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\training_diagnostics\03_training_diagnostics_summary_statistics.xlsx
+Size KB  : 7.41
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\training_diagnostics\04_training_diagnostics_validation_report.xlsx
+Size KB  : 7.11
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\vpp_performance\01_vpp_performance_source_snapshot.xlsx
+Size KB  : 12.47
+Modified : 07/30/2026 01:53:23
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\vpp_performance\02_vpp_performance_cleaned_dataset.xlsx
+Size KB  : 7.68
+Modified : 09/04/2026 04:52:37
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\vpp_performance\03_vpp_performance_summary_statistics.xlsx
+Size KB  : 5.89
+Modified : 09/04/2026 04:52:37
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : evaluation\data\vpp_performance\04_vpp_performance_validation_report.xlsx
+Size KB  : 5.68
+Modified : 09/04/2026 04:52:37
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : forecasting\confidence_data\01_confidence_data_source_snapshot.xlsx
+Size KB  : 24.25
+Modified : 07/25/2026 20:11:58
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : forecasting\confidence_data\02_confidence_data_cleaned_dataset.xlsx
+Size KB  : 18.04
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : forecasting\confidence_data\03_confidence_data_summary_statistics.xlsx
+Size KB  : 6.73
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+Status   : SUPPORTING
+Category : Supporting Excel
+Path     : forecasting\confidence_data\04_confidence_data_validation_report.xlsx
+Size KB  : 6.45
+Modified : 09/04/2026 04:52:38
+Notes    : Derived supporting artifact; not an independent model run.
+
+============================================================
+END OF AUDIT
+============================================================

@@ -1,0 +1,35 @@
+{
+    "random_seed": 42,
+    "device": "cpu",
+    "input_window": 168,
+    "forecast_horizon": 24,
+    "features": [
+        "pv_power_kw",
+        "load_kw",
+        "ev_power_kw",
+        "price_usd_per_kwh"
+    ],
+    "model": {
+        "hidden_dimension": 128,
+        "number_of_attention_heads": 4,
+        "number_of_encoder_layers": 2,
+        "feedforward_dimension": 256,
+        "dropout": 0.1,
+        "activation": "gelu",
+        "learnable_positional_encoding": true
+    },
+    "training": {
+        "learning_rate": 0.0001,
+        "weight_decay": 1e-05,
+        "batch_size": 64,
+        "maximum_epochs": 100,
+        "early_stopping_patience": 15,
+        "loss_function": "mse"
+    },
+    "data": {
+        "training_samples": 5941,
+        "validation_samples": 1291,
+        "test_samples": 1291
+    },
+    "reconstruction_note": "Transformer hidden dimensions and related architectural hyperparameters are reconstruction choices unless independently supported by the manuscript."
+}

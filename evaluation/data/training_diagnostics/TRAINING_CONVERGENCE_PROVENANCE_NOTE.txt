@@ -1,0 +1,22 @@
+﻿FC-HMARL TRAINING CONVERGENCE PROVENANCE NOTE
+
+The existing workbook:
+evaluation\data\training_diagnostics\fc_hmarl_training_convergence_data.xlsx
+
+contains a reported Convergence_Episode value of approximately 1506.44.
+
+This workbook is retained as historical/manuscript-supporting material.
+It must not be represented as the validated final FC-HMARL V3 training
+history without independent provenance.
+
+The final V3 model was trained for 5000 episodes.
+
+Checkpoint selection for final evaluation was performed exclusively on
+VALIDATION data, and checkpoint 200 was frozen before locked TEST evaluation.
+
+The previously identified episode 1312 corresponds to a best 20-episode
+moving-average training-return point in the final V3 audit. It must not be
+relabelled automatically as a formal convergence episode.
+
+No value in the historical workbook was manually changed to force agreement
+with final V3 results.

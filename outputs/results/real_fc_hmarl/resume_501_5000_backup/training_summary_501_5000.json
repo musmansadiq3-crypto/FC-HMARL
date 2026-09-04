@@ -1,0 +1,52 @@
+{
+    "mode": "full_training",
+    "requested_episodes": 5000,
+    "completed_episodes": 4500,
+    "steps_per_episode": 24,
+    "training_samples_available": 5941,
+    "seed": 42,
+    "device": "cpu",
+    "local_state_dimension": 101,
+    "local_action_dimension": 5,
+    "coordinator_state_dimension": 99,
+    "coordinator_action_dimension": 3,
+    "predictive_state_dimension": 96,
+    "lead_1_causal_confidence": 0.8412885069847107,
+    "mean_24h_causal_confidence": 0.8241741061210632,
+    "training_split": "train",
+    "forecast_selection_split": "validation",
+    "confidence_calibration_split": "validation",
+    "test_data_used_during_training": false,
+    "battery_degradation_cost_usd_per_kwh": 0.02,
+    "initial_soc": 0.6,
+    "ev_charger_power_kw": 7.2,
+    "ev_simultaneous_fraction": 0.25,
+    "pairwise_sharing_capacity_kw": 250.0,
+    "resume_episode": 500,
+    "start_episode": 501,
+    "exact_resume": true,
+    "notes": [
+        "Initial SOC is a reconstruction choice.",
+        "EV per-vehicle availability records are interface reconstruction records; the time-varying aggregate demand originates from the ACN-derived training profile.",
+        "EV simultaneous fraction is a reconstruction choice.",
+        "Pairwise sharing capacity is a reconstruction choice.",
+        "Lead-1 Phi is used as the scalar coordinator risk confidence at each rolling decision.",
+        "Full confidence-aware 24-hour forecast remains embedded in the 96-dimensional predictive state."
+    ],
+    "trainer_summary": {
+        "number_of_local_agents": 5,
+        "maximum_episodes": 5000,
+        "steps_per_episode": 24,
+        "updates_per_step": 1,
+        "global_step": 108000,
+        "completed_episodes": 4500,
+        "training_history": {
+            "number_of_episodes": 4500,
+            "total_steps": 108000,
+            "final_return": -17614.41898308219,
+            "mean_return": -13710.840067906227,
+            "maximum_return": -5378.264190271994,
+            "minimum_return": -33167.20604597596
+        }
+    }
+}

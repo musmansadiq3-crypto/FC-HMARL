@@ -1,0 +1,6 @@
+Table — Final benchmark comparison on 1,268 locked TEST windows
+
+         Controller    Mean return  Return std.  Net market cost (USD/day)  Grid import (kWh/day)  Grid export (kWh/day)  Peak grid import (kW)  BESS throughput (kWh/day)  Energy sharing (kWh/day)  Feasible reserve (kWh/day)  Balance violation steps  Transformer violation steps  SOC violation events
+  Passive grid-only -18,320.486056 3,252.695934               9,155.555160          48,175.843152              42.903203           3,173.535138                   0.000000                  0.000000                    0.000000                        0                            0                     0
+Rule-based BESS EMS -17,835.675273 3,183.868850               8,897.807730          46,849.009781              58.109076           3,167.593581               1,424.154798                  0.000000                    0.000000                        0                            0                     0
+           FC-HMARL -17,573.003806 3,199.954778               8,575.627636          47,084.772950             146.364612           3,155.289877               2,137.710502                127.342998                7,120.655388                        0                            0                     0

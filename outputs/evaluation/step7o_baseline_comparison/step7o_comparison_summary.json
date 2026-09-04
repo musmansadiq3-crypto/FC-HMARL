@@ -1,0 +1,23 @@
+{
+    "mean_return_fc_hmarl": -16817.25650505125,
+    "mean_return_passive": -19301.22101060412,
+    "mean_return_delta_fc_minus_passive": 2483.9645055528704,
+    "fc_better_return_episodes": 30,
+    "mean_grid_import_fc_hmarl_kwh": 48599.632789888965,
+    "mean_grid_import_passive_kwh": 50714.11680519814,
+    "grid_import_reduction_percent": 4.169418987283714,
+    "mean_net_market_cost_fc_hmarl_usd": 7515.7959955542265,
+    "mean_net_market_cost_passive_usd": 9647.576243862222,
+    "net_market_cost_reduction_percent": 22.09653693759852,
+    "mean_peak_import_fc_hmarl_kw": 3319.8071060640764,
+    "mean_peak_import_passive_kw": 3344.0340709517145,
+    "peak_import_reduction_percent": 0.7244831952547398,
+    "mean_bess_throughput_fc_hmarl_kwh": 2121.7854883043833,
+    "mean_bess_throughput_passive_kwh": 0.0,
+    "mean_sharing_fc_hmarl_kwh": 20.966753772990597,
+    "mean_sharing_passive_kwh": 0.0,
+    "fc_power_balance_violation_steps": 0,
+    "passive_power_balance_violation_steps": 0,
+    "fc_transformer_violation_steps": 0,
+    "passive_transformer_violation_steps": 0
+}

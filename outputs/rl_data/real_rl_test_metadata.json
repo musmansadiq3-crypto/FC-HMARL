@@ -1,0 +1,32 @@
+{
+    "locked_checkpoint_episode": 200,
+    "checkpoint_selection_source": "validation",
+    "test_protocol": "one-time final evaluation only",
+    "source_split": "test",
+    "test_samples": 1291,
+    "input_horizon": 168,
+    "forecast_horizon": 24,
+    "number_of_features": 4,
+    "predictive_state_dimension": 96,
+    "feature_order": [
+        "pv_power_kw",
+        "load_kw",
+        "ev_power_kw",
+        "price_usd_per_kwh"
+    ],
+    "forecast_methods": {
+        "pv_power_kw": "daily_seasonal",
+        "load_kw": "transformer",
+        "ev_power_kw": "transformer",
+        "price_usd_per_kwh": "daily_seasonal"
+    },
+    "forecast_method_selection_split": "validation",
+    "confidence_calibration_split": "validation",
+    "test_split_used_for_checkpoint_selection": false,
+    "predictive_state_equation": "S_pred = Phi * Z_hat",
+    "notes": [
+        "Predictive-state values are normalized before entering the RL state.",
+        "Current physical realization uses only y_test[:,0,:].",
+        "Future training targets are not inserted into S_pred."
+    ]
+}

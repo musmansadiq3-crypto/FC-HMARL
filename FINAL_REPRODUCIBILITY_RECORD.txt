@@ -1,0 +1,51 @@
+============================================================
+FC-HMARL FINAL REPRODUCIBILITY RECORD
+Generated: 2026-09-04 05:00:12
+Project: D:\Molvi paper review\FC_HMARL
+============================================================
+
+[PYTHON]
+Python 3.13.9
+
+[PIP]
+pip 25.3 from C:\Users\Alienware\anaconda3\Lib\site-packages\pip (python 3.13)
+
+
+[PYTORCH]
+Version: 2.13.0+cpu
+CUDA available: False
+Device count: 0
+
+[NUMPY / PANDAS / SCIPY / MATPLOTLIB]
+numpy 2.3.5
+pandas 2.3.3
+scipy 1.16.3
+matplotlib 3.10.6
+
+[PYTEST]
+pytest 8.4.2
+
+[FINAL SOFTWARE VERIFICATION]
+993 tests passed, 22 warnings.
+
+[FINAL TRAINING]
+Final controller: FC-HMARL V3
+Training episodes: 5000
+Final checkpoint selection: validation-based
+Frozen checkpoint: episode 200
+
+[FINAL EVALUATION PROTOCOL]
+TRAIN data used for model training.
+VALIDATION data used for model/checkpoint selection.
+TEST data reserved for final locked evaluation.
+No policy learning or checkpoint re-ranking performed during final TEST evaluation.
+
+[KEY RECORD FILES]
+DEVELOPMENT_HISTORY.md
+FINAL_SUBMISSION_MANIFEST.txt
+FINAL_TEST_VERIFICATION.txt
+final_project_structure.txt
+
+============================================================
+END OF REPRODUCIBILITY RECORD
+============================================================

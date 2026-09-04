@@ -1,0 +1,17 @@
+{
+    "target_episode": 87,
+    "checkpoint_episode_used_for_replay": 100,
+    "transition_slice_zero_based": [
+        2064,
+        2087
+    ],
+    "sum_replay_rewards": -480473.8819465637,
+    "history_total_return": -480473.8664906047,
+    "worst_aggregate_step": 1,
+    "worst_aggregate_step_reward": -451798.2242088318,
+    "most_negative_agent": "local_3",
+    "most_negative_agent_episode_sum": -453369.72092437744,
+    "most_negative_agent_worst_step": 1,
+    "absolute_component_dominance_ratio": 0.9435886901648471,
+    "classification": "CONCENTRATED: one agent/reward stream dominates the episode outlier."
+}

@@ -1,0 +1,4 @@
+comparison,mean_delta_return,median_delta_return,std_delta_return,alternative_better_windows,full_better_windows,equal_windows
+no_confidence_awareness_minus_full,5.970620078084952,5.889564055980372,0.8568928648468702,1268,0,0
+no_energy_sharing_minus_full,0.8754650414798462,0.8152421481818237,0.42196131712708207,1244,24,0
+no_upper_level_coordination_minus_full,-745.387441605568,-708.4319856089132,229.99420753969522,0,1268,0

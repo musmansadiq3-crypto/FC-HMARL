@@ -1,0 +1,8 @@
+metric,value
+validation_samples,1291.0
+forecast_horizon,24.0
+forecast_features,4.0
+predictive_state_dimension,96.0
+mean_causal_confidence,0.8241741061210632
+minimum_causal_confidence,0.816879153251648
+maximum_causal_confidence,0.8412885069847107

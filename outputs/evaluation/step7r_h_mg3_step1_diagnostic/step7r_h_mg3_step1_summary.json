@@ -1,0 +1,95 @@
+{
+    "episode": 87,
+    "step": 1,
+    "transition_index_zero_based": 2064,
+    "local_actions": [
+        [
+            0.949128270149231,
+            -1.0,
+            -0.8250505328178406,
+            1.0,
+            -0.7563296556472778
+        ],
+        [
+            0.8273650407791138,
+            1.0,
+            -0.8603726029396057,
+            1.0,
+            -0.9664015769958496
+        ],
+        [
+            -1.0,
+            -0.9483597874641418,
+            1.0,
+            1.0,
+            0.7806129455566406
+        ],
+        [
+            0.9473565220832825,
+            -0.6411134004592896,
+            0.31542572379112244,
+            -0.8633642196655273,
+            -1.0
+        ],
+        [
+            0.8065088391304016,
+            -1.0,
+            -1.0,
+            -1.0,
+            -0.8668648600578308
+        ]
+    ],
+    "coordinator_action": [
+        0.7722119688987732,
+        1.0,
+        1.0
+    ],
+    "local_rewards": [
+        -90.11312643126632,
+        -132.55682433633086,
+        -450958.5469876155,
+        -5.684139132499695,
+        -87.35998186709472
+    ],
+    "coordinator_reward": -523.9476429112838,
+    "total_reward": -451798.208702294,
+    "mg3_physical_fields": {
+        "load_kw": 687.8447362879328,
+        "pv_kw": 0.0,
+        "ev_kw": 38.338641593033266,
+        "bess_kw": -250.0,
+        "grid_kw": 1671.3366142701261
+    },
+    "reward_config": {
+        "beta_soc": 1.0,
+        "beta_grid": 1.0,
+        "risk_aversion": 1.0
+    },
+    "bridge_result_fields": {},
+    "physical_totals": {
+        "pv_power_kw": 0.0,
+        "load_power_kw": 3979.6731170944686,
+        "ev_power_kw": 244.94132128882364,
+        "bess_power_kw": 801.9766300916672,
+        "grid_power_kw": 3453.1180016383632,
+        "grid_import_kw": 3560.501917547397,
+        "grid_export_kw": 107.38391590903393,
+        "grid_purchase_cost_usd": 555.3718671047734,
+        "grid_sale_revenue_usd": 11.681767191088227,
+        "reserve_requested_kw": 398.0233699083328,
+        "reserve_feasible_kw": 398.0233699083328,
+        "reserve_curtailed_kw": 0.0,
+        "reserve_revenue_usd": 19.90116849541664,
+        "market_revenue_usd": 31.582935686504868,
+        "market_profit_usd": -523.7889314182685,
+        "sharing_scheduled_kw": 1524.0096673369408,
+        "sharing_received_kw": 1493.529473990202,
+        "sharing_loss_kw": 30.480193346738815
+    },
+    "constraints": {
+        "all_power_balanced": true,
+        "all_transformers_feasible": false,
+        "total_power_balance_violation_kw": 0.0,
+        "total_transformer_violation_kw": 1434.4891863414457
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "checkpoint": 1000,
+    "test_episodes": 30,
+    "cvar_alpha": 0.95,
+    "operating_cost_var95_usd": 10601.70684362746,
+    "operating_cost_cvar95_usd": 10800.250057808316,
+    "mean_operating_cost_usd": 7562.040781152682,
+    "mean_market_profit_usd": -7515.795995554227,
+    "mean_bess_degradation_cost_usd": 42.43570976608767,
+    "mean_grid_import_kwh": 48599.632789888965,
+    "mean_grid_export_kwh": 24.06435742533241,
+    "mean_sharing_scheduled_kwh": 20.966753772990597,
+    "total_power_balance_violation_kw": 0.0,
+    "total_transformer_violation_kw": 0.0,
+    "notes": [
+        "Checkpoint 1000 was selected using validation only.",
+        "Held-out TEST is used only for final evaluation.",
+        "BESS degradation coefficient is 0.02 USD/kWh.",
+        "CVaR is an empirical upper-tail operating-cost diagnostic.",
+        "Risk cost uses reconstructed rho=1 with manuscript form rho*(1-Phi)."
+    ]
+}

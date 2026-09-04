@@ -1,0 +1,6 @@
+- Downloaded November 19
+- Only downloading "Pricing Node Type" ZONE and INTERFACE (two separate downloads)
+- Downloaded year by year due to limitations in the downloading app
+
+
+Utkarsh: downloaded real time data exactly as above

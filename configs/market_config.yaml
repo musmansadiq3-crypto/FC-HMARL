@@ -1,0 +1,98 @@
+# ============================================================
+# FC-HMARL MARKET AND OPERATIONAL CONFIGURATION
+# ============================================================
+#
+# Source:
+# Manuscript Table 5 - Market and Operational Parameters
+# ============================================================
+
+
+# ------------------------------------------------------------
+# GRID ENERGY PRICE
+# ------------------------------------------------------------
+
+grid_market:
+
+  buying_price_usd_per_kwh:
+
+    minimum: 0.12
+
+    maximum: 0.32
+
+
+  selling_price_usd_per_kwh:
+
+    minimum: 0.08
+
+    maximum: 0.24
+
+
+# ------------------------------------------------------------
+# RESERVE MARKET
+# ------------------------------------------------------------
+
+reserve_market:
+
+  reserve_price_usd_per_kwh: 0.05
+
+
+# ------------------------------------------------------------
+# BESS OPERATION
+# ------------------------------------------------------------
+
+battery:
+
+  charging_efficiency: 0.95
+
+  discharging_efficiency: 0.95
+
+  self_discharge_rate_per_hour: 0.001
+
+  minimum_soc: 0.20
+
+  maximum_soc: 0.95
+
+  degradation_cost_usd_per_kwh: 0.02
+
+
+# ------------------------------------------------------------
+# ENERGY SHARING
+# ------------------------------------------------------------
+
+energy_sharing:
+
+  efficiency: 0.98
+
+
+# ------------------------------------------------------------
+# RISK MANAGEMENT
+# ------------------------------------------------------------
+
+risk:
+
+  use_cvar: true
+
+  use_forecast_confidence: true
+
+  confidence_level: 0.95
+
+
+# ------------------------------------------------------------
+# ECONOMIC TERMS
+# ------------------------------------------------------------
+
+economic_terms:
+
+  include_grid_purchase_cost: true
+
+  include_energy_sale_revenue: true
+
+  include_reserve_revenue: true
+
+  include_battery_degradation_cost: true
+
+  include_energy_sharing_benefit: true
+
+  include_congestion_penalty: true
+
+  include_uncertainty_risk_penalty: true

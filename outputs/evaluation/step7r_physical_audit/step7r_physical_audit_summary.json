@@ -1,0 +1,21 @@
+{
+    "checkpoint": 1000,
+    "representative_test_episode": 26,
+    "test_start_index": 1041,
+    "hours_audited": 24,
+    "minimum_soc_percent": 20.0,
+    "maximum_soc_percent": 33.978381325571156,
+    "all_mgs_at_20_percent_after_hour_2": false,
+    "hour_1_total_feasible_bess_power_kw": 1441.7259126901627,
+    "hour_2_total_feasible_bess_power_kw": 669.7545877866148,
+    "absolute_bess_dispatch_after_hour_2_kwh_proxy": 10.261592112158823,
+    "total_reserve_power_sum_kw": 34740.63593894243,
+    "total_reserve_revenue_usd": 1737.0317969471216,
+    "simultaneous_bess_dispatch_and_reserve_mg_hours": 15,
+    "apparent_reserve_headroom_excess_mg_hours": 14,
+    "hours_with_any_apparent_headroom_excess": 3,
+    "all_power_balanced": true,
+    "all_transformers_feasible": true,
+    "time_axis_note": "episode_relative_hour 1..24; test_sample_index is also saved",
+    "headroom_diagnostic_note": "Diagnostic assumes positive feasible BESS power is discharge and upward reserve should not exceed rated power minus simultaneous discharge. This checks power headroom only; energy-duration reserve feasibility is not evaluated here."
+}

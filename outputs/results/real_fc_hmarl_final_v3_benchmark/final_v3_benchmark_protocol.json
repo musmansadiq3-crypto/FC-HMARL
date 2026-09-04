@@ -1,0 +1,18 @@
+{
+    "checkpoint": 200,
+    "checkpoint_selection_source": "validation",
+    "test_split_role": "evaluation only",
+    "test_windows": 1268,
+    "modes": [
+        "passive_grid_only",
+        "rule_based_bess_ems",
+        "full_fc_hmarl"
+    ],
+    "rule_based_benchmark_definition": "No sharing, no reserve; charge on PV surplus; discharge on deficit when SOC > 0.50; grid closes balance.",
+    "passive_definition": "BESS idle, no sharing, no reserve; grid closes balance.",
+    "deterministic_fc_hmarl": true,
+    "learning_disabled": true,
+    "replay_writes_disabled": true,
+    "checkpoint_ranking_disabled": true,
+    "checkpoint_reselection_disabled": true
+}

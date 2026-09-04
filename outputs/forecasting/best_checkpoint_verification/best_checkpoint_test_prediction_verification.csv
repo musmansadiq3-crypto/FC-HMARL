@@ -1,0 +1,5 @@
+array,shape_match,regenerated_shape,existing_shape,maximum_absolute_difference,mean_absolute_difference,rmse_difference,allclose_atol_1e-6,allclose_atol_1e-5
+predictions_normalized,True,"(1291, 24, 4)","(1291, 24, 4)",0.0,0.0,0.0,True,True
+targets_normalized,True,"(1291, 24, 4)","(1291, 24, 4)",0.0,0.0,0.0,True,True
+predictions_original,True,"(1291, 24, 4)","(1291, 24, 4)",0.0,0.0,0.0,True,True
+targets_original,True,"(1291, 24, 4)","(1291, 24, 4)",0.0,0.0,0.0,True,True

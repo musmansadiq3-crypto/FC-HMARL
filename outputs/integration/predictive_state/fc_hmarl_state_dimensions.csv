@@ -1,0 +1,5 @@
+state,dimension,structure
+predictive_state,96,24 x 4
+local_agent,101,5 + 96
+coordinator,99,3 + 96
+global,604,5 x 101 + 99

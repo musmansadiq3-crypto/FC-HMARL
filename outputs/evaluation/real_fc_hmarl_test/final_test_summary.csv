@@ -1,0 +1,2 @@
+checkpoint_episode,test_episodes,mean_return,std_return,median_return,minimum_return,maximum_return,mean_coordinator_return,mean_local_return,power_balance_violation_steps,transformer_violation_steps
+1000,30,-16817.25650505125,3236.851713056684,-16541.95254165803,-23660.448169298557,-11447.092798935306,-7519.605071386594,-1859.530286732931,0,0

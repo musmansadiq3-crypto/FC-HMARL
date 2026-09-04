@@ -1,0 +1,12 @@
+{
+    "locked_checkpoint": 200,
+    "test_windows": 1268,
+    "fc_vs_passive_return_delta": 747.4822506241981,
+    "fc_vs_rule_return_delta": 262.6714675600015,
+    "fc_vs_passive_grid_import_reduction_percent": 2.264766179403723,
+    "fc_vs_rule_grid_import_reduction_percent": -0.5032404527455373,
+    "fc_vs_passive_market_cost_reduction_percent": 6.334160124383423,
+    "fc_vs_rule_market_cost_reduction_percent": 3.6208929663411507,
+    "fc_vs_passive_peak_import_reduction_percent": 0.5749191334027612,
+    "fc_vs_rule_peak_import_reduction_percent": 0.3884243154335184
+}

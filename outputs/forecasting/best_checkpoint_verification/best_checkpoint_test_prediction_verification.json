@@ -1,0 +1,59 @@
+{
+    "best_checkpoint_file": "D:\\Molvi paper review\\FC_HMARL\\outputs\\checkpoints\\best_real_forecasting_model.pt",
+    "best_checkpoint_epoch": 56,
+    "best_checkpoint_validation_loss": 0.011350957985525904,
+    "existing_test_archive": "D:\\Molvi paper review\\FC_HMARL\\outputs\\forecasting\\real_forecasting_test_predictions.npz",
+    "regenerated_test_archive": "D:\\Molvi paper review\\FC_HMARL\\outputs\\forecasting\\best_checkpoint_verification\\best_checkpoint_test_predictions_regenerated.npz",
+    "test_samples": 1291,
+    "forecast_horizon": 24,
+    "target_features": 4,
+    "feature_names_match": true,
+    "strict_match_atol_1e-6": true,
+    "practical_match_atol_1e-5": true,
+    "comparisons": [
+        {
+            "array": "predictions_normalized",
+            "shape_match": true,
+            "regenerated_shape": "(1291, 24, 4)",
+            "existing_shape": "(1291, 24, 4)",
+            "maximum_absolute_difference": 0.0,
+            "mean_absolute_difference": 0.0,
+            "rmse_difference": 0.0,
+            "allclose_atol_1e-6": true,
+            "allclose_atol_1e-5": true
+        },
+        {
+            "array": "targets_normalized",
+            "shape_match": true,
+            "regenerated_shape": "(1291, 24, 4)",
+            "existing_shape": "(1291, 24, 4)",
+            "maximum_absolute_difference": 0.0,
+            "mean_absolute_difference": 0.0,
+            "rmse_difference": 0.0,
+            "allclose_atol_1e-6": true,
+            "allclose_atol_1e-5": true
+        },
+        {
+            "array": "predictions_original",
+            "shape_match": true,
+            "regenerated_shape": "(1291, 24, 4)",
+            "existing_shape": "(1291, 24, 4)",
+            "maximum_absolute_difference": 0.0,
+            "mean_absolute_difference": 0.0,
+            "rmse_difference": 0.0,
+            "allclose_atol_1e-6": true,
+            "allclose_atol_1e-5": true
+        },
+        {
+            "array": "targets_original",
+            "shape_match": true,
+            "regenerated_shape": "(1291, 24, 4)",
+            "existing_shape": "(1291, 24, 4)",
+            "maximum_absolute_difference": 0.0,
+            "mean_absolute_difference": 0.0,
+            "rmse_difference": 0.0,
+            "allclose_atol_1e-6": true,
+            "allclose_atol_1e-5": true
+        }
+    ]
+}
