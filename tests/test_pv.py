@@ -10,17 +10,6 @@ from environment.pv import (
 # ============================================================
 @pytest.fixture
 def pv():
-    """
-    Create an MG1-type PV system for testing.
-
-    Manuscript MG1 PV rated capacity:
-        500 kW
-
-    Test-only values:
-        efficiency = 1.0
-        critical irradiance = 200 W/m^2
-        STC irradiance = 1000 W/m^2
-    """
 
     parameters = PVParameters(
         rated_capacity_kw=500.0,
@@ -56,21 +45,8 @@ def test_low_irradiance_power(pv):
 # ============================================================
 
 def test_critical_irradiance_boundary(pv):
-    """
-    At I = I_c, the second branch is used:
-
-        r = I / I_STC
-
-    Therefore:
-
-        r = 200 / 1000 = 0.20
-    """
-
     ratio = pv.irradiance_ratio(200.0)
-
     assert ratio == pytest.approx(0.20)
-
-
 # ============================================================
 # MEDIUM IRRADIANCE REGION
 # ============================================================
@@ -491,15 +467,7 @@ def test_invalid_stc_irradiance():
         PhotovoltaicSystem(
             parameters
         )
-
-
 def test_critical_irradiance_must_be_below_stc():
-    """
-    The piecewise model requires:
-
-        I_c < I_STC
-    """
-
     parameters = PVParameters(
         rated_capacity_kw=500.0,
         efficiency=0.90,
@@ -511,8 +479,6 @@ def test_critical_irradiance_must_be_below_stc():
         PhotovoltaicSystem(
             parameters
         )
-
-
 # ============================================================
 # REPRESENTATION TEST
 # ============================================================
