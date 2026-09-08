@@ -228,11 +228,7 @@ class VPPEnvironment:
                 self.energy_sharing_network
                 .total_transfer_loss_kw(),
         }
-
-    # ========================================================
     # ONE VPP STEP
-    # ========================================================
-
     def step(
         self,
         time: float,
@@ -250,48 +246,6 @@ class VPPEnvironment:
             Iterable[float]
         ] = None,
     ) -> Dict[str, object]:
-        """
-        Execute one coordinated VPP operating interval.
-
-        Parameters
-        ----------
-        time:
-            Simulation time.
-
-        loads_kw:
-            Local loads for all MGs.
-
-        irradiances_w_m2:
-            Solar irradiance for all MGs.
-
-        bess_actions_kw:
-            Local BESS actions.
-            Positive -> discharge
-            Negative -> charge
-
-        sharing_matrix_kw:
-            Requested N x N directional sharing matrix.
-
-        buy_prices_usd_per_kwh:
-            Grid buying prices.
-
-        sell_prices_usd_per_kwh:
-            Grid selling prices.
-
-        reserve_actions_kw:
-            Reserve commitments for each MG.
-
-        ev_requested_charging_powers_kw:
-            Optional list containing individual EV charging actions
-            for each local EV fleet.
-
-        grid_power_actions_kw:
-            Optional explicit grid powers.
-
-            If omitted, each microgrid automatically calculates the
-            grid exchange required to close its physical power balance.
-        """
-
         time = float(time)
 
         if time < 0:
