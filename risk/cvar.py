@@ -1,4 +1,3 @@
-
 from __future__ import annotations
 from dataclasses import dataclass, asdict
 from typing import Any, Dict, Iterable
@@ -81,8 +80,6 @@ def summarize_losses(
         cvar=conditional_value_at_risk(arr, alpha),
         worst_loss=float(np.max(arr)),
     )
-
-
 def cvar_improvement_percent(
     baseline_losses: Iterable[float],
     proposed_losses: Iterable[float],
