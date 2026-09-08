@@ -1,58 +1,10 @@
-"""
-Forecast uncertainty estimation for the FC-HMARL framework.
-
-Purpose
--------
-This module converts historical forecasting errors into uncertainty
-information that can later be transformed into forecast-confidence
-signals.
-
-Manuscript-supported concepts
------------------------------
-The forecasting framework uses forecast residuals and uncertainty
-information for uncertain variables such as:
-
-    PV generation
-    load demand
-    EV charging demand
-    electricity price
-
-A 95% confidence interval is also reported in the forecasting setup.
-
-Reconstruction choice
----------------------
-The manuscript does not fully specify the numerical method used to
-construct the confidence interval.
-
-This implementation therefore uses empirical residual quantiles:
-
-    residual = actual - forecast
-
-For a nominal 95% interval:
-
-    lower quantile = 0.025
-    upper quantile = 0.975
-
-Then:
-
-    lower forecast bound = forecast + q_lower
-    upper forecast bound = forecast + q_upper
-
-This is a transparent, data-driven, distribution-free reconstruction.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Dict, Optional, Sequence
-
 import numpy as np
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class ForecastUncertaintyConfig:
     """
@@ -290,8 +242,6 @@ def confidence_to_quantiles(
         alpha / 2.0,
         1.0 - alpha / 2.0,
     )
-
-
 # ============================================================
 # RESIDUAL QUANTILE MODEL
 # ============================================================
