@@ -66,14 +66,6 @@ InfoExtractorFunction = Callable[
 
 @dataclass
 class EnvironmentAdapterConfig:
-    """
-    Configuration for the VPP-to-FC-HMARL adapter.
-
-    number_of_microgrids = 5 is manuscript-supported.
-
-    Other fields are software-interface options.
-    """
-
     number_of_microgrids: int = 5
 
     strict_validation: bool = True
@@ -126,19 +118,7 @@ class EnvironmentAdapterConfig:
 
 @dataclass
 class RewardOutput:
-    """
-    Hierarchical reward result.
-
-    local_rewards:
-        one reward for each microgrid agent.
-
-    coordinator_reward:
-        global VPP reward.
-
-    components:
-        optional detailed reward information for logging.
-    """
-
+   
     local_rewards: Sequence[float]
 
     coordinator_reward: float
@@ -529,13 +509,7 @@ class FCHMARLEnvironmentAdapter:
         time_step: int,
         actions: HierarchicalActionBundle,
     ) -> EnvironmentStepResult:
-        """
-        Execute one physical FC-HMARL operating interval.
-
-        This method has exactly the callback signature required
-        by FCHMARLTrainingLoop.step_function.
-        """
-
+       MARLTrainingLoop.step_function.
         if self.current_episode is None:
             raise RuntimeError(
                 "Environment adapter must be reset before step."
