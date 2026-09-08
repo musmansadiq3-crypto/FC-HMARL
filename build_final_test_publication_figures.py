@@ -1,43 +1,26 @@
-"""
-STEP 7R-O4 — BUILD FINAL TEST PUBLICATION FIGURES
-
-Reads only the already locked FINAL TEST episode results.
-Creates separate publication figures. No policy evaluation, training,
-checkpoint comparison, or re-selection occurs.
-"""
-
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 ROOT = Path(__file__).resolve().parent
 RESULT_DIR = ROOT / "outputs" / "results" / "real_fc_hmarl_final_v3_test"
 EPISODE_CSV = RESULT_DIR / "final_test_episode_results.csv"
 OUTPUT_DIR = RESULT_DIR / "publication_figures"
-
 FIG1 = OUTPUT_DIR / "Figure_Final_TEST_Return_Distribution.png"
 FIG2 = OUTPUT_DIR / "Figure_Final_TEST_Net_Market_Cost.png"
 FIG3 = OUTPUT_DIR / "Figure_Final_TEST_Grid_Interaction.png"
 FIG4 = OUTPUT_DIR / "Figure_Final_TEST_Resource_Utilization.png"
-
-
 def section(title):
     print()
     print("=" * 80)
     print(title)
     print("=" * 80)
-
-
 def save_current(path):
     plt.tight_layout()
     plt.savefig(path, dpi=300, bbox_inches="tight")
     plt.close()
-
-
 def main():
     section("STEP 7R-O4 — FINAL TEST PUBLICATION FIGURES")
-
     if not EPISODE_CSV.exists():
         raise FileNotFoundError(
             f"Locked TEST episode results not found:\n{EPISODE_CSV}"
@@ -72,9 +55,6 @@ def main():
 
     x = df["test_episode"].to_numpy(dtype=int)
 
-    # ---------------------------------------------------------
-    # FIGURE 1 — TEST RETURN DISTRIBUTION
-    # ---------------------------------------------------------
     returns = df["total_return"].to_numpy(dtype=float)
 
     plt.figure(figsize=(7.5, 5.2))
