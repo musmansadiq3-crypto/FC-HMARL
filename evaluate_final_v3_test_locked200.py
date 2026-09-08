@@ -1,23 +1,4 @@
-"""
-FC-HMARL FINAL V3 — LOCKED CHECKPOINT 200 TEST EVALUATION
-
-Protocol
---------
-TRAIN       -> policy learning only
-VALIDATION  -> forecasting-method selection, Phi calibration, checkpoint selection
-TEST        -> one-time final evaluation of the already frozen checkpoint 200
-
-This script:
-- loads ONLY checkpoint 200;
-- evaluates deterministically;
-- performs no gradient updates;
-- writes no replay transitions;
-- does not rank or compare checkpoints;
-- evaluates every valid rolling 24-hour TEST window by default.
-"""
-
 from __future__ import annotations
-
 import argparse
 import csv
 import importlib.util
