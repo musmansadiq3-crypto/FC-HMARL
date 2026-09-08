@@ -1,28 +1,3 @@
-"""
-Market interaction model for the FC-HMARL VPP environment.
-
-This module reconstructs the manuscript's economic interaction with
-the utility grid and reserve market.
-
-Supported manuscript elements
------------------------------
-1. Grid energy purchase
-2. Grid energy sale
-3. Reserve market participation
-4. Energy-trading revenue/cost calculation
-
-Sign convention used here
--------------------------
-grid_power_kw > 0
-    Import / purchase from utility grid.
-
-grid_power_kw < 0
-    Export / sale to utility grid.
-
-This is consistent with the reconstructed power-balance convention
-used in environment/constraints.py.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -30,38 +5,13 @@ from typing import Dict
 
 import numpy as np
 
-
 # ============================================================
 # MARKET PARAMETERS
 # ============================================================
 
 @dataclass
 class MarketParameters:
-    """
-    Market and economic parameters.
-
-    Parameters
-    ----------
-    minimum_buy_price_usd_per_kwh:
-        Minimum grid purchase price.
-
-    maximum_buy_price_usd_per_kwh:
-        Maximum grid purchase price.
-
-    minimum_sell_price_usd_per_kwh:
-        Minimum grid selling price.
-
-    maximum_sell_price_usd_per_kwh:
-        Maximum grid selling price.
-
-    reserve_price_usd_per_kwh:
-        Reserve market payment.
-
-    time_step_hours:
-        Simulation interval.
-    """
-
-    minimum_buy_price_usd_per_kwh: float = 0.12
+        minimum_buy_price_usd_per_kwh: float = 0.12
     maximum_buy_price_usd_per_kwh: float = 0.32
 
     minimum_sell_price_usd_per_kwh: float = 0.08
