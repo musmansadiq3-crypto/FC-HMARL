@@ -174,8 +174,6 @@ class LearnablePositionalEncoding(nn.Module):
                 :
             ]
         )
-
-
 # ============================================================
 # FIXED SINUSOIDAL POSITIONAL ENCODING
 # ============================================================
@@ -302,8 +300,6 @@ class SinusoidalPositionalEncoding(nn.Module):
                 :
             ]
         )
-
-
 # ============================================================
 # MAIN FORECASTING MODEL
 # ============================================================
@@ -656,33 +652,6 @@ class MultiHorizonTransformerForecaster(
         x: torch.Tensor,
         return_attention: bool = False,
     ):
-        """
-        Produce direct 24-hour forecasts.
-
-        Parameters
-        ----------
-        x:
-            Input tensor:
-
-                (batch,
-                 168,
-                 input_features)
-
-        return_attention:
-            When True, also return temporal attention weights.
-
-        Returns
-        -------
-        forecast:
-            (batch,
-             24,
-             target_features)
-
-        or
-
-        forecast, attention_weights
-        """
-
         encoded = self.encode(
             x
         )
@@ -794,12 +763,9 @@ class MultiHorizonTransformerForecaster(
             f"layers={self.config.number_of_encoder_layers}"
             ")"
         )
-
-
 # ============================================================
 # FACTORY
 # ============================================================
-
 def build_forecasting_model(
     input_features: int = 4,
     target_features: int = 4,
