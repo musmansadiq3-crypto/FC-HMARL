@@ -1,32 +1,3 @@
-# ============================================================
-# FC-HMARL - ACN-DATA MONTHLY DOWNLOADER
-# ============================================================
-#
-# Purpose:
-#   Download Caltech ACN charging-session data month-by-month
-#   instead of downloading the full dataset in one long API run.
-#
-# Advantages:
-#   - Smaller pagination chains
-#   - Easier restart after server errors
-#   - Each completed month is saved permanently
-#   - Final files are automatically merged
-#   - Duplicate sessions are removed
-#   - Final JSON is validated
-#
-# IMPORTANT:
-#   Do NOT put your API token directly in this file.
-#
-# In PowerShell:
-#
-#   $env:ACN_API_TOKEN="YOUR_NEW_TOKEN"
-#
-# Then run:
-#
-#   python download_acn_monthly.py
-#
-# ============================================================
-
 import os
 import json
 import time
@@ -34,21 +5,14 @@ import calendar
 from pathlib import Path
 from datetime import datetime, timezone
 from urllib.parse import urljoin
-
 import requests
-
-
 # ============================================================
 # 1. USER SETTINGS
 # ============================================================
-
 SITE_ID = "caltech"
-
 START_YEAR = 2018
 END_YEAR = 2020
-
 BASE_API = "https://ev.caltech.edu/api/v1/"
-
 SESSION_ENDPOINT = (
     f"{BASE_API}sessions/{SITE_ID}"
 )
