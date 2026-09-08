@@ -1,10 +1,5 @@
-"""
-Tests for forecasting/confidence.py.
-"""
-
 import numpy as np
 import pytest
-
 from forecasting.confidence import (
     ForecastConfidenceConfig,
     ForecastConfidenceEstimator,
@@ -19,39 +14,25 @@ from forecasting.confidence import (
     validate_error_array,
     validate_same_shapes,
 )
-
-
 # ============================================================
 # CONFIG
 # ============================================================
-
 def test_default_error_scale():
-
     config = ForecastConfidenceConfig()
 
     assert config.error_scale == pytest.approx(
         1.0
     )
-
-
 def test_valid_config():
-
     config = ForecastConfidenceConfig()
-
     config.validate()
-
-
 def test_invalid_error_scale():
 
     config = ForecastConfidenceConfig(
         error_scale=0.0
     )
-
     with pytest.raises(ValueError):
-
         config.validate()
-
-
 def test_invalid_minimum_confidence():
 
     config = ForecastConfidenceConfig(
@@ -61,31 +42,19 @@ def test_invalid_minimum_confidence():
     with pytest.raises(ValueError):
 
         config.validate()
-
-
 def test_invalid_maximum_confidence():
-
     config = ForecastConfidenceConfig(
         maximum_confidence=1.1
     )
-
     with pytest.raises(ValueError):
-
         config.validate()
-
-
 def test_minimum_above_maximum():
-
     config = ForecastConfidenceConfig(
         minimum_confidence=0.8,
         maximum_confidence=0.5,
     )
-
     with pytest.raises(ValueError):
-
         config.validate()
-
-
 # ============================================================
 # VALIDATION
 # ============================================================
