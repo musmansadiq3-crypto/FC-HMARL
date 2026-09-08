@@ -1,22 +1,12 @@
-# ============================================================
-# FC-HMARL
-# STEP 7R-G
-# DIAGNOSE EXTREME TRAINING EPISODE FROM SAVED HISTORY + REPLAY
-# ============================================================
-
 from __future__ import annotations
-
 from pathlib import Path
 import json
 import re
 import numpy as np
 import pandas as pd
-
-
 # ============================================================
 # 1. PATHS / SETTINGS
 # ============================================================
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
 
 RESULTS_DIR = (
