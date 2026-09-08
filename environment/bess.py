@@ -1,29 +1,4 @@
-"""
-Battery Energy Storage System (BESS) model for FC-HMARL.
-
-The implementation follows the BESS formulation in the manuscript:
-
-SOC(t+1)
-    = (1 - self_discharge) * SOC(t)
-      + eta_ch * P_ch(t) * dt / E_capacity
-      - P_dis(t) * dt / (eta_dis * E_capacity)
-
-Net BESS power:
-
-P_BESS(t) = P_dis(t) - P_ch(t)
-
-Sign convention used by the manuscript:
-    P_BESS > 0  -> battery is discharging
-    P_BESS < 0  -> battery is charging
-
-The environment clips infeasible requested actions so that:
-    SOC_min <= SOC <= SOC_max
-    0 <= P_ch <= P_rated
-    0 <= P_dis <= P_rated
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -32,41 +7,7 @@ import numpy as np
 
 @dataclass
 class BESSParameters:
-    """
-    Physical and operational parameters of one BESS.
-
-    Parameters
-    ----------
-    capacity_kwh:
-        Rated battery energy capacity.
-
-    rated_power_kw:
-        BESS rated charging/discharging power.
-
-        Reconstruction choice:
-        The manuscript Table 2 provides one BESS rated power per
-        microgrid. Therefore, this implementation uses the same value
-        as both maximum charging and maximum discharging power.
-
-    charging_efficiency:
-        Charging efficiency.
-
-    discharging_efficiency:
-        Discharging efficiency.
-
-    self_discharge_rate:
-        Fractional self-discharge rate per simulation step.
-
-    minimum_soc:
-        Minimum permitted state of charge.
-
-    maximum_soc:
-        Maximum permitted state of charge.
-
-    time_step_hours:
-        Simulation interval in hours.
-    """
-
+    val in hours.
     capacity_kwh: float
     rated_power_kw: float
 
