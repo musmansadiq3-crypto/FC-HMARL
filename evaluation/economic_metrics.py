@@ -1,28 +1,7 @@
-"""
-Economic metrics for FC-HMARL evaluation.
-
-This module computes transparent cost/revenue/profit metrics from recorded
-VPP trajectories. It does not alter the trained policy, environment, or
-checkpoint selection.
-
-Manuscript-supported quantities used elsewhere in the project include:
-- grid purchase price,
-- grid sale price,
-- reserve compensation,
-- BESS degradation cost.
-
-The software API and aggregation routines below are reconstructed utilities
-for reproducible evaluation.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass, asdict
 from typing import Any, Dict, Iterable, Mapping, Sequence
-
 import numpy as np
-
-
 def _as_1d(values: Iterable[float], name: str) -> np.ndarray:
     arr = np.asarray(values, dtype=float).reshape(-1)
     if arr.size == 0:
@@ -30,8 +9,6 @@ def _as_1d(values: Iterable[float], name: str) -> np.ndarray:
     if not np.all(np.isfinite(arr)):
         raise ValueError(f"{name} contains NaN or infinite values.")
     return arr
-
-
 def _same_length(**arrays: np.ndarray) -> None:
     lengths = {name: arr.size for name, arr in arrays.items()}
     if len(set(lengths.values())) != 1:
@@ -39,8 +16,6 @@ def _same_length(**arrays: np.ndarray) -> None:
             "All economic trajectories must have equal length. "
             f"Received lengths: {lengths}"
         )
-
-
 def purchase_cost_usd(
     grid_power_kw: Iterable[float],
     buy_price_usd_per_kwh: Iterable[float],
@@ -63,8 +38,6 @@ def purchase_cost_usd(
     return float(
         np.sum(imported_kw * buy) * timestep_hours
     )
-
-
 def sale_revenue_usd(
     grid_power_kw: Iterable[float],
     sell_price_usd_per_kwh: Iterable[float],
@@ -351,19 +324,12 @@ def compute_economic_metrics(
         net_profit_usd=net_profit,
     )
 
-
 def percentage_improvement(
     baseline_value: float,
     proposed_value: float,
     *,
     lower_is_better: bool = True,
 ) -> float:
-    """
-    Percentage improvement from baseline to proposed value.
-
-    For costs, use lower_is_better=True.
-    For profits/revenues, use lower_is_better=False.
-    """
     baseline = float(baseline_value)
     proposed = float(proposed_value)
 
