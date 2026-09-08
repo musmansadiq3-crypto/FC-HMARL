@@ -1,51 +1,4 @@
-"""
-Hierarchical controller for the FC-HMARL framework.
 
-Purpose
--------
-This module coordinates:
-
-    lower-level local microgrid agents
-    upper-level VPP coordinator agent
-
-It does not implement SAC learning itself. The learning algorithms
-remain inside the agent classes.
-
-The hierarchical controller is responsible for:
-
-    1. validating hierarchical state inputs
-    2. requesting actions from all local agents
-    3. requesting an action from the VPP coordinator
-    4. packaging the complete hierarchical action
-    5. supporting training and deterministic evaluation modes
-    6. resetting agent episode state when required
-
-Manuscript-supported hierarchy
-------------------------------
-The lower layer contains local microgrid agents responsible for
-distributed resource management.
-
-The upper layer contains a VPP coordinator responsible for
-system-level coordination, market participation, and energy sharing.
-
-The global action contains all local-agent decisions plus the
-coordinator decision.
-
-Reconstruction choices
-----------------------
-The exact Python interface between the controller and the agents is
-not specified in the manuscript.
-
-This implementation adopts a common agent interface:
-
-    select_action(state, deterministic=False)
-
-and optionally:
-
-    reset()
-
-The controller is intentionally agnostic to the internal RL algorithm.
-"""
 
 from __future__ import annotations
 
@@ -53,7 +6,6 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Sequence
 
 import numpy as np
-
 
 # ============================================================
 # CONFIGURATION
@@ -64,7 +16,6 @@ class HierarchicalControllerConfig:
     """
     Configuration for hierarchical action coordination.
     """
-
     number_of_microgrids: int = 5
 
     deterministic_evaluation: bool = True
@@ -236,25 +187,6 @@ def validate_agent_interface(
 
 @dataclass
 class HierarchicalActionResult:
-    """
-    Container for one complete hierarchical action.
-
-    Attributes
-    ----------
-    local_actions:
-        One action vector for each local microgrid agent.
-
-    coordinator_action:
-        Upper-level VPP coordinator action.
-
-    flat_action:
-        Concatenated software representation of all hierarchical
-        actions.
-
-    deterministic:
-        Whether deterministic action selection was requested.
-    """
-
     local_actions: List[
         np.ndarray
     ]
