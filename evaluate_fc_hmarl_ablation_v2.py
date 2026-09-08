@@ -1,27 +1,4 @@
-"""
-FC-HMARL ablation evaluator.
-
-Evaluates the locked FC-HMARL checkpoint under controlled action/state
-ablations on the same held-out TEST episodes.
-
-Important methodological note:
-These are post-training inference ablations. They diagnose sensitivity of the
-trained policy to hierarchy/confidence/sharing components. They are not
-separately retrained ablation models and should be reported as such.
-
-Ablations:
-- full_fc_hmarl
-- no_confidence_weighting
-- no_energy_sharing
-- no_upper_level_coordination
-
-The script reuses the validated held-out TEST evaluation pipeline so that
-physical data, checkpoint loading, deterministic inference, and episode starts
-remain consistent.
-"""
-
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
@@ -299,21 +276,13 @@ def build_action_bundle(local_actions, coordinator_action):
 
 
 def load_common_test_context(args):
-    """
-    Reuse the validated TEST evaluator objects. This intentionally depends on
-    the already-successful held-out TEST pipeline rather than duplicating it.
-    """
-    # The user's validated TEST script exposes these helpers through its own
-    # module or through the validation evaluator imported as `val`.
     module_candidates = [base_test]
     if hasattr(base_test, "val"):
         module_candidates.append(base_test.val)
-
     load_data = None
     choose_starts = None
     build_bridge = None
     load_policy = None
-
     for module in module_candidates:
         for name in (
             "TestData",
@@ -325,7 +294,6 @@ def load_common_test_context(args):
                 break
         if load_data is not None:
             break
-
     for module in module_candidates:
         for name in (
             "build_fixed_test_episode_starts",
@@ -455,10 +423,6 @@ def main():
 
     if sample_count is None:
         print_api_hint_and_exit()
-
-    # The validated evaluator's build_fixed_episode_starts expects
-    # the data object itself (not an integer sample count). Try that
-    # calling convention first, then fall back to other compatible APIs.
     try:
         starts = choose_starts(
             test_data,
