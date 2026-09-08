@@ -1,21 +1,4 @@
-# ============================================================
-# FC-HMARL FORECASTING CONFIGURATION
-# ============================================================
-#
-# Source:
-# Manuscript Table 3 - Forecasting Model Configuration
-#
-# Forecasted variables:
-#   1. PV generation
-#   2. Load demand
-#   3. EV charging demand
-#   4. Electricity market price
-# ============================================================
 
-
-# ------------------------------------------------------------
-# FORECASTING WINDOW
-# ------------------------------------------------------------
 
 forecasting:
 
@@ -98,14 +81,6 @@ output:
 # ============================================================
 # FORECASTING MODEL ARCHITECTURE
 # ============================================================
-#
-# IMPORTANT:
-# The manuscript permits transformer / attention-based temporal
-# architectures but does not report the exact layer dimensions.
-#
-# Therefore the values below are RECONSTRUCTION CHOICES.
-# ============================================================
-
 model:
 
   architecture: "transformer_encoder"
@@ -138,13 +113,6 @@ model:
 # ============================================================
 # FORECASTING TRAINING CONFIGURATION
 # ============================================================
-#
-# RECONSTRUCTION CHOICES:
-# The manuscript does not separately report the optimizer,
-# epoch count, patience, gradient clipping, or scheduler used
-# to train the forecasting neural network.
-# ============================================================
-
 training:
 
   optimizer: "adam"
