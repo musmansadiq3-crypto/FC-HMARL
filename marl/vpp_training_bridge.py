@@ -1,46 +1,8 @@
-"""
-Production bridge between the reconstructed physical VPP environment
-and the FC-HMARL training stack.
-
-This module connects:
-
-    VPPEnvironment
-        ->
-    HierarchicalStateBuilder
-        ->
-    LocalAgent x N
-        ->
-    CoordinatorAgent
-        ->
-    VPPEnvironment.step(...)
-        ->
-    HierarchicalRewardBuilder
-        ->
-    TrainingLoop
-
-Important reconstruction choices
---------------------------------
-The manuscript specifies the mathematical state/action/reward structure,
-but does not provide the original software implementation for:
-
-1. exact RL-action-to-physical-action scaling,
-2. exact inter-MG sharing-vector encoding,
-3. battery-degradation monetary coefficient,
-4. monetary coefficient for physical imbalance violations.
-
-Those quantities are therefore explicit configuration parameters here
-rather than being silently invented.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Callable, Dict, Optional, Sequence
-
 import numpy as np
-
 from environment.vpp_env import VPPEnvironment
-
 from marl.environment_adapter import (
     HierarchicalActionBundle,
 )
@@ -858,24 +820,7 @@ class FCHMARLVPPTrainingBridge:
                                 index
                             ]
                         ),
-
-                    # Local feasibility credit assignment:
-                    #
-                    # The physical environment projects the requested
-                    # utility-grid exchange onto the feasible PCC region
-                    # before market settlement. If the post-projection
-                    # grid power were used here, the local grid-violation
-                    # term could become zero even when the local action
-                    # requested an infeasible PCC loading.
-                    #
-                    # The reconstructed PCC constraint is evaluated on:
-                    #
-                    #     |P_grid,requested + P_share,out|
-                    #
-                    # Therefore the EXISTING local grid-violation reward
-                    # receives the requested PCC loading magnitude. This
-                    # preserves the manuscript reward structure without
-                    # introducing an additional local imbalance-cost term.
+                   
                     "grid_exchange":
                         float(
                             abs(
