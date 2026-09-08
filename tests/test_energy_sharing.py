@@ -1,22 +1,3 @@
-"""
-Tests for the FC-HMARL inter-microgrid energy-sharing model.
-
-These tests verify:
-
-1. Connectivity logic
-2. Directional sharing limits
-3. Manuscript topology constraint
-4. Incoming/outgoing accounting
-5. Scheduled-power conservation
-6. 98% sharing efficiency
-7. Transfer loss
-8. Surplus-based feasibility
-9. Network reset and state
-
-The numerical connectivity/capacity matrices below are TEST VALUES.
-They are not claimed to be the lost original topology.
-"""
-
 import numpy as np
 import pytest
 
@@ -24,8 +5,6 @@ from environment.energy_sharing import (
     EnergySharingNetwork,
     EnergySharingParameters,
 )
-
-
 # ============================================================
 # TEST NETWORK
 # ============================================================
