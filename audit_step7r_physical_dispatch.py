@@ -1,37 +1,11 @@
-"""
-Step 7R-A: Physical-dispatch audit for FC-HMARL.
-
-This is a diagnostic only:
-- NO retraining
-- NO checkpoint selection
-- NO TEST tuning
-- locked checkpoint = 1000
-- representative TEST episode = the same median-return episode used in Step 7Q-B
-
-The audit checks:
-1) Local normalized BESS actions
-2) Requested and feasible BESS powers
-3) BESS SOC trajectory
-4) Reserve participation at the same time as BESS dispatch
-5) Whether reserve exceeds apparent BESS headroom
-6) Power balance / transformer feasibility
-7) Episode-relative hour vs underlying test start index
-"""
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
-
 import evaluate_real_fc_hmarl_test as t
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
-
 STEP7O_FILE = (
     PROJECT_ROOT
     / "outputs"
@@ -46,7 +20,6 @@ OUTPUT_DIR = (
     / "evaluation"
     / "step7r_physical_audit"
 )
-
 LOCKED_CHECKPOINT = 1000
 TEST_EPISODES = 30
 SEED = 42
@@ -59,8 +32,6 @@ BESS_RATED_POWER_KW = np.array(
     [250.0, 300.0, 250.0, 300.0, 350.0],
     dtype=float,
 )
-
-
 def choose_representative_episode():
     df = pd.read_csv(STEP7O_FILE)
     fc = df[df["mode"] == "full_fc_hmarl"].copy()
