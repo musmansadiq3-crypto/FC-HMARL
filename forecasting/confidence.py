@@ -1,85 +1,15 @@
-"""
-Forecast-confidence construction for the FC-HMARL framework.
-
-This module implements the confidence formulation described in
-the manuscript.
-
-The forecasting errors are grouped into:
-
-    Renewable/load uncertainty:
-        PV forecast error
-        Load forecast error
-
-    EV/market uncertainty:
-        EV charging forecast error
-        Electricity-price forecast error
-
-The manuscript formulation is reconstructed as:
-
-    epsilon_RL =
-        sqrt(e_PV^2 + e_Load^2)
-
-    omega_RL =
-        exp(-epsilon_RL)
-
-    epsilon_EM =
-        sqrt(e_EV^2 + e_Price^2)
-
-    Phi =
-        omega_RL * exp(-epsilon_EM)
-
-which is equivalent to:
-
-    Phi =
-        exp(-(epsilon_RL + epsilon_EM))
-
-The confidence coefficient Phi therefore satisfies:
-
-    0 < Phi <= 1
-
-for finite forecasting errors.
-
-Higher confidence:
-    smaller forecasting error
-
-Lower confidence:
-    larger forecasting error
-
-The predictive state is then confidence weighted:
-
-    S_pred = Phi * Z_hat
-
-where Z_hat represents future predictive operating information.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Dict, Optional, Sequence
-
 import numpy as np
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class ForecastConfidenceConfig:
     """
     Configuration for forecast-confidence calculation.
-
-    error_scale
-    -----------
-    Default = 1.0.
-
-    The manuscript exponential formulation is recovered when
-    error_scale = 1.0.
-
-    A different value may be used only as an explicit
-    implementation/calibration choice.
     """
-
     error_scale: float = 1.0
 
     minimum_confidence: float = 0.0
@@ -299,8 +229,6 @@ def calculate_renewable_load_confidence(
     )
 
     return confidence
-
-
 # ============================================================
 # EV + MARKET UNCERTAINTY
 # ============================================================
@@ -348,8 +276,6 @@ def calculate_ev_market_uncertainty(
     )
 
     return uncertainty
-
-
 # ============================================================
 # GLOBAL CONFIDENCE
 # ============================================================
