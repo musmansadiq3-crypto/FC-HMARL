@@ -1,40 +1,3 @@
-"""
-Local microgrid model for the FC-HMARL VPP environment.
-
-This module integrates:
-
-- photovoltaic generation
-- BESS operation
-- EV charging demand
-- local load
-- internal energy sharing
-- utility-grid exchange
-- transformer / PCC constraints
-- local market accounting
-
-Manuscript local net-power formulation
---------------------------------------
-
-    P_net
-        = P_PV
-          + P_BESS
-          - P_load
-          - P_EV
-
-Final microgrid balance
------------------------
-
-    P_balance
-        = P_net
-          + P_share_in
-          - P_share_out
-          + P_grid
-
-Feasible operation requires:
-
-    P_balance = 0
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -72,28 +35,6 @@ from environment.market import (
 
 @dataclass
 class MicrogridParameters:
-    """
-    Static configuration of one local microgrid.
-
-    Parameters
-    ----------
-    name:
-        Microgrid name.
-
-    peak_load_kw:
-        Peak electricity demand.
-
-    transformer_rating_kva:
-        Transformer rating from manuscript Table 2.
-
-    power_factor:
-        Explicit reconstruction parameter used to convert
-        kVA to active-power limit.
-
-    balance_tolerance_kw:
-        Numerical tolerance for power balance.
-    """
-
     name: str
     peak_load_kw: float
     transformer_rating_kva: float
