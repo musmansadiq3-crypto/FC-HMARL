@@ -1,66 +1,20 @@
-"""
-Neural-network components for the FC-HMARL SAC agents.
-
-This module provides:
-
-    1. Gaussian stochastic policy / actor network
-    2. Twin Q critic network
-    3. Deterministic action evaluation
-    4. Reparameterized stochastic sampling
-    5. Tanh action squashing
-    6. Action scaling to physical action bounds
-    7. Parameter initialization utilities
-
-Manuscript-supported concept
-----------------------------
-The FC-HMARL framework uses Soft Actor-Critic (SAC) as the
-learning backbone for:
-
-    local microgrid agents
-    VPP coordinator agent
-
-The manuscript also describes actor-network updates, critic-network
-updates, and soft target-network updates.
-
-Reconstruction choices
-----------------------
-The manuscript does not specify the exact neural-network layer sizes
-or complete implementation architecture.
-
-Therefore, the following defaults are implementation choices:
-
-    hidden dimensions = (256, 256)
-    activation        = ReLU
-    log_std range     = [-20, 2]
-
-These are standard SAC-compatible choices and remain configurable.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Dict, Sequence, Tuple
-
 import numpy as np
 import torch
 from torch import nn
 from torch.distributions import Normal
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class SACNetworkConfig:
     """
     Configuration for actor and critic networks.
     """
-
     state_dimension: int
-
     action_dimension: int
-
     hidden_dimensions: Tuple[int, ...] = (
         256,
         256,
