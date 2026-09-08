@@ -1,57 +1,15 @@
-"""
-Unit tests for the FC-HMARL EV aggregation model.
-
-The tests verify the manuscript equations for:
-
-1. EV arrival/departure availability
-2. Aggregated charging demand
-3. Aggregate charging-power limit
-
-Numerical individual charging powers and the fleet-level maximum
-charging power used here are TEST PARAMETERS only. They are not claimed
-to be values reported by the manuscript.
-"""
-
 import numpy as np
 import pytest
-
 from environment.ev_fleet import (
     EVFleet,
     EVFleetParameters,
     EVRecord,
 )
-
-
 # ============================================================
 # TEST FIXTURE
 # ============================================================
-
 @pytest.fixture
 def fleet():
-    """
-    Create a simple three-EV test fleet.
-
-    EV1:
-        arrival   = 8
-        departure = 12
-        charging  = 7 kW
-
-    EV2:
-        arrival   = 9
-        departure = 15
-        charging  = 11 kW
-
-    EV3:
-        arrival   = 18
-        departure = 22
-        charging  = 7 kW
-
-    Fleet aggregate limit:
-        15 kW
-
-    These are test values only.
-    """
-
     parameters = EVFleetParameters(
         number_of_evs=3,
         maximum_aggregate_charging_power_kw=15.0,
@@ -86,8 +44,6 @@ def fleet():
         vehicles=vehicles,
         name="Test_EV_Fleet",
     )
-
-
 # ============================================================
 # BASIC PARAMETER TESTS
 # ============================================================
@@ -110,8 +66,6 @@ def test_time_step(fleet):
     assert fleet.time_step_hours == pytest.approx(
         1.0
     )
-
-
 # ============================================================
 # AVAILABILITY TESTS
 # ============================================================
@@ -171,8 +125,6 @@ def test_ev_available_at_departure_time(fleet):
     assert availability[0] == pytest.approx(
         1.0
     )
-
-
 def test_ev_unavailable_after_departure(fleet):
 
     availability = fleet.availability_vector(
@@ -182,8 +134,6 @@ def test_ev_unavailable_after_departure(fleet):
     assert availability[0] == pytest.approx(
         0.0
     )
-
-
 def test_evening_ev_availability(fleet):
 
     availability = fleet.availability_vector(
@@ -194,12 +144,9 @@ def test_evening_ev_availability(fleet):
         availability,
         np.array([0.0, 0.0, 1.0]),
     )
-
-
 def test_number_available(fleet):
 
     assert fleet.number_available(10.0) == 2
-
 
 # ============================================================
 # RATED CHARGING POWER VECTOR
@@ -213,8 +160,6 @@ def test_rated_charging_power_vector(fleet):
         powers,
         np.array([7.0, 11.0, 7.0]),
     )
-
-
 # ============================================================
 # AGGREGATED CHARGING EQUATION
 # ============================================================
