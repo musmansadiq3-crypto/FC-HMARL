@@ -171,8 +171,6 @@ class ForecastTrainerConfig:
                 "checkpoint_filename must contain "
                 "only a filename, not a path."
             )
-
-
 # ============================================================
 # REPRODUCIBILITY
 # ============================================================
@@ -208,30 +206,23 @@ def set_random_seed(
         torch.cuda.manual_seed_all(
             seed
         )
-
-
 # ============================================================
 # DEVICE
 # ============================================================
-
 def resolve_device(
     requested_device: str = "auto",
 ) -> torch.device:
     """
     Determine the PyTorch execution device.
     """
-
     requested_device = (
         requested_device.lower()
     )
-
     if requested_device == "auto":
-
         if torch.cuda.is_available():
             return torch.device(
                 "cuda"
             )
-
         return torch.device(
             "cpu"
         )
@@ -258,8 +249,6 @@ def resolve_device(
         "requested_device must be "
         "'auto', 'cpu', or 'cuda'."
     )
-
-
 # ============================================================
 # DATASET ADAPTER
 # ============================================================
@@ -430,7 +419,6 @@ def build_loss_function(
         f"'{loss_name}'."
     )
 
-
 # ============================================================
 # OPTIMIZER
 # ============================================================
@@ -483,8 +471,6 @@ def build_optimizer(
         f"Unsupported optimizer "
         f"'{config.optimizer}'."
     )
-
-
 # ============================================================
 # SCHEDULER
 # ============================================================
@@ -529,8 +515,6 @@ def build_scheduler(
         f"Unsupported scheduler "
         f"'{config.scheduler}'."
     )
-
-
 # ============================================================
 # TRAINING HISTORY
 # ============================================================
@@ -581,8 +565,6 @@ class ForecastTrainingHistory:
             "stopped_early":
                 self.stopped_early,
         }
-
-
 # ============================================================
 # TRAINER
 # ============================================================
