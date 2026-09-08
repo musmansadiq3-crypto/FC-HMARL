@@ -7,30 +7,9 @@ import numpy as np
 # ============================================================
 @dataclass
 class RewardConfig:
-    """
-    Configuration for FC-HMARL reward construction.
-
-    beta_soc
-        Penalty coefficient for upper SOC violation.
-
-    beta_grid
-        Penalty coefficient for grid-exchange violation.
-
-    risk_aversion
-        rho in:
-
-            C_risk = rho * (1 - Phi)
-
-    Numeric defaults are reconstruction choices unless explicitly
-    replaced by manuscript-/experiment-specific parameters.
-    """
-
     beta_soc: float = 1.0
-
     beta_grid: float = 1.0
-
     risk_aversion: float = 1.0
-
     def validate(self) -> None:
         """Validate reward configuration."""
 
@@ -115,10 +94,6 @@ def validate_nonnegative_scalar(
     value,
     name: str,
 ) -> float:
-    """
-    Validate a non-negative scalar cost.
-    """
-
     value = validate_finite_scalar(
         value,
         name,
@@ -131,8 +106,6 @@ def validate_nonnegative_scalar(
         )
 
     return value
-
-
 # ============================================================
 # SOC VIOLATION
 # ============================================================
@@ -156,24 +129,19 @@ def calculate_soc_violation(
         soc,
         "soc",
     )
-
     maximum_soc = (
         validate_finite_scalar(
             maximum_soc,
             "maximum_soc",
         )
     )
-
     return max(
         0.0,
         soc - maximum_soc,
     )
-
-
 # ============================================================
 # GRID EXCHANGE VIOLATION
 # ============================================================
-
 def calculate_grid_violation(
     grid_exchange,
     maximum_grid_exchange,
@@ -284,8 +252,6 @@ def calculate_violation_cost(
     return float(
         cost
     )
-
-
 # ============================================================
 # LOCAL MICROGRID REWARD
 # ============================================================
@@ -400,11 +366,6 @@ def calculate_complete_local_reward(
         RewardConfig
     ] = None,
 ) -> LocalRewardResult:
-    """
-    Calculate the complete local reward from costs and
-    physical operating limits.
-    """
-
     if config is None:
 
         config = (
@@ -485,12 +446,9 @@ def calculate_complete_local_reward(
 
         reward=reward,
     )
-
-
 # ============================================================
 # FORECAST-CONFIDENCE RISK COST
 # ============================================================
-
 def calculate_confidence_risk_cost(
     confidence,
     risk_aversion: float = 1.0,
@@ -538,30 +496,15 @@ def calculate_confidence_risk_cost(
     return float(
         risk_cost
     )
-
-
 # ============================================================
 # COORDINATOR REWARD
 # ============================================================
-
 def calculate_coordinator_reward(
     profit,
     imbalance_cost,
     risk_cost,
 ) -> float:
-    """
-    Calculate upper-level VPP coordinator reward.
-
-    Manuscript formulation:
-
-        R_VPP =
-            Profit
-            -
-            C_imb
-            -
-            C_risk
-    """
-
+   
     profit = validate_finite_scalar(
         profit,
         "profit",
@@ -590,7 +533,6 @@ def calculate_coordinator_reward(
     return float(
         reward
     )
-
 
 # ============================================================
 # COMPLETE COORDINATOR REWARD
@@ -632,8 +574,6 @@ class CoordinatorRewardResult:
             "reward":
                 self.reward,
         }
-
-
 def calculate_complete_coordinator_reward(
     profit,
     imbalance_cost,
@@ -705,8 +645,6 @@ def calculate_complete_coordinator_reward(
 
         reward=reward,
     )
-
-
 # ============================================================
 # TOTAL HIERARCHICAL REWARD
 # ============================================================
@@ -717,17 +655,7 @@ def calculate_hierarchical_reward(
     ],
     coordinator_reward,
 ) -> float:
-    """
-    Calculate the cooperative FC-HMARL reward.
-
-    Manuscript formulation:
-
-        R(t) =
-            sum_i R_i(t)
-            +
-            R_VPP(t)
-    """
-
+   
     local_rewards = np.asarray(
         local_rewards,
         dtype=np.float64,
@@ -770,8 +698,6 @@ def calculate_hierarchical_reward(
     return float(
         total_reward
     )
-
-
 # ============================================================
 # HIERARCHICAL RESULT
 # ============================================================
