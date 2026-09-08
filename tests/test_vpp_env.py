@@ -1,53 +1,33 @@
-"""
-Integration tests for the five-microgrid FC-HMARL VPP environment.
-
-The physical capacities used for PV, BESS, peak load, and transformer
-ratings follow manuscript Table 2.
-
-Individual EV records and the explicit energy-sharing topology used in
-these unit tests are reconstruction/test values because the recovered
-manuscript does not provide those individual records or pairwise
-sharing capacities.
-"""
-
 import numpy as np
 import pytest
-
 from environment.bess import (
     BESSParameters,
     BatteryEnergyStorageSystem,
 )
-
 from environment.pv import (
     PVParameters,
     PhotovoltaicSystem,
 )
-
 from environment.ev_fleet import (
     EVFleet,
     EVFleetParameters,
     EVRecord,
 )
-
 from environment.market import (
     ElectricityMarket,
     MarketParameters,
 )
-
 from environment.microgrid import (
     Microgrid,
     MicrogridParameters,
 )
-
 from environment.energy_sharing import (
     EnergySharingNetwork,
     EnergySharingParameters,
 )
-
 from environment.vpp_env import (
     VPPEnvironment,
 )
-
 
 # ============================================================
 # HELPER
