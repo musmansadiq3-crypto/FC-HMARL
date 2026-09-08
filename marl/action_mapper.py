@@ -1,104 +1,21 @@
-"""
-FC-HMARL normalized-action to physical-action mapper.
-
-This module converts SAC actions into physical commands used by
-VPPEnvironment.
-
-Manuscript-supported action interpretation
-------------------------------------------
-Local microgrid agent:
-    a_i(t) = [P_i^BESS(t), P_ij^sh(t)]^T
-
-Upper-level coordinator:
-    a_VPP(t) = [P^market(t), P^sh(t)]^T
-
-The manuscript does not recover the exact original software encoding
-of the sharing vector. Therefore the implementation below uses an
-explicit, deterministic reconstruction:
-
-Local-agent action:
-    action[0]
-        normalized BESS command in [-1, 1]
-
-    action[1:]
-        directional sharing requests from this microgrid to the
-        other microgrids, in ascending microgrid-index order.
-
-Coordinator action:
-    action[0]
-        normalized market/grid modulation in [-1, 1]
-
-    action[1]
-        normalized reserve participation in [-1, 1]
-
-    action[2], if present
-        global sharing multiplier in [-1, 1]
-
-All physical limits are read from the actual VPP environment.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Optional
-
 import numpy as np
-
 from environment.vpp_env import VPPEnvironment
-
 from marl.environment_adapter import (
     HierarchicalActionBundle,
 )
-
 from marl.vpp_training_bridge import (
     VPPExogenousInput,
     VPPPhysicalAction,
 )
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
 
 @dataclass
 class ActionMapperConfig:
-    """
-    Configuration for normalized-to-physical action conversion.
-
-    use_dynamic_bess_feasibility:
-        If True, BESS actions are scaled using the instantaneous
-        SOC-feasible charge/discharge power.
-
-        If False, the rated BESS power is used and the BESS model
-        performs feasibility clipping afterward.
-
-    coordinator_controls_grid:
-        If True, coordinator action[0] produces explicit aggregate
-        grid commands distributed among microgrids.
-
-        If False, grid_power_actions_kw=None and the physical
-        environment closes each local power balance automatically.
-
-    coordinator_controls_reserve:
-        If True, coordinator action[1] controls reserve power.
-
-    coordinator_controls_sharing:
-        If True and coordinator action has at least 3 dimensions,
-        action[2] acts as a global sharing multiplier.
-
-    reserve_fraction_of_bess_rating:
-        Upper bound for reserve relative to BESS rated power.
-
-    reserve_duration_hours:
-        Required duration of upward reserve availability. Reserve is
-        additionally clipped by instantaneous BESS power headroom and
-        energy available above minimum SOC.
-
-        The recovered manuscript does not provide the exact software
-        reserve saturation / duration rule. These are explicit,
-        physically conservative reconstruction choices.
-    """
-
     use_dynamic_bess_feasibility: bool = True
 
     coordinator_controls_grid: bool = False
@@ -141,8 +58,6 @@ class ActionMapperConfig:
             raise ValueError(
                 "action_tolerance cannot be negative."
             )
-
-
 # ============================================================
 # BASIC HELPERS
 # ============================================================
