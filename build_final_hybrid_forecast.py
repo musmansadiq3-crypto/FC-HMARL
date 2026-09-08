@@ -1,39 +1,6 @@
-# ============================================================
-# FC-HMARL
-# STEP 7G - FINAL HYBRID FORECAST + CONFIDENCE EVALUATION
-# ============================================================
-#
-# Final forecasting strategy selected from Steps 7C-7F:
-#
-#   PV    -> Daily seasonal baseline
-#   Load  -> Daily seasonal baseline
-#   EV    -> Original Transformer forecast, physically clipped
-#   Price -> Daily seasonal baseline
-#
-# Confidence equations:
-#
-#   epsilon_RL = sqrt(e_PV^2 + e_Load^2)
-#
-#   omega_RL = exp(-epsilon_RL)
-#
-#   epsilon_EM = sqrt(e_EV^2 + e_Price^2)
-#
-#   Phi = omega_RL * exp(-epsilon_EM)
-#
-#       = exp(-(epsilon_RL + epsilon_EM))
-#
-# IMPORTANT:
-# Confidence in this script is REALIZED TEST-SET confidence.
-# Actual future values are used only for offline evaluation.
-# This confidence must NOT yet be used as causal RL input.
-#
-# ============================================================
-
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-
 from forecasting.confidence import (
     calculate_renewable_load_uncertainty,
     calculate_renewable_load_confidence,
@@ -41,17 +8,12 @@ from forecasting.confidence import (
     calculate_global_confidence,
     calculate_confidence_from_errors,
 )
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
-
-
 SEQUENCE_FILE = (
     PROJECT_ROOT
     / "data"
@@ -59,8 +21,6 @@ SEQUENCE_FILE = (
     / "forecasting"
     / "forecasting_sequences.npz"
 )
-
-
 RESIDUAL_FILE = (
     PROJECT_ROOT
     / "data"
@@ -68,8 +28,6 @@ RESIDUAL_FILE = (
     / "forecasting"
     / "forecasting_residual_sequences.npz"
 )
-
-
 SCALER_FILE = (
     PROJECT_ROOT
     / "data"
@@ -77,54 +35,39 @@ SCALER_FILE = (
     / "forecasting"
     / "forecasting_scaler.csv"
 )
-
-
 TRANSFORMER_PREDICTION_FILE = (
     PROJECT_ROOT
     / "outputs"
     / "forecasting"
     / "real_forecasting_test_predictions.npz"
 )
-
-
 OUTPUT_DIR = (
     PROJECT_ROOT
     / "outputs"
     / "forecasting"
     / "hybrid"
 )
-
-
 HYBRID_ARCHIVE_FILE = (
     OUTPUT_DIR
     / "final_hybrid_test_predictions.npz"
 )
-
-
 METRICS_FILE = (
     OUTPUT_DIR
     / "final_hybrid_test_metrics.csv"
 )
-
-
 CONFIDENCE_FILE = (
     OUTPUT_DIR
     / "final_hybrid_confidence.csv"
 )
-
-
 CONFIDENCE_SUMMARY_FILE = (
     OUTPUT_DIR
     / "final_hybrid_confidence_summary.csv"
 )
 
-
 HORIZON_FILE = (
     OUTPUT_DIR
     / "final_hybrid_horizon_metrics.csv"
 )
-
-
 # ============================================================
 # 2. FEATURE DEFINITIONS
 # ============================================================
@@ -135,33 +78,20 @@ FEATURE_NAMES = [
     "ev_power_kw",
     "price_usd_per_kwh",
 ]
-
-
 PV_INDEX = 0
 LOAD_INDEX = 1
 EV_INDEX = 2
 PRICE_INDEX = 3
-
 EPS = 1e-12
-
-
 # ============================================================
 # 3. HELPERS
 # ============================================================
-
 def section(title):
-
     print()
-
     print("=" * 80)
-
     print(title)
-
     print("=" * 80)
-
-
 def mae(actual, forecast):
-
     return float(
         np.mean(
             np.abs(
@@ -169,10 +99,7 @@ def mae(actual, forecast):
             )
         )
     )
-
-
 def rmse(actual, forecast):
-
     return float(
         np.sqrt(
             np.mean(
@@ -182,8 +109,6 @@ def rmse(actual, forecast):
             )
         )
     )
-
-
 def r2(actual, forecast):
 
     actual = np.asarray(
@@ -213,27 +138,17 @@ def r2(actual, forecast):
     if ss_tot <= EPS:
 
         return np.nan
-
-
     return float(
         1.0
         - ss_res
         / ss_tot
     )
-
-
 def nmae(actual, forecast):
-
     denominator = np.mean(
         np.abs(actual)
     )
-
-
     if denominator <= EPS:
-
         return np.nan
-
-
     return float(
         100.0
         * mae(
@@ -242,20 +157,12 @@ def nmae(actual, forecast):
         )
         / denominator
     )
-
-
 def nrmse(actual, forecast):
-
     denominator = np.mean(
         np.abs(actual)
     )
-
-
     if denominator <= EPS:
-
         return np.nan
-
-
     return float(
         100.0
         * rmse(
@@ -317,8 +224,6 @@ OUTPUT_DIR.mkdir(
     parents=True,
     exist_ok=True,
 )
-
-
 # ============================================================
 # 5. LOAD FORECAST DATA
 # ============================================================
@@ -359,8 +264,6 @@ print_npz_keys(
     "Original Transformer prediction archive",
     transformer_data,
 )
-
-
 # ============================================================
 # 6. LOAD NORMALIZED TEST TARGETS
 # ============================================================
@@ -399,29 +302,6 @@ if y_test_norm.shape[1:] != (
         f"Unexpected test target shape: "
         f"{y_test_norm.shape}"
     )
-
-
-# ============================================================
-# 7. SEASONAL BASELINE
-# ============================================================
-#
-# Step 7D selected:
-#
-# PV    -> daily
-# Load  -> daily
-# EV    -> weekly
-# Price -> daily
-#
-# For the final hybrid forecast we need:
-#
-# PV    daily
-# Load  daily
-# Price daily
-#
-# EV seasonal baseline is retained only for comparison.
-#
-# ============================================================
-
 seasonal_test_norm = np.asarray(
     residual_data[
         "baseline_test"
@@ -435,23 +315,6 @@ if seasonal_test_norm.shape != y_test_norm.shape:
     raise RuntimeError(
         "Seasonal baseline shape mismatch."
     )
-
-
-# ============================================================
-# 8. LOAD ORIGINAL TRANSFORMER FORECAST
-# ============================================================
-#
-# We attempt several possible archive names so the script
-# remains compatible with the Step 7A output.
-#
-# Preference:
-#
-#   predictions_original
-#   predictions_original_clipped
-#   predictions
-#
-# ============================================================
-
 possible_prediction_keys = [
 
     "predictions_original",
@@ -464,13 +327,9 @@ possible_prediction_keys = [
 
     "forecast_original",
 ]
-
-
 transformer_original = None
 
 selected_prediction_key = None
-
-
 for key in possible_prediction_keys:
 
     if key in transformer_data.files:
@@ -620,8 +479,6 @@ def normalize_feature(
     return (
         values - minimum
     ) / scale
-
-
 # ============================================================
 # 10. ORIGINAL-SCALE ACTUAL TARGET
 # ============================================================
@@ -674,16 +531,6 @@ for feature_index, feature_name in enumerate(
     )
 
 
-# ============================================================
-# 11. PHYSICAL CLIPPING OF TRANSFORMER
-# ============================================================
-#
-# The original Transformer performed best for EV.
-#
-# EV charging demand cannot be negative in the present
-# forecasting representation.
-#
-# ============================================================
 
 transformer_original_clipped = (
     transformer_original.copy()
@@ -772,12 +619,6 @@ hybrid_original[
     :,
     PV_INDEX
 ]
-
-
-# ------------------------------------------------------------
-# Load -> daily seasonal
-# ------------------------------------------------------------
-
 hybrid_original[
     :,
     :,
@@ -834,22 +675,6 @@ print(
 print(
     "Price -> Daily seasonal"
 )
-
-
-# ============================================================
-# 13. CONVERT HYBRID FORECAST TO NORMALIZED SPACE
-# ============================================================
-#
-# Confidence equations combine different targets.
-#
-# Therefore the forecast errors are calculated in normalized
-# dimensionless space rather than mixing:
-#
-#   kW + USD/kWh
-#
-# directly.
-#
-# ============================================================
 
 hybrid_norm = np.zeros_like(
     hybrid_original,
