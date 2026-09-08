@@ -1,52 +1,12 @@
-"""
-Final FC-HMARL post-training ablation evaluator.
-
-This script reuses the already validated held-out TEST pipeline and the locked
-validation-selected checkpoint 1000.
-
-IMPORTANT:
-These are inference-time component ablations of one trained policy. They are
-NOT separately retrained ablation agents. Report them as post-training
-diagnostic ablations.
-
-Modes
------
-1. full_fc_hmarl
-   Original locked policy and original confidence-aware TEST pipeline.
-
-2. no_confidence_awareness
-   Removes confidence from BOTH places where Phi enters the reconstructed
-   manuscript pipeline:
-       S_pred = Phi * Z_hat  ->  Z_hat
-       C_risk = rho(1-Phi)   ->  0 by setting Phi = 1
-   Forecast information itself is retained.
-
-3. no_energy_sharing
-   Disables all local sharing requests and sets the coordinator sharing
-   multiplier to zero.
-
-4. no_upper_level_coordination
-   Keeps local policies active, disables coordinator-controlled reserve/market
-   intervention, and allows local sharing proposals to pass without an
-   adaptive coordinator multiplier. This is an inference-time diagnostic
-   reconstruction because the manuscript does not uniquely specify a
-   software-level "coordinator off" action.
-"""
-
 from __future__ import annotations
-
 import argparse
 import copy
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
-
 import evaluate_real_fc_hmarl_test as test_eval
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
 
 OUTPUT_DIRECTORY = (
