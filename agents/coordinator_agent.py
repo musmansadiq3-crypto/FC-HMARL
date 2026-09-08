@@ -1,33 +1,3 @@
-"""
-Global VPP coordinator agent for the FC-HMARL framework.
-
-The coordinator represents the upper level of the hierarchical
-multi-agent architecture.
-
-Manuscript-supported role
--------------------------
-The FC-HMARL system contains:
-
-    5 local microgrid agents
-    1 global VPP coordinator
-
-The coordinator performs system-level coordination such as:
-
-    - global scheduling
-    - market participation
-    - energy-sharing coordination
-    - reserve allocation
-
-The learning backbone is SAC.
-
-Reconstruction choice
----------------------
-The manuscript does not provide the exact Python implementation
-or wrapper API. This module therefore wraps the generic SACAgent
-with coordinator-specific validation, metadata, storage, training,
-checkpointing, and hierarchical-controller interfaces.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -41,12 +11,7 @@ from agents.sac_agent import (
     SACAgentConfig,
     SACUpdateResult,
 )
-
-
-# ============================================================
 # CONFIGURATION
-# ============================================================
-
 @dataclass
 class CoordinatorAgentConfig:
     """
@@ -203,11 +168,7 @@ class CoordinatorAgentConfig:
             dtype=self.dtype,
         )
 
-
-# ============================================================
 # ACTION RESULT
-# ============================================================
-
 @dataclass
 class CoordinatorActionResult:
     """
@@ -673,10 +634,8 @@ class CoordinatorAgent:
 
         return result
 
-    # ========================================================
-    # TRANSITION STORAGE
-    # ========================================================
-
+     # TRANSITION STORAGE
+ 
     def store_transition(
         self,
         state,
@@ -718,9 +677,9 @@ class CoordinatorAgent:
 
         return index
 
-    # ========================================================
+ 
     # TRAINING
-    # ========================================================
+  
 
     def ready_to_update(
         self,
@@ -779,9 +738,8 @@ class CoordinatorAgent:
 
         return result
 
-    # ========================================================
     # TRAIN/EVAL MODES
-    # ========================================================
+  
 
     def set_training_mode(
         self,
