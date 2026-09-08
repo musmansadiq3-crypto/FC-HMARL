@@ -1,38 +1,12 @@
-# ============================================================
-# FC-HMARL
-# STEP 7D - DAILY VS WEEKLY SEASONAL DIAGNOSTIC
-# ============================================================
-#
-# Purpose:
-# Compare two simple seasonal forecasting baselines:
-#
-#   Daily seasonal:
-#       future hour h = same hour from previous day
-#
-#   Weekly seasonal:
-#       future hour h = same hour from previous week
-#
-# Input window = 168 hours
-# Forecast horizon = 24 hours
-#
-# No model retraining is performed.
-#
-# ============================================================
-
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-
-
 # ============================================================
 # 1. PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
-
 SEQUENCE_FILE = (
     PROJECT_ROOT
     / "data"
@@ -166,8 +140,6 @@ def nrmse(actual, predicted):
         * rmse(actual, predicted)
         / denominator
     )
-
-
 # ============================================================
 # 3. LOAD DATA
 # ============================================================
@@ -306,39 +278,11 @@ for feature_index, feature_name in enumerate(
         ],
         feature_name,
     )
-
-
-# ============================================================
-# 6. DAILY SEASONAL BASELINE
-# ============================================================
-#
-# Final 24 hours in the history:
-#
-#   t-24 ... t-1
-#
-# are used as the 24-hour forecast.
-#
-# ============================================================
-
 daily_prediction = X_test[
     :,
     -24:,
     :
 ].copy()
-
-
-# ============================================================
-# 7. WEEKLY SEASONAL BASELINE
-# ============================================================
-#
-# History contains exactly 168 hours.
-#
-# For a 24-hour forecast, the corresponding hours from
-# one week earlier are the FIRST 24 hours of the input:
-#
-#   t-168 ... t-145
-#
-# ============================================================
 
 weekly_prediction = X_test[
     :,
@@ -370,11 +314,6 @@ if weekly_prediction.shape != targets.shape:
     raise RuntimeError(
         "Weekly baseline shape mismatch."
     )
-
-
-# ============================================================
-# 8. EVALUATE BOTH BASELINES
-# ============================================================
 
 section(
     "DAILY VS WEEKLY RESULTS"
