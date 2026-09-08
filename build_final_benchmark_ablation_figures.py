@@ -1,16 +1,3 @@
-"""
-STEP 7R-Q2 — FINAL PUBLICATION COMPARISON FIGURES
-
-Reads only already-locked FINAL V3 benchmark and diagnostic-ablation CSVs.
-No training, policy evaluation, replay write, or checkpoint selection.
-
-Creates:
-1. Figure_Benchmark_Mean_Return.png/.pdf
-2. Figure_Benchmark_Net_Market_Cost.png/.pdf
-3. Figure_Benchmark_Operational_Normalized.png/.pdf
-4. Figure_Diagnostic_Ablation.png/.pdf
-"""
-
 from pathlib import Path
 import numpy as np
 import pandas as pd
