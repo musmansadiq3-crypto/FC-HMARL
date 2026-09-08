@@ -567,36 +567,22 @@ class HierarchicalController:
             bool
         ] = None,
     ) -> bool:
-        """
-        Resolve whether actions should be deterministic.
-
-        Training:
-            default stochastic / exploratory action selection.
-
-        Evaluation:
-            default controlled by deterministic_evaluation.
-        """
-
         if not isinstance(
             training,
             bool,
         ):
-
             raise TypeError(
                 "training must be boolean."
             )
-
         if deterministic is not None:
 
             if not isinstance(
                 deterministic,
                 bool,
             ):
-
                 raise TypeError(
                     "deterministic must be boolean or None."
                 )
-
             return deterministic
 
         if training:
