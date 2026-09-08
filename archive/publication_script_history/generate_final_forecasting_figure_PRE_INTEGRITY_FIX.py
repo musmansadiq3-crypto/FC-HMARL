@@ -1,22 +1,17 @@
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-
 np.random.seed(2026)
-
 ROOT = Path(__file__).resolve().parent
 DATA_PATH = ROOT / "data" / "publication" / "forecasting_figure_data.xlsx"
 OUTPUT_DIR = ROOT / "outputs" / "figures"
-
 FIG_WIDTH = 16
 FIG_HEIGHT_PANEL_A = 8.5
 FIG_HEIGHT_PANEL_B = 5.0
 PANEL_SPACING = 1.0
 FIG_HEIGHT_TOTAL = FIG_HEIGHT_PANEL_A + FIG_HEIGHT_PANEL_B + PANEL_SPACING
-
 plt.rcParams["font.family"] = "Times New Roman"
 plt.rcParams["font.size"] = 22
 plt.rcParams["font.weight"] = "bold"
