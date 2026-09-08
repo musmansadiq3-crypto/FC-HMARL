@@ -44,8 +44,6 @@ class ForecastDatasetConfig:
             raise ValueError(
                 "stride must be greater than zero."
             )
-
-
 # ============================================================
 # VALIDATION UTILITIES
 # ============================================================
@@ -126,18 +124,14 @@ def validate_time_series(
             )
 
     return frame
-
-
 def resolve_columns(
     data: pd.DataFrame,
     columns: Optional[Sequence[str]],
 ) -> list[str]:
     """
     Resolve and validate selected forecasting columns.
-
     If columns is None, all columns are selected.
     """
-
     if columns is None:
         return list(data.columns)
 
@@ -168,25 +162,12 @@ def resolve_columns(
 # ============================================================
 # SAMPLE COUNT
 # ============================================================
-
 def calculate_number_of_samples(
     sequence_length: int,
     input_window: int = 168,
     forecast_horizon: int = 24,
     stride: int = 1,
 ) -> int:
-    """
-    Calculate the number of complete forecasting samples.
-
-    Formula
-    -------
-    N = floor(
-        (T - input_window - forecast_horizon) / stride
-        ) + 1
-
-    where T is the number of time steps.
-    """
-
     if not isinstance(sequence_length, int):
         raise TypeError(
             "sequence_length must be an integer."
@@ -227,7 +208,6 @@ def calculate_number_of_samples(
         )
         // stride
     ) + 1
-
 
 # ============================================================
 # WINDOW CREATION
@@ -369,12 +349,9 @@ def create_forecasting_windows(
         ]
 
     return X, y
-
-
 # ============================================================
 # TIMESTAMP WINDOWS
 # ============================================================
-
 def create_window_timestamps(
     data: pd.DataFrame,
     input_window: int = 168,
@@ -463,8 +440,6 @@ def create_window_timestamps(
         ]
 
     return X_time, y_time
-
-
 # ============================================================
 # FORECAST DATASET CLASS
 # ============================================================
@@ -726,16 +701,6 @@ def build_forecasting_datasets(
     ForecastWindowDataset,
     ForecastWindowDataset,
 ]:
-    """
-    Build independent train, validation, and test window datasets.
-
-    Important
-    ---------
-    Windows are generated separately inside each chronological split.
-    Therefore no training input or target can cross into validation or
-    testing data.
-    """
-
     if config is None:
         config = ForecastDatasetConfig()
 
