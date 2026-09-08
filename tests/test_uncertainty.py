@@ -1,10 +1,5 @@
-"""
-Tests for forecasting/uncertainty.py.
-"""
-
 import numpy as np
 import pytest
-
 from forecasting.uncertainty import (
     ForecastUncertaintyConfig,
     ForecastUncertaintyEstimator,
@@ -17,7 +12,6 @@ from forecasting.uncertainty import (
     normalize_uncertainty,
     validate_forecast_arrays,
 )
-
 
 # ============================================================
 # SYNTHETIC DATA
@@ -57,7 +51,6 @@ def actual_forecast():
 
     return actual, forecast
 
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
@@ -76,7 +69,6 @@ def test_valid_config():
     config = ForecastUncertaintyConfig()
 
     config.validate()
-
 
 def test_invalid_zero_confidence():
 
@@ -218,7 +210,6 @@ def test_nan_actual_rejected():
             forecast,
         )
 
-
 # ============================================================
 # RESIDUALS
 # ============================================================
@@ -269,7 +260,6 @@ def test_residual_shape(
         4,
     )
 
-
 # ============================================================
 # RESIDUAL STATISTICS
 # ============================================================
@@ -304,7 +294,6 @@ def test_residual_statistics_shape(
             4,
         )
 
-
 def test_residual_statistics_keys(
     actual_forecast,
 ):
@@ -334,7 +323,6 @@ def test_residual_statistics_keys(
         "mae",
         "rmse",
     }
-
 
 # ============================================================
 # CONFIDENCE QUANTILES
