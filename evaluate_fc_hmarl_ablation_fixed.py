@@ -1,38 +1,11 @@
-"""
-FC-HMARL ablation evaluator.
-
-Evaluates the locked FC-HMARL checkpoint under controlled action/state
-ablations on the same held-out TEST episodes.
-
-Important methodological note:
-These are post-training inference ablations. They diagnose sensitivity of the
-trained policy to hierarchy/confidence/sharing components. They are not
-separately retrained ablation models and should be reported as such.
-
-Ablations:
-- full_fc_hmarl
-- no_confidence_weighting
-- no_energy_sharing
-- no_upper_level_coordination
-
-The script reuses the validated held-out TEST evaluation pipeline so that
-physical data, checkpoint loading, deterministic inference, and episode starts
-remain consistent.
-"""
-
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
 from typing import Dict, List
-
 import numpy as np
 import pandas as pd
-
 import evaluate_real_fc_hmarl_test as base_test
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
 OUTPUT_DIR = (
     PROJECT_ROOT
@@ -40,10 +13,7 @@ OUTPUT_DIR = (
     / "evaluation"
     / "real_fc_hmarl_ablation"
 )
-
 LOCKED_CHECKPOINT = 1000
-
-
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Evaluate FC-HMARL post-training ablations."
