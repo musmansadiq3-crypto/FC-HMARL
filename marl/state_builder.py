@@ -1,82 +1,15 @@
-"""
-State construction utilities for the FC-HMARL framework.
-
-This module connects:
-
-    physical VPP observations
-    forecasting outputs
-    forecast confidence information
-
-to the state vectors consumed by the hierarchical MARL agents.
-
-Manuscript-supported local state
---------------------------------
-
-For microgrid i:
-
-    s_i(t) = [
-        SOC_i(t),
-        P_i^PV(t),
-        P_i^Load(t),
-        P_i^EV(t),
-        P_i^grid(t),
-        S^pred(t)
-    ]^T
-
-Manuscript-supported coordinator state
---------------------------------------
-
-    S_VPP(t) = [
-        P^VPP(t),
-        E^share(t),
-        lambda(t),
-        S^pred(t)
-    ]^T
-
-The global state contains all local states plus the coordinator state.
-
-Reconstruction choice
----------------------
-S^pred may contain multi-horizon information.
-
-For neural-network input, this implementation flattens the predictive
-state in chronological order.
-
-For the default forecasting arrangement:
-
-    24 forecast hours
-    4 forecast variables
-
-the predictive vector contains:
-
-    24 * 4 = 96 elements.
-
-Therefore:
-
-    local state dimension       = 5 + 96 = 101
-    coordinator state dimension = 3 + 96 = 99
-
-for the default configuration.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Dict, Iterable, List, Optional, Sequence
-
 import numpy as np
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class StateBuilderConfig:
     """
     Configuration for FC-HMARL state construction.
     """
-
     number_of_microgrids: int = 5
 
     forecast_horizon: int = 24
@@ -178,8 +111,6 @@ class StateBuilderConfig:
             * self.local_state_dimension
             + self.coordinator_state_dimension
         )
-
-
 # ============================================================
 # GENERAL VALIDATION
 # ============================================================
@@ -241,21 +172,7 @@ def validate_predictive_state(
     forecast_horizon: Optional[int] = None,
     forecast_features: Optional[int] = None,
 ) -> np.ndarray:
-    """
-    Validate confidence-aware predictive information.
-
-    Accepted forms
-    --------------
-
-    Matrix:
-        (forecast_horizon, forecast_features)
-
-    or already flattened vector:
-        (forecast_horizon * forecast_features,)
-
-    The matrix form is preferred.
-    """
-
+   
     predictive_state = np.asarray(
         predictive_state,
         dtype=np.float64,
