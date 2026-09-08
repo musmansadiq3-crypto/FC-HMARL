@@ -1,57 +1,16 @@
-"""
-Dataset construction utilities for the FC-HMARL forecasting module.
-
-The forecasting dataset converts a continuous multivariate hourly
-time series into supervised learning samples.
-
-Default manuscript structure
-----------------------------
-Historical input window : 168 hours
-Forecast horizon        : 24 hours
-Time resolution         : 1 hour
-
-For a time series:
-
-    z_0, z_1, ..., z_T
-
-one supervised sample is:
-
-    X = [z_t, ..., z_(t+167)]
-
-and the corresponding target is:
-
-    y = [z_(t+168), ..., z_(t+191)]
-
-The implementation supports multivariate forecasting variables such as:
-
-    PV generation
-    load demand
-    EV charging demand
-    electricity price
-
-No random shuffling is performed while constructing the samples because
-the temporal order of the original time series must be preserved.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Optional, Sequence, Tuple
-
 import numpy as np
 import pandas as pd
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class ForecastDatasetConfig:
     """
     Configuration for supervised forecasting-window construction.
     """
-
     input_window: int = 168
     forecast_horizon: int = 24
     stride: int = 1
@@ -206,8 +165,6 @@ def resolve_columns(
         )
 
     return selected
-
-
 # ============================================================
 # SAMPLE COUNT
 # ============================================================
