@@ -1,11 +1,6 @@
-"""
-Tests for forecasting/dataset.py.
-"""
-
 import numpy as np
 import pandas as pd
 import pytest
-
 from forecasting.dataset import (
     ForecastDatasetConfig,
     ForecastWindowDataset,
@@ -16,8 +11,6 @@ from forecasting.dataset import (
     resolve_columns,
     validate_time_series,
 )
-
-
 # ============================================================
 # TEST DATA
 # ============================================================
@@ -25,7 +18,6 @@ from forecasting.dataset import (
 def make_data(
     periods=300,
 ):
-
     index = pd.date_range(
         "2024-01-01",
         periods=periods,
