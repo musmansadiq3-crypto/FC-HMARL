@@ -1,50 +1,4 @@
-"""
-Environment adapter for the FC-HMARL framework.
-
-Purpose
--------
-Connect the physical VPP environment with the hierarchical
-training interface defined in marl/training_loop.py.
-
-The manuscript specifies the physical information entering
-the local and coordinator states, but it does not define an
-exact Python environment API. Therefore this adapter keeps
-the physical model and learning model separated.
-
-Architecture
-------------
-VPPEnvironment
-      |
-      v
-raw physical state
-      |
-      v
-StateBuilder / extractor
-      |
-      v
-TrainingObservation
-      |
-      v
-FC-HMARL agents
-      |
-      v
-HierarchicalActionBundle
-      |
-      v
-physical action conversion
-      |
-      v
-VPPEnvironment.step(...)
-      |
-      v
-reward calculation
-      |
-      v
-EnvironmentStepResult
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass, field
 from typing import (
     Any,
@@ -53,7 +7,6 @@ from typing import (
     Optional,
     Sequence,
 )
-
 import numpy as np
 
 from marl.training_loop import (
@@ -61,7 +14,6 @@ from marl.training_loop import (
     HierarchicalActionBundle,
     TrainingObservation,
 )
-
 
 # ============================================================
 # TYPE ALIASES
@@ -282,37 +234,6 @@ class AdapterStepRecord:
 # ============================================================
 
 class FCHMARLEnvironmentAdapter:
-    """
-    Adapter connecting a physical VPP environment to the
-    FC-HMARL training loop.
-
-    Parameters
-    ----------
-    environment_reset_function
-        Resets the physical environment and returns its raw
-        initial state.
-
-    environment_step_function
-        Receives the converted physical action and advances
-        the physical environment.
-
-    observation_builder
-        Converts raw physical state/results into
-        TrainingObservation.
-
-    action_converter
-        Converts HierarchicalActionBundle into the action
-        representation expected by the physical environment.
-
-    reward_builder
-        Computes local and coordinator rewards.
-
-    done_extractor
-        Optional function extracting physical termination.
-
-    info_extractor
-        Optional function extracting environment diagnostics.
-    """
 
     def __init__(
         self,
