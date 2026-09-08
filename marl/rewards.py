@@ -1,77 +1,10 @@
-"""
-Reward construction for the FC-HMARL framework.
-
-This module implements the local-agent, coordinator-agent,
-confidence-risk, and hierarchical total reward formulations.
-
-Manuscript-supported formulations
----------------------------------
-
-Local microgrid reward:
-
-    R_i(t) =
-        -(
-            C_i^grid(t)
-            +
-            C_i^deg(t)
-            +
-            C_i^viol(t)
-        )
-
-Operational violation cost:
-
-    C_i^viol(t) =
-        beta_soc * max(0, SOC_i(t) - SOC_i^max)^2
-        +
-        beta_grid * max(
-            0,
-            P_i^grid(t) - P_i^grid,max
-        )^2
-
-Coordinator reward:
-
-    R_VPP(t) =
-        Profit(t)
-        -
-        C^imb(t)
-        -
-        C^risk(t)
-
-Forecast-confidence risk cost:
-
-    C^risk(t) =
-        rho * [1 - Phi(t)]
-
-Hierarchical reward:
-
-    R(t) =
-        sum_i R_i(t)
-        +
-        R_VPP(t)
-
-Notes
------
-The manuscript specifies the mathematical structures above,
-but does not provide all numerical penalty coefficients in the
-reward equations.
-
-Therefore, coefficient defaults in this implementation are
-explicit reconstruction choices and can be overridden through
-configuration.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Dict, Optional, Sequence
-
 import numpy as np
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class RewardConfig:
     """
