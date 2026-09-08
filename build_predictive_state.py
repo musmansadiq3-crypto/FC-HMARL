@@ -1,44 +1,12 @@
-# ============================================================
-# FC-HMARL
-# STEP 7I - BUILD CONFIDENCE-AWARE PREDICTIVE STATE
-# ============================================================
-#
-# Manuscript formulation:
-#
-#   S_pred = Phi * Z_hat
-#
-# where
-#
-#   Z_hat =
-#       [PV forecast,
-#        Load forecast,
-#        EV forecast,
-#        Price forecast]
-#
-# Forecast horizon = 24 h
-# Number of variables = 4
-#
-# Therefore:
-#
-#   predictive matrix = 24 x 4
-#   flattened predictive state = 96
-#
-# ============================================================
-
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-
 from forecasting.confidence import (
     build_confidence_aware_predictive_state,
 )
-
-
 # ============================================================
 # 1. PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
@@ -186,12 +154,9 @@ print(
     f"Causal confidence shape   : "
     f"{Phi_causal.shape}"
 )
-
-
 # ============================================================
 # 5. INPUT VALIDATION
 # ============================================================
-
 if forecast_normalized.ndim != 3:
 
     raise RuntimeError(
@@ -199,11 +164,9 @@ if forecast_normalized.ndim != 3:
         "[samples, horizon, features]."
     )
 
-
 number_of_samples = (
     forecast_normalized.shape[0]
 )
-
 
 if forecast_normalized.shape[1:] != (
     FORECAST_HORIZON,
@@ -225,7 +188,6 @@ if Phi_causal.shape != (
         "exactly 24 values."
     )
 
-
 if np.any(
     Phi_causal < 0.0
 ) or np.any(
@@ -236,55 +198,9 @@ if np.any(
         "Confidence must remain inside [0,1]."
     )
 
-
-# ============================================================
-# 6. BUILD CONFIDENCE-AWARE PREDICTIVE STATES
-# ============================================================
-#
-# Existing confidence.py expects:
-#
-#   forecast:
-#       [samples, horizon, features]
-#
-# Therefore we pass the COMPLETE forecasting batch:
-#
-#       forecast_normalized
-#       shape = [1291, 24, 4]
-#
-# The causal confidence profile is horizon dependent:
-#
-#       Phi
-#       shape = [24]
-#
-# We repeat that SAME causal 24-hour calibration profile
-# across every forecasting sample:
-#
-#       confidence_matrix
-#       shape = [1291, 24]
-#
-# This does NOT introduce future information because Phi was
-# calibrated entirely from the validation set in Step 7H.
-#
-# ============================================================
-
 section(
     "BUILDING S_pred = Phi * Z_hat"
 )
-
-
-# ------------------------------------------------------------
-# Expand the 24-hour causal confidence profile across all
-# forecasting samples.
-#
-# Original:
-#
-#   Phi_causal.shape = (24,)
-#
-# Required batch representation:
-#
-#   confidence_matrix.shape = (1291, 24)
-#
-# ------------------------------------------------------------
 
 confidence_matrix = np.broadcast_to(
 
@@ -311,11 +227,6 @@ print(
     f"{confidence_matrix.shape}"
 )
 
-
-# ------------------------------------------------------------
-# Use the EXISTING tested confidence module.
-# ------------------------------------------------------------
-
 predictive_state_matrix = (
     build_confidence_aware_predictive_state(
 
@@ -325,25 +236,15 @@ predictive_state_matrix = (
     )
 )
 
-
 predictive_state_matrix = np.asarray(
     predictive_state_matrix,
     dtype=np.float64,
 )
 
-
 print(
     f"Predictive-state matrix shape: "
     f"{predictive_state_matrix.shape}"
 )
-
-
-# ------------------------------------------------------------
-# Required output:
-#
-#   [samples, 24, 4]
-#
-# ------------------------------------------------------------
 
 expected_shape = (
 
@@ -377,11 +278,6 @@ print(
     "[OK] Batch confidence-aware predictive "
     "state constructed successfully."
 )
-
-
-# ============================================================
-# 7. DIRECT MANUSCRIPT EQUATION CHECK
-# ============================================================
 
 section(
     "VERIFYING MANUSCRIPT EQUATION"
@@ -438,9 +334,6 @@ print(
 )
 
 
-# ============================================================
-# 8. FLATTEN TO 96-DIMENSIONAL STATE
-# ============================================================
 
 section(
     "FLATTENING 24 x 4 -> 96"
