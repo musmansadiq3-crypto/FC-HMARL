@@ -1,18 +1,6 @@
-"""
-Step 7R-C reserve-feasibility regression tests.
-
-Copy to:
-    tests/test_reserve_feasibility.py
-
-Run:
-    python -m pytest tests/test_reserve_feasibility.py -q
-"""
-
 from types import SimpleNamespace
-
 import numpy as np
 import pytest
-
 from environment.bess import (
     BatteryEnergyStorageSystem,
     BESSParameters,
@@ -158,7 +146,6 @@ def test_mapper_clips_reserve_by_simultaneous_discharge():
         reserve_fraction_of_bess_rating=1.0,
         reserve_duration_hours=1.0,
     )
-
     assert reserve.shape == (1,)
     assert reserve[0] == pytest.approx(50.0)
 
@@ -174,10 +161,7 @@ def test_mapper_zero_reserve_at_minimum_soc():
         reserve_fraction_of_bess_rating=1.0,
         reserve_duration_hours=1.0,
     )
-
     assert reserve[0] == pytest.approx(0.0)
-
-
 def test_mapper_respects_participation_request():
     bess = make_bess(soc=0.80)
     env = make_env([bess])
@@ -190,13 +174,9 @@ def test_mapper_respects_participation_request():
         reserve_fraction_of_bess_rating=1.0,
         reserve_duration_hours=1.0,
     )
-
     assert reserve[0] == pytest.approx(125.0)
-
-
 def test_invalid_reserve_duration_rejected():
     bess = make_bess(soc=0.80)
-
     with pytest.raises(ValueError):
         bess.maximum_feasible_upward_reserve_power_kw(
             scheduled_power_kw=0.0,
