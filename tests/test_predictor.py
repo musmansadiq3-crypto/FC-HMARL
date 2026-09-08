@@ -1,13 +1,8 @@
-"""
-Tests for forecasting/predictor.py.
-"""
-
 import numpy as np
 import pandas as pd
 import pytest
 import torch
 from torch import nn
-
 from forecasting.predictor import (
     ForecastInputDataset,
     ForecastPredictionResult,
@@ -20,25 +15,12 @@ from forecasting.predictor import (
     resolve_prediction_device,
     to_float_tensor,
 )
-
-
 # ============================================================
 # SMALL MODEL
 # ============================================================
-
 class SmallPredictionModel(
     nn.Module
 ):
-    """
-    Small model used only for predictor unit testing.
-
-    Input:
-        (batch, 8, 2)
-
-    Output:
-        (batch, 3, 2)
-    """
-
     def __init__(
         self,
     ):
@@ -52,7 +34,6 @@ class SmallPredictionModel(
                 3 * 2,
             ),
         )
-
     def forward(
         self,
         x,
@@ -87,10 +68,7 @@ class SmallPredictionModel(
                 forecast,
                 attention,
             )
-
         return forecast
-
-
 # ============================================================
 # SYNTHETIC DATASET
 # ============================================================
@@ -143,23 +121,12 @@ class SmallPredictionDataset:
             self.X[index],
             self.y[index],
         )
-
-
 # ============================================================
 # SIMPLE TEST SCALER
 # ============================================================
 
 class SimpleScaler:
-    """
-    Test-only inverse scaler.
-
-    Normalized value:
-        z
-
-    Physical value:
-        z * 10 + 5
-    """
-
+  
     def inverse_transform(
         self,
         dataframe,
@@ -205,8 +172,6 @@ def config():
         device="cpu",
         return_attention=False,
     )
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
@@ -245,8 +210,6 @@ def test_invalid_batch_type():
     with pytest.raises(TypeError):
 
         config.validate()
-
-
 def test_invalid_device():
 
     config = ForecastPredictorConfig(
@@ -256,8 +219,6 @@ def test_invalid_device():
     with pytest.raises(ValueError):
 
         config.validate()
-
-
 # ============================================================
 # DEVICE
 # ============================================================
@@ -294,8 +255,6 @@ def test_invalid_device_resolver():
         resolve_prediction_device(
             "bad_device"
         )
-
-
 # ============================================================
 # TENSOR CONVERSION
 # ============================================================
@@ -321,8 +280,6 @@ def test_numpy_to_tensor():
     )
 
     assert tensor.dtype == torch.float32
-
-
 def test_tensor_conversion_shape():
 
     array = np.zeros(
@@ -342,8 +299,6 @@ def test_tensor_conversion_shape():
         8,
         2,
     )
-
-
 def test_nan_input_rejected():
 
     array = np.zeros(
@@ -419,23 +374,18 @@ def test_array_dataset_sample_shape():
 def test_supervised_dataset_uses_only_x(
     dataset,
 ):
-
     prediction_dataset = (
         ForecastInputDataset(
             dataset
         )
     )
-
     sample = prediction_dataset[
         0
     ]
-
     assert sample.shape == (
         8,
         2,
     )
-
-
 def test_invalid_array_dimension():
 
     array = np.zeros(
