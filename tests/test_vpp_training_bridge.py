@@ -1,45 +1,4 @@
-"""
-Real VPP training bridge for the FC-HMARL framework.
-
-This module connects the hierarchical reinforcement-learning
-training interfaces to the physical multi-microgrid VPP environment.
-
-The bridge performs:
-
-    hierarchical normalized actions
-            ↓
-    FC-HMARL action mapper
-            ↓
-    physical VPP actions
-            ↓
-    VPPEnvironment.step(...)
-            ↓
-    physical/economic results
-            ↓
-    local + coordinator rewards
-            ↓
-    next hierarchical states
-            ↓
-    EnvironmentStepResult
-
-Important reconstruction note
------------------------------
-The manuscript defines the physical variables, hierarchical states,
-actions and reward structure, but does not provide the original
-software API connecting all modules.
-
-This file is therefore an implementation bridge between the
-reconstructed modules.
-
-Runtime interface requirement
------------------------------
-EnvironmentStepResult.local_rewards is required by training_loop.py
-to be a Python Sequence[float].  NumPy arrays are therefore converted
-explicitly to Python lists before returning the step result.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import (
     Callable,
@@ -80,41 +39,6 @@ from marl.training_loop import (
 
 @dataclass
 class VPPExogenousInput:
-    """
-    Exogenous information supplied to one VPP operating interval.
-
-    Parameters
-    ----------
-    time:
-        Environment time index / hour.
-
-    loads_kw:
-        Local demand for every microgrid.
-
-    irradiances_w_m2:
-        Irradiance supplied to every local PV model.
-
-    buy_prices_usd_per_kwh:
-        Utility-grid purchase price for every microgrid.
-
-    sell_prices_usd_per_kwh:
-        Utility-grid export price for every microgrid.
-
-    predictive_state:
-        Confidence-aware multi-horizon predictive information.
-
-    confidence:
-        Global forecast-confidence coefficient Phi.
-
-    market_price:
-        Scalar price used in the coordinator state.  When omitted,
-        the mean grid-purchase price is used.
-
-    ev_requested_charging_powers_kw:
-        Optional EV charging requests supplied directly to the
-        physical environment.
-    """
-
     time: float
 
     loads_kw: Sequence[float]
