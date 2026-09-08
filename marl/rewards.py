@@ -931,7 +931,6 @@ class HierarchicalRewardBuilder:
                 config=self.config,
             )
         )
-
         total_reward = (
             calculate_hierarchical_reward(
                 local_rewards=local_rewards,
