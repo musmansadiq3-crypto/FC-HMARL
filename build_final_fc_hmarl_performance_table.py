@@ -1,43 +1,14 @@
-"""
-STEP 7R-O1 — BUILD MAIN FINAL FC-HMARL PERFORMANCE TABLE
-
-Reads the locked FINAL V3 TEST summary produced by:
-    evaluate_final_v3_test_locked200.py
-
-and creates a manuscript-ready performance table without
-changing or re-evaluating the trained policy.
-
-Inputs
-------
-outputs/results/real_fc_hmarl_final_v3_test/
-    final_test_summary.csv
-    final_test_protocol.json
-
-Outputs
--------
-outputs/results/real_fc_hmarl_final_v3_test/publication_tables/
-    Table_Final_FC_HMARL_Performance.csv
-    Table_Final_FC_HMARL_Performance.md
-    Table_Final_FC_HMARL_Performance.txt
-"""
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
 import pandas as pd
-
-
 PROJECT_ROOT = Path(__file__).resolve().parent
-
 RESULT_DIR = (
     PROJECT_ROOT
     / "outputs"
     / "results"
     / "real_fc_hmarl_final_v3_test"
 )
-
 SUMMARY_CSV = (
     RESULT_DIR
     / "final_test_summary.csv"
