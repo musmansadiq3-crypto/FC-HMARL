@@ -1,22 +1,3 @@
-"""
-STEP 7R-P1 — FINAL V3 BENCHMARK EVALUATION, LOCKED CHECKPOINT 200
-
-Compares on the same 1,268 rolling 24-hour TEST windows:
-1) Passive grid-only
-2) Rule-based BESS EMS
-3) Final FC-HMARL checkpoint 200
-
-Protocol
---------
-- TEST archive only
-- checkpoint 200 only
-- deterministic FC-HMARL actions
-- no learning
-- no replay writes
-- no checkpoint ranking or re-selection
-- same FINAL V3 physical environment and reward implementation
-"""
-
 from __future__ import annotations
 
 import argparse
