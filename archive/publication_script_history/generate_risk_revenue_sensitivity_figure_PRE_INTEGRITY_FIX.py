@@ -1,15 +1,11 @@
 from pathlib import Path as FilePath
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.gridspec as gridspec
 from matplotlib.patches import Rectangle, Patch
-
-
 FONT_FAMILY = 'Times New Roman'
 FONT_WEIGHT = 'bold'
-
 GLOBAL_FONT_SIZE = 33
 TITLE_FONT_SIZE = 33
 AXIS_LABEL_FONT_SIZE = 33
