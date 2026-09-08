@@ -22,8 +22,6 @@ from agents.coordinator_agent import (
     CoordinatorAgent,
     CoordinatorTrainingResult,
 )
-
-
 # ============================================================
 # TRAINING CONFIGURATION
 # ============================================================
@@ -125,12 +123,9 @@ class TrainingLoopConfig:
             raise TypeError(
                 "verbose must be boolean."
             )
-
-
 # ============================================================
 # OBSERVATION
 # ============================================================
-
 @dataclass
 class TrainingObservation:
     """
@@ -213,18 +208,11 @@ class TrainingObservation:
             raise ValueError(
                 "coordinator_state contains NaN or Inf."
             )
-
-
 # ============================================================
 # ENVIRONMENT STEP RESULT
 # ============================================================
-
 @dataclass
 class EnvironmentStepResult:
-    """
-    Result returned by the VPP step adapter.
-    """
-
     next_observation: TrainingObservation
 
     local_rewards: Sequence[float]
@@ -241,26 +229,15 @@ class EnvironmentStepResult:
         self,
         expected_local_agents: Optional[int] = None,
     ) -> None:
-        """
-        Validate one environment transition.
-
-        local_rewards may originate from NumPy-based physical and
-        reward calculations.  Normalize them to a plain Python
-        list[float] before performing the training-loop checks.
-        """
-
         # --------------------------------------------------------
         # NEXT OBSERVATION
         # --------------------------------------------------------
-
         self.next_observation.validate(
             expected_local_agents
         )
-
         # --------------------------------------------------------
         # NORMALIZE LOCAL REWARDS
         # --------------------------------------------------------
-
         try:
             reward_array = np.asarray(
                 self.local_rewards,
@@ -458,18 +435,13 @@ class HierarchicalActionBundle:
             raise ValueError(
                 "Coordinator action contains NaN or Inf."
             )
-
-
 # ============================================================
 # STEP STATISTICS
 # ============================================================
 
 @dataclass
 class TrainingStepStatistics:
-    """
-    Statistics collected for one operating interval.
-    """
-
+  
     episode: int
 
     time_step: int
@@ -485,34 +457,20 @@ class TrainingStepStatistics:
     coordinator_updated: bool
 
     done: bool
-
-
 # ============================================================
 # EPISODE STATISTICS
 # ============================================================
 
 @dataclass
 class EpisodeStatistics:
-    """
-    Summary of one 24-hour FC-HMARL episode.
-    """
-
     episode: int
-
     steps: int
-
     local_returns: List[float]
-
     coordinator_return: float
-
     total_return: float
-
     local_update_count: int
-
     coordinator_update_count: int
-
     terminated_early: bool
-
     step_statistics: List[
         TrainingStepStatistics
     ] = field(
@@ -660,8 +618,6 @@ class TrainingHistory:
                     )
                 ),
         }
-
-
 # ============================================================
 # CALLBACK TYPES
 # ============================================================
@@ -684,45 +640,11 @@ StopFunction = Callable[
     [TrainingHistory],
     bool,
 ]
-
-
 # ============================================================
 # FC-HMARL TRAINING LOOP
 # ============================================================
 
 class FCHMARLTrainingLoop:
-    """
-    Offline training procedure for FC-HMARL.
-
-    The loop is intentionally independent of the exact
-    environment software API.
-
-    reset_function
-    --------------
-    Receives the episode index and returns the initial
-    TrainingObservation.
-
-    step_function
-    -------------
-    Receives:
-
-        episode index
-        time-step index
-        HierarchicalActionBundle
-
-    and returns EnvironmentStepResult.
-
-    This design lets train.py later connect:
-
-        forecasting
-        confidence calculation
-        StateBuilder
-        VPPEnvironment
-        reward functions
-
-    without duplicating SAC training logic.
-    """
-
     def __init__(
         self,
         local_agents: Sequence[
@@ -1503,27 +1425,6 @@ class FCHMARLTrainingLoop:
         self,
         start_episode: int = 1,
     ) -> TrainingHistory:
-        """
-        Execute FC-HMARL training.
-
-        Parameters
-        ----------
-        start_episode:
-            Absolute first episode number to execute.
-
-            Default = 1 for normal training.
-
-            Example:
-                start_episode=201
-                maximum_episodes=500
-
-            runs episodes:
-                201, 202, ..., 500
-
-        This preserves absolute episode numbering when training
-        is resumed from a complete checkpoint.
-        """
-
         start_episode = int(
             start_episode
         )
@@ -1604,14 +1505,10 @@ class FCHMARLTrainingLoop:
                 ):
 
                     break
-
-
         return self.history
-
     # ========================================================
     # SUMMARY
     # ========================================================
-
     def summary(
         self,
     ) -> Dict[str, Any]:
