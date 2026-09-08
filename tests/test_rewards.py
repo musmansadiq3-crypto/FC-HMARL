@@ -1,10 +1,5 @@
-"""
-Tests for marl/rewards.py.
-"""
-
 import numpy as np
 import pytest
-
 from marl.rewards import (
     CoordinatorRewardResult,
     HierarchicalRewardBuilder,
@@ -21,12 +16,9 @@ from marl.rewards import (
     calculate_soc_violation,
     calculate_violation_cost,
 )
-
-
 # ============================================================
 # CONFIG
 # ============================================================
-
 def test_default_beta_soc():
 
     config = RewardConfig()
@@ -35,7 +27,6 @@ def test_default_beta_soc():
         1.0
     )
 
-
 def test_default_beta_grid():
 
     config = RewardConfig()
@@ -43,21 +34,13 @@ def test_default_beta_grid():
     assert config.beta_grid == pytest.approx(
         1.0
     )
-
-
 def test_default_risk_aversion():
-
     config = RewardConfig()
-
     assert config.risk_aversion == pytest.approx(
         1.0
     )
-
-
 def test_valid_config():
-
     RewardConfig().validate()
-
 
 def test_negative_beta_soc():
 
@@ -67,7 +50,6 @@ def test_negative_beta_soc():
             beta_soc=-1
         ).validate()
 
-
 def test_negative_beta_grid():
 
     with pytest.raises(ValueError):
@@ -76,7 +58,6 @@ def test_negative_beta_grid():
             beta_grid=-1
         ).validate()
 
-
 def test_negative_risk_aversion():
 
     with pytest.raises(ValueError):
@@ -84,7 +65,6 @@ def test_negative_risk_aversion():
         RewardConfig(
             risk_aversion=-1
         ).validate()
-
 
 # ============================================================
 # SOC VIOLATION
@@ -101,7 +81,6 @@ def test_no_soc_violation():
         0.0
     )
 
-
 def test_soc_violation():
 
     result = calculate_soc_violation(
@@ -112,7 +91,6 @@ def test_soc_violation():
     assert result == pytest.approx(
         0.1
     )
-
 
 # ============================================================
 # GRID VIOLATION
@@ -129,7 +107,6 @@ def test_no_grid_violation():
         0.0
     )
 
-
 def test_grid_violation():
 
     result = calculate_grid_violation(
@@ -140,7 +117,6 @@ def test_grid_violation():
     assert result == pytest.approx(
         25.0
     )
-
 
 # ============================================================
 # VIOLATION COST
@@ -159,7 +135,6 @@ def test_zero_violation_cost():
         0.0
     )
 
-
 def test_soc_only_violation_cost():
 
     result = calculate_violation_cost(
@@ -176,7 +151,6 @@ def test_soc_only_violation_cost():
         * 0.1 ** 2
     )
 
-
 def test_grid_only_violation_cost():
 
     result = calculate_violation_cost(
@@ -192,7 +166,6 @@ def test_grid_only_violation_cost():
         2.0
         * 10.0 ** 2
     )
-
 
 def test_combined_violation_cost():
 
@@ -217,7 +190,6 @@ def test_combined_violation_cost():
         expected
     )
 
-
 # ============================================================
 # LOCAL REWARD
 # ============================================================
@@ -234,7 +206,6 @@ def test_local_reward():
         -15.0
     )
 
-
 def test_zero_local_cost_reward():
 
     reward = calculate_local_reward(
@@ -247,7 +218,6 @@ def test_zero_local_cost_reward():
         0.0
     )
 
-
 def test_negative_grid_cost_rejected():
 
     with pytest.raises(ValueError):
@@ -257,7 +227,6 @@ def test_negative_grid_cost_rejected():
             0.0,
             0.0,
         )
-
 
 # ============================================================
 # COMPLETE LOCAL
@@ -335,7 +304,6 @@ def test_half_confidence_risk():
         5.0
     )
 
-
 def test_invalid_confidence():
 
     with pytest.raises(ValueError):
@@ -343,7 +311,6 @@ def test_invalid_confidence():
         calculate_confidence_risk_cost(
             confidence=1.2,
         )
-
 
 # ============================================================
 # COORDINATOR REWARD
@@ -361,7 +328,6 @@ def test_coordinator_reward():
         85.0
     )
 
-
 def test_negative_profit_allowed():
 
     reward = calculate_coordinator_reward(
@@ -374,7 +340,6 @@ def test_negative_profit_allowed():
         -35.0
     )
 
-
 def test_negative_imbalance_rejected():
 
     with pytest.raises(ValueError):
@@ -384,7 +349,6 @@ def test_negative_imbalance_rejected():
             imbalance_cost=-1,
             risk_cost=0,
         )
-
 
 # ============================================================
 # COMPLETE COORDINATOR
@@ -436,7 +400,6 @@ def test_complete_coordinator_value():
         88.0
     )
 
-
 # ============================================================
 # HIERARCHICAL REWARD
 # ============================================================
@@ -456,7 +419,6 @@ def test_hierarchical_reward():
         40.0
     )
 
-
 def test_empty_local_rewards_rejected():
 
     with pytest.raises(ValueError):
@@ -465,7 +427,6 @@ def test_empty_local_rewards_rejected():
             [],
             100,
         )
-
 
 # ============================================================
 # FULL BUILDER
@@ -501,7 +462,6 @@ def local_inputs():
         },
     ]
 
-
 def test_reward_builder_creation():
 
     builder = HierarchicalRewardBuilder()
@@ -510,7 +470,6 @@ def test_reward_builder_creation():
         builder.config,
         RewardConfig,
     )
-
 
 def test_reward_builder(
     local_inputs,
