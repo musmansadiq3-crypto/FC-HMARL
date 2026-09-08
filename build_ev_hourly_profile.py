@@ -1,39 +1,6 @@
-# ============================================================
-# FC-HMARL
-# STEP 5A - BUILD HOURLY EV CHARGING PROFILE FROM ACN SESSIONS
-# ============================================================
-#
-# Input:
-#   data/processed/ev/ACN_EV_2018_2020_Clean.csv
-#
-# Output:
-#   data/processed/ev/ACN_EV_Hourly_Profile_2018_2020.csv
-#
-# Method:
-#   For each charging session:
-#
-#   1. Use actual connection time.
-#   2. Use doneChargingTime when it is valid.
-#   3. Otherwise use disconnectTime as fallback.
-#   4. Spread observed kWhDelivered uniformly over the
-#      selected charging interval.
-#   5. Allocate energy into overlapping hourly bins.
-#
-# IMPORTANT:
-#   - Total delivered energy is preserved.
-#   - No SOC is generated.
-#   - No battery capacity is generated.
-#   - No V2G discharge is generated.
-#   - No 96-point trajectory is generated.
-#   - No scaling to manuscript EV counts is performed here.
-#
-# ============================================================
-
-
 from pathlib import Path
 import pandas as pd
 import numpy as np
-
 
 # ============================================================
 # 1. PATHS
@@ -63,7 +30,6 @@ OUTPUT_FILE = (
     / "ACN_EV_Hourly_Profile_2018_2020.csv"
 )
 
-
 # ============================================================
 # 2. CONSTANTS
 # ============================================================
@@ -71,7 +37,6 @@ OUTPUT_FILE = (
 LOCAL_TIMEZONE = "America/Los_Angeles"
 
 EPSILON_HOURS = 1e-9
-
 
 # ============================================================
 # 3. HELPER FUNCTIONS
@@ -83,7 +48,6 @@ def section(title):
     print("=" * 80)
     print(title)
     print("=" * 80)
-
 
 def subsection(title):
 
@@ -702,15 +666,6 @@ hourly = complete.merge(
     how="left",
 )
 
-
-# ============================================================
-# 19. FILL HOURS WITH NO EV CHARGING
-# ============================================================
-#
-# Zero is physically meaningful here:
-# no charging energy was allocated to that hour.
-# ============================================================
-
 zero_fill_columns = [
 
     "ev_energy_kwh",
@@ -719,7 +674,6 @@ zero_fill_columns = [
     "unique_sessions",
 
 ]
-
 
 for column in zero_fill_columns:
 
