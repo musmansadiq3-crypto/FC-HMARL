@@ -1,21 +1,8 @@
-"""
-STEP 7R-Q1 — BUILD FINAL BENCHMARK + DIAGNOSTIC ABLATION PUBLICATION TABLES
-
-Reads ONLY already-generated FINAL V3 evaluation results.
-No controller evaluation, training, replay write, or checkpoint selection.
-
-Outputs:
-1) Table_Final_Benchmark_Comparison.csv/.md/.txt
-2) Table_Final_Diagnostic_Ablation.csv/.md/.txt
-"""
-
 from pathlib import Path
 import json
 import numpy as np
 import pandas as pd
-
 ROOT = Path(__file__).resolve().parent
-
 BENCH_DIR = ROOT / "outputs" / "results" / "real_fc_hmarl_final_v3_benchmark"
 ABL_DIR = ROOT / "outputs" / "results" / "real_fc_hmarl_final_v3_ablation"
 TEST_DIR = ROOT / "outputs" / "results" / "real_fc_hmarl_final_v3_test"
