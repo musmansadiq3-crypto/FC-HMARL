@@ -1,37 +1,7 @@
-# ============================================================
-# FC-HMARL
-# STEP 3B - CLEAN ACN-DATA EV SESSIONS
-# ============================================================
-#
-# Input:
-#   data/raw/ev/acndata_sessions.json
-#
-# Output:
-#   data/processed/ev/ACN_EV_2018_2020_Clean.csv
-#
-# Purpose:
-#   Clean the observed ACN charging-session data and derive
-#   transparent behavioural variables from observed timestamps.
-#
-# IMPORTANT:
-#   This script DOES NOT create:
-#       - battery capacity
-#       - arrival SOC
-#       - target SOC
-#       - synthetic driving distance
-#       - V2G trajectory
-#       - 24-point charging profile
-#       - 96-point charging profile
-#
-# ============================================================
-
-
 from pathlib import Path
 import json
 import numpy as np
 import pandas as pd
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
@@ -944,23 +914,6 @@ df["source_period"] = (
 df["source_api"] = (
     "ACN-Data REST API"
 )
-
-
-# ============================================================
-# 31. NORMALIZE SITE ID REPRESENTATION
-# ============================================================
-#
-# Raw data may contain:
-#
-#   "0002"
-#   "2"
-#
-# These refer to the same Caltech site representation
-# in this downloaded dataset.
-#
-# Preserve original site ID separately.
-# ============================================================
-
 df["site_id_raw"] = (
     df["siteID"]
     .astype(
