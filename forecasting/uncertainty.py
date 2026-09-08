@@ -10,7 +10,6 @@ class ForecastUncertaintyConfig:
     """
     Configuration for forecast uncertainty estimation.
     """
-
     confidence_level: float = 0.95
 
     minimum_residual_samples: int = 10
@@ -48,24 +47,14 @@ class ForecastUncertaintyConfig:
             raise ValueError(
                 "minimum_residual_samples must be positive."
             )
-
-
 # ============================================================
 # ARRAY VALIDATION
 # ============================================================
-
 def validate_forecast_arrays(
     actual,
     forecast,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Validate actual and forecast arrays.
-
-    Expected shape
-    --------------
-    (samples, forecast_horizon, targets)
-    """
-
+ 
     actual = np.asarray(
         actual,
         dtype=np.float64,
@@ -114,8 +103,6 @@ def validate_forecast_arrays(
         )
 
     return actual, forecast
-
-
 # ============================================================
 # RESIDUALS
 # ============================================================
@@ -138,8 +125,6 @@ def calculate_forecast_residuals(
     )
 
     return actual - forecast
-
-
 # ============================================================
 # ERROR STATISTICS
 # ============================================================
@@ -210,8 +195,6 @@ def calculate_residual_statistics(
                 )
             ),
     }
-
-
 # ============================================================
 # QUANTILE LEVELS
 # ============================================================
@@ -251,22 +234,16 @@ class ResidualQuantileModel:
     """
     Stores learned empirical residual quantiles.
     """
-
     lower_quantile: np.ndarray
     upper_quantile: np.ndarray
-
     residual_mean: np.ndarray
     residual_std: np.ndarray
-
     confidence_level: float
-
     forecast_horizon: int
     number_of_targets: int
-
     target_names: Optional[
         list[str]
     ] = None
-
     def validate(self) -> None:
         """Validate fitted uncertainty model."""
 
@@ -495,8 +472,6 @@ class ForecastUncertaintyResult:
             "target_names":
                 self.target_names,
         }
-
-
 # ============================================================
 # MAIN ESTIMATOR
 # ============================================================
@@ -1117,18 +1092,7 @@ def normalize_uncertainty(
     uncertainty,
     epsilon: float = 1e-12,
 ) -> np.ndarray:
-    """
-    Normalize uncertainty magnitudes into [0, 1].
-
-    This utility is provided for later confidence construction.
-
-    Reconstruction choice
-    ---------------------
-    Global min-max scaling is used here. The final mapping from
-    uncertainty to confidence is implemented separately in
-    confidence.py.
-    """
-
+  
     uncertainty = np.asarray(
         uncertainty,
         dtype=np.float64,
