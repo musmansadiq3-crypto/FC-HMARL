@@ -1,31 +1,18 @@
-"""
-STEP 7R-O3 — BUILD ECONOMIC AND OPERATIONAL PERFORMANCE TABLE
-
-Reads only the already locked FINAL TEST episode results.
-No model evaluation, training, checkpoint comparison, or re-selection occurs.
-"""
-
 from pathlib import Path
 import numpy as np
 import pandas as pd
-
 ROOT = Path(__file__).resolve().parent
 RESULT_DIR = ROOT / "outputs" / "results" / "real_fc_hmarl_final_v3_test"
 EPISODE_CSV = RESULT_DIR / "final_test_episode_results.csv"
 OUTPUT_DIR = RESULT_DIR / "publication_tables"
-
 CSV_OUT = OUTPUT_DIR / "Table_Economic_Operational_Performance.csv"
 MD_OUT = OUTPUT_DIR / "Table_Economic_Operational_Performance.md"
 TXT_OUT = OUTPUT_DIR / "Table_Economic_Operational_Performance.txt"
-
-
 def section(title):
     print()
     print("=" * 80)
     print(title)
     print("=" * 80)
-
-
 def stat_row(category, metric, column, unit, df):
     x = pd.to_numeric(df[column], errors="raise").to_numpy(dtype=float)
     return {
@@ -38,8 +25,6 @@ def stat_row(category, metric, column, unit, df):
         "Maximum": float(np.max(x)),
         "Unit": unit,
     }
-
-
 def main():
     section("STEP 7R-O3 — ECONOMIC AND OPERATIONAL PERFORMANCE")
 
