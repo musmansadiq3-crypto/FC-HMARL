@@ -267,24 +267,18 @@ def test_pcc_exchange():
     assert exchange == pytest.approx(
         600.0
     )
-
-
 def test_pcc_exchange_with_export():
 
     exchange = pcc_exchange_kw(
         grid_power_kw=-300.0,
         outgoing_sharing_kw=100.0,
     )
-
     assert exchange == pytest.approx(
         -200.0
     )
-
-
 # ============================================================
 # TRANSFORMER LIMIT
 # ============================================================
-
 def test_transformer_limit_satisfied():
 
     assert is_transformer_limit_satisfied(
@@ -292,8 +286,6 @@ def test_transformer_limit_satisfied():
         outgoing_sharing_kw=100.0,
         active_power_limit_kw=1000.0,
     )
-
-
 def test_transformer_limit_violated():
 
     assert not is_transformer_limit_satisfied(
@@ -301,8 +293,6 @@ def test_transformer_limit_violated():
         outgoing_sharing_kw=200.0,
         active_power_limit_kw=1000.0,
     )
-
-
 def test_negative_active_power_limit_rejected():
 
     with pytest.raises(ValueError):
@@ -312,8 +302,6 @@ def test_negative_active_power_limit_rejected():
             outgoing_sharing_kw=0.0,
             active_power_limit_kw=-1.0,
         )
-
-
 # ============================================================
 # TRANSFORMER VIOLATION
 # ============================================================
@@ -325,12 +313,9 @@ def test_no_transformer_violation():
         outgoing_sharing_kw=100.0,
         active_power_limit_kw=1000.0,
     )
-
     assert violation == pytest.approx(
         0.0
     )
-
-
 def test_transformer_violation_value():
 
     violation = transformer_violation_kw(
@@ -338,12 +323,9 @@ def test_transformer_violation_value():
         outgoing_sharing_kw=200.0,
         active_power_limit_kw=1000.0,
     )
-
     assert violation == pytest.approx(
         100.0
     )
-
-
 # ============================================================
 # PCC CLIPPING
 # ============================================================
@@ -380,8 +362,6 @@ def test_clip_pcc_exchange_upper_limit():
     assert grid_power == pytest.approx(
         800.0
     )
-
-
 def test_clip_pcc_exchange_lower_limit():
     """
     Constraint:
@@ -402,8 +382,6 @@ def test_clip_pcc_exchange_lower_limit():
     assert grid_power == pytest.approx(
         -1200.0
     )
-
-
 # ============================================================
 # FULL CONSTRAINT EVALUATION
 # ============================================================
@@ -443,8 +421,6 @@ def test_full_constraint_evaluation_feasible():
     ] == pytest.approx(
         0.0
     )
-
-
 def test_full_constraint_evaluation_infeasible_balance():
 
     parameters = ConstraintParameters(
