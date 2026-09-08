@@ -21,20 +21,13 @@ from marl.training_loop import (
     TrainingObservation,
     EnvironmentStepResult,
 )
-
-
 # ============================================================
 # EXOGENOUS VPP INPUT
 # ============================================================
 
 @dataclass
 class VPPExogenousInput:
-    """
-    Exogenous physical quantities for one hourly VPP interval.
-    """
-
     time: float
-
     loads_kw: Sequence[float]
 
     irradiances_w_m2: Sequence[float]
@@ -175,18 +168,11 @@ class VPPExogenousInput:
                 raise ValueError(
                     "market_price must be finite."
                 )
-
-
 # ============================================================
 # PHYSICAL ACTION COMMAND
 # ============================================================
-
 @dataclass
 class VPPPhysicalAction:
-    """
-    Physical action passed directly to VPPEnvironment.step().
-    """
-
     bess_actions_kw: Sequence[float]
 
     sharing_matrix_kw: np.ndarray
@@ -317,28 +303,6 @@ class VPPPhysicalAction:
 
 @dataclass
 class VPPTrainingBridgeConfig:
-    """
-    Configuration needed only for quantities not directly returned
-    by VPPEnvironment.
-
-    maximum_socs
-        Maximum SOC used by the local reward-violation calculation.
-
-    maximum_grid_exchanges_kw
-        Per-MG grid-exchange limits used by the reward calculation.
-
-    battery_degradation_cost_per_kwh
-        Reconstruction parameter converting BESS throughput to
-        degradation cost.
-
-    imbalance_penalty_per_kw
-        Reconstruction parameter converting physical power-balance
-        violation into coordinator imbalance cost.
-
-    timestep_hours
-        Physical simulation interval. Manuscript operation is hourly.
-    """
-
     maximum_socs: Sequence[float]
 
     maximum_grid_exchanges_kw: Sequence[float]
@@ -440,8 +404,6 @@ class VPPTrainingBridgeConfig:
             raise ValueError(
                 "timestep_hours must be positive."
             )
-
-
 # ============================================================
 # CALLBACK TYPES
 # ============================================================
@@ -689,15 +651,6 @@ class FCHMARLVPPTrainingBridge:
         self,
         episode: int,
     ) -> TrainingObservation:
-        """
-        Training-loop reset callback.
-
-        The physical VPP is reset first.
-
-        Since no sharing has yet occurred at t=0, the initial
-        coordinator sharing state is represented by a zero matrix.
-        """
-
         self.current_episode = int(
             episode
         )
@@ -746,7 +699,6 @@ class FCHMARLVPPTrainingBridge:
         return self._training_observation(
             state_result
         )
-
     # ========================================================
     # REWARD CONSTRUCTION
     # ========================================================
