@@ -1,74 +1,26 @@
-"""
-Training utilities for the FC-HMARL forecasting module.
-
-This module trains the reconstructed multi-horizon forecasting model.
-
-Important manuscript / reconstruction distinction
---------------------------------------------------
-The manuscript defines:
-
-    historical input window = 168 h
-    forecast horizon        = 24 h
-
-and describes uncertainty-aware multi-horizon forecasting.
-
-However, it does not separately report the complete neural-network
-training procedure for the forecasting model.
-
-Therefore the following are explicit reconstruction choices:
-
-    optimizer
-    forecasting batch size
-    number of epochs
-    early stopping
-    gradient clipping
-    learning-rate scheduling
-    checkpointing strategy
-
-These choices are implemented transparently and remain configurable.
-"""
-
 from __future__ import annotations
-
 import json
 import random
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-
 import numpy as np
 import torch
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class ForecastTrainerConfig:
-    """
-    Configuration for forecasting-model training.
-
-    Unless otherwise documented, these parameters are
-    reconstruction choices rather than recovered original-code
-    hyperparameters.
-    """
-
     optimizer: str = "adam"
-
     learning_rate: float = 1e-4
     weight_decay: float = 1e-5
-
     batch_size: int = 64
     maximum_epochs: int = 100
-
     early_stopping_patience: int = 15
     minimum_improvement: float = 1e-6
-
     gradient_clip_norm: Optional[float] = 1.0
-
     scheduler: str = "reduce_on_plateau"
     scheduler_factor: float = 0.5
     scheduler_patience: int = 5
