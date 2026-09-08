@@ -1,48 +1,13 @@
-# ============================================================
-# FC-HMARL
-# STEP 4B - CLEAN PJM DAY-AHEAD PJM-RTO PRICE DATA
-# ============================================================
-#
-# Input:
-#   data/raw/price/price_pjm.zip
-#
-# Source inside ZIP:
-#   price_pjm/zone/2019_da_hrl_lmps.csv
-#
-# Selected market series:
-#   pnode_id   = 1
-#   pnode_name = PJM-RTO
-#   type       = ZONE
-#   price      = total_lmp_da
-#
-# Output:
-#   data/processed/price/PJM_DA_RTO_2019_Clean.csv
-#
-# IMPORTANT:
-#   This script DOES NOT:
-#       - relabel 2019 data as 2022
-#       - synthesize prices
-#       - remove legitimate negative prices
-#       - normalize prices
-#       - interpolate before checking missing hours
-#
-# ============================================================
-
-
 from pathlib import Path
 import zipfile
 import pandas as pd
 import numpy as np
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
-
 RAW_PRICE_ZIP = (
     PROJECT_ROOT
     / "data"
@@ -62,8 +27,6 @@ OUTPUT_FILE = (
     OUTPUT_DIR
     / "PJM_DA_RTO_2019_Clean.csv"
 )
-
-
 # ============================================================
 # 2. SOURCE FILE INSIDE ZIP
 # ============================================================
@@ -411,13 +374,11 @@ print(
     .to_string()
 )
 
-
 print()
 
 print(
     "row_is_current counts:"
 )
-
 
 print(
 
@@ -432,7 +393,6 @@ print(
     .to_string()
 )
 
-
 # ============================================================
 # 15. CHECK DUPLICATE TIMESTAMPS BEFORE VERSION FILTERING
 # ============================================================
@@ -440,7 +400,6 @@ print(
 subsection(
     "DUPLICATE TIMESTAMP CHECK BEFORE VERSION SELECTION"
 )
-
 
 duplicate_time_rows = int(
 
@@ -454,27 +413,10 @@ duplicate_time_rows = int(
 
     .sum()
 )
-
-
 print(
     f"Rows participating in duplicate UTC timestamps: "
     f"{duplicate_time_rows:,}"
 )
-
-
-# ============================================================
-# 16. SELECT FINAL/CURRENT VERSION
-# ============================================================
-#
-# Selection strategy:
-#
-#   1. Prefer row_is_current == True
-#   2. If multiple records remain for the same timestamp,
-#      retain the highest version_nbr
-#
-# This avoids silently choosing an obsolete PJM version.
-# ============================================================
-
 current_rows = pjm[
 
     pjm[
