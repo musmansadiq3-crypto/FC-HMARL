@@ -1,25 +1,3 @@
-"""
-Unit tests for the FC-HMARL photovoltaic model.
-
-These tests validate the piecewise PV generation model used in the
-manuscript.
-
-Important:
-The manuscript provides the PV equation and the PV rated capacities,
-but it does not provide numerical values for PV efficiency, critical
-irradiance, or STC irradiance in the recovered configuration tables.
-
-Therefore, the values used below for:
-    efficiency = 1.0
-    critical irradiance = 200 W/m^2
-    STC irradiance = 1000 W/m^2
-
-are TEST PARAMETERS only.
-
-They are selected to make the manuscript equations easy to verify
-analytically.
-"""
-
 import numpy as np
 import pytest
 
@@ -27,12 +5,9 @@ from environment.pv import (
     PVParameters,
     PhotovoltaicSystem,
 )
-
-
 # ============================================================
 # FIXTURE
 # ============================================================
-
 @pytest.fixture
 def pv():
     """
@@ -53,58 +28,21 @@ def pv():
         critical_irradiance_w_m2=200.0,
         stc_irradiance_w_m2=1000.0,
     )
-
     return PhotovoltaicSystem(
         parameters=parameters,
         name="MG1_PV",
     )
-
-
 # ============================================================
 # BASIC PV OUTPUT TESTS
 # ============================================================
-
 def test_zero_irradiance_produces_zero_power(pv):
-    """
-    If solar irradiance is zero, PV output must be zero.
-    """
-
     power = pv.power_from_irradiance(0.0)
-
     assert power == pytest.approx(0.0)
-
-
 def test_low_irradiance_ratio(pv):
-    """
-    Manuscript low-irradiance equation:
-
-        r = I^2 / (I_c * I_STC)
-
-    For:
-        I = 100 W/m^2
-        I_c = 200 W/m^2
-        I_STC = 1000 W/m^2
-
-    Therefore:
-
-        r = 100^2 / (200 * 1000)
-          = 10000 / 200000
-          = 0.05
-    """
-
     ratio = pv.irradiance_ratio(100.0)
-
     assert ratio == pytest.approx(0.05)
-
-
 def test_low_irradiance_power(pv):
-    """
-    With efficiency = 1.0:
-
-        P_PV = eta * r * P_rated
-             = 1.0 * 0.05 * 500
-             = 25 kW
-    """
+   
 
     power = pv.power_from_irradiance(100.0)
 
@@ -208,8 +146,6 @@ def test_power_does_not_exceed_rated_capacity(pv):
     power = pv.power_from_irradiance(1500.0)
 
     assert power <= 500.0
-
-
 # ============================================================
 # PV EFFICIENCY TEST
 # ============================================================
@@ -246,53 +182,20 @@ def test_efficiency_affects_power():
     assert power == pytest.approx(
         expected_power
     )
-
-
 # ============================================================
 # INVALID INPUT TESTS
 # ============================================================
-
 def test_negative_irradiance_is_rejected(pv):
-    """
-    Negative irradiance is physically invalid.
-    """
-
     with pytest.raises(ValueError):
         pv.power_from_irradiance(-1.0)
-
-
 def test_negative_irradiance_ratio_is_rejected(pv):
-    """
-    irradiance_ratio() itself must reject negative irradiance.
-    """
-
     with pytest.raises(ValueError):
         pv.irradiance_ratio(-10.0)
-
-
 # ============================================================
 # PV PROFILE TEST
 # ============================================================
 
 def test_power_profile(pv):
-    """
-    Check a full irradiance profile.
-
-    Irradiance:
-        0
-        100
-        200
-        500
-        1000
-
-    Expected powers:
-        0
-        25
-        100
-        250
-        500
-    """
-
     irradiance = np.array(
         [
             0.0,
@@ -342,8 +245,6 @@ def test_negative_value_in_profile_is_rejected(pv):
         pv.power_profile(
             irradiance
         )
-
-
 # ============================================================
 # HISTORICAL PV DATA VALIDATION
 # ============================================================
@@ -375,41 +276,25 @@ def test_historical_power_above_capacity_is_clipped(pv):
     assert power == pytest.approx(
         500.0
     )
-
-
 def test_historical_power_inside_range_is_unchanged(pv):
-    """
-    Valid historical PV power should remain unchanged.
-    """
-
     power = pv.validate_historical_power(
         300.0
     )
-
     assert power == pytest.approx(
         300.0
     )
-
-
 # ============================================================
 # STEP FUNCTION TEST
 # ============================================================
-
 def test_step_returns_correct_information(pv):
-    """
-    Check that step() returns the complete PV state.
-    """
-
     result = pv.step(
         500.0
     )
-
     assert result[
         "irradiance_w_m2"
     ] == pytest.approx(
         500.0
     )
-
     assert result[
         "irradiance_ratio"
     ] == pytest.approx(
@@ -427,16 +312,11 @@ def test_step_returns_correct_information(pv):
     ] == pytest.approx(
         500.0
     )
-
-
 # ============================================================
 # STATE TEST
 # ============================================================
 
 def test_get_state_after_step(pv):
-    """
-    get_state() should return the most recent values.
-    """
 
     pv.step(
         500.0
@@ -467,8 +347,6 @@ def test_get_state_after_step(pv):
     ] == pytest.approx(
         500.0
     )
-
-
 # ============================================================
 # RESET TEST
 # ============================================================
@@ -503,8 +381,6 @@ def test_reset(pv):
     ] == pytest.approx(
         0.0
     )
-
-
 # ============================================================
 # PARAMETER VALIDATION TESTS
 # ============================================================
