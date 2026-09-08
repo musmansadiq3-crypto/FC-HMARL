@@ -1,28 +1,4 @@
-"""
-Local microgrid agent for the FC-HMARL framework.
-
-Each local microgrid agent uses the generic SACAgent learning
-engine but adds microgrid-specific identity, state/action
-validation, transition storage, and training interfaces.
-
-Manuscript-supported role
--------------------------
-The proposed FC-HMARL architecture contains five local
-microgrid agents.
-
-Each local agent receives its local operating state together
-with the confidence-aware predictive state and determines
-local battery/energy-sharing decisions.
-
-Reconstruction choice
----------------------
-The manuscript does not specify the exact Python wrapper
-architecture. This class therefore provides a clean software
-interface around SACAgent.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional, Sequence, Tuple
@@ -34,12 +10,9 @@ from agents.sac_agent import (
     SACAgentConfig,
     SACUpdateResult,
 )
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class LocalAgentConfig:
     """
