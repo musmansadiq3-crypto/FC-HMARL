@@ -1,45 +1,16 @@
-"""
-Real integration tests for the FC-HMARL VPP training bridge.
-
-This test connects:
-
-    HierarchicalActionBundle
-        ->
-    FCHMARLActionMapper
-        ->
-    VPPEnvironment
-        ->
-    HierarchicalStateBuilder
-        ->
-    HierarchicalRewardBuilder
-        ->
-    EnvironmentStepResult
-
-The five-microgrid capacities follow the same physical fixture already
-validated in tests/test_vpp_env.py.
-
-The small EV fleet, pairwise sharing capacities, predictive-state data,
-and test actions are integration-test/reconstruction values.
-"""
-
 import numpy as np
 import pytest
-
-
 # ============================================================
 # PHYSICAL ENVIRONMENT
 # ============================================================
-
 from environment.bess import (
     BESSParameters,
     BatteryEnergyStorageSystem,
 )
-
 from environment.pv import (
     PVParameters,
     PhotovoltaicSystem,
 )
-
 from environment.ev_fleet import (
     EVFleet,
     EVFleetParameters,
