@@ -1,60 +1,17 @@
-"""
-Data preprocessing utilities for the FC-HMARL forecasting pipeline.
-
-Manuscript-supported preprocessing
-----------------------------------
-The manuscript specifies:
-
-1. Conversion of all datasets to hourly resolution.
-2. Missing-data reconstruction using linear interpolation.
-3. Abnormal-sample filtering using a three-sigma rule.
-4. Min-max normalization.
-5. Chronological dataset split:
-       training   = 70%
-       validation = 15%
-       testing    = 15%
-
-Important reconstruction choices
---------------------------------
-A. The manuscript states that abnormal samples are removed, but does
-   not state whether timestamps are physically deleted or whether the
-   abnormal value is replaced before interpolation.
-
-   Since forecasting requires a continuous hourly time series, this
-   reconstruction converts detected outliers to NaN and subsequently
-   fills them using the manuscript-specified linear interpolation.
-
-B. The manuscript states that all data are converted to hourly
-   resolution, but does not specify the aggregation operator used when
-   multiple measurements fall inside one hour.
-
-   Therefore hourly aggregation is configurable. The default is "mean".
-
-C. To prevent information leakage, the min-max scaler should normally
-   be fitted on the training subset only and then applied unchanged to
-   validation and testing data. This is a reconstruction best-practice
-   choice; it is not explicitly stated in the manuscript.
-"""
 
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Dict, Iterable, Optional, Sequence, Tuple
-
 import numpy as np
 import pandas as pd
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class PreprocessingConfig:
     """
     Configuration for the forecasting preprocessing pipeline.
     """
-
     timestamp_column: str = "timestamp"
 
     hourly_frequency: str = "h"
