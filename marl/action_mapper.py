@@ -185,32 +185,6 @@ def build_local_sharing_matrix(
     environment: VPPEnvironment,
     tolerance: float = 1e-8,
 ) -> np.ndarray:
-    """
-    Decode sharing commands from every local agent.
-
-    Reconstruction encoding:
-        local_action[0]
-            BESS command
-
-        local_action[1:]
-            directional sharing requests from MG i to all other MGs
-            in ascending destination-index order.
-
-    For N microgrids, each complete local action therefore has:
-
-        1 + (N - 1) = N
-
-    action values.
-
-    Example for N=5:
-
-        MG0 action:
-            [BESS, 0->1, 0->2, 0->3, 0->4]
-
-        MG2 action:
-            [BESS, 2->0, 2->1, 2->3, 2->4]
-    """
-
     n = int(
         environment.num_microgrids
     )
@@ -388,27 +362,6 @@ def map_reserve_actions(
     reserve_duration_hours: float = 1.0,
     tolerance: float = 1e-8,
 ) -> np.ndarray:
-    """
-    Convert the coordinator reserve command into feasible per-MG reserve.
-
-    Coordinator action[1] is transformed from [-1, 1] to [0, 1].
-
-    The raw reserve request for MG i is:
-
-        participation
-        * reserve_fraction_of_bess_rating
-        * P_i_rated
-
-    The raw request is then clipped by the BESS physical capability:
-
-        P_res <= P_rated - max(P_BESS, 0)
-
-    and by energy available above SOC_min for reserve_duration_hours.
-
-    This coupling prevents simultaneous BESS discharge and reserve
-    commitments from double-counting the same converter/energy capacity.
-    """
-
     action = _to_action_vector(
         coordinator_action,
         "coordinator_action",
@@ -571,10 +524,6 @@ def map_grid_actions(
 # ============================================================
 
 class FCHMARLActionMapper:
-    """
-    Production action mapper for the real VPP environment.
-    """
-
     def __init__(
         self,
         config: Optional[
@@ -607,7 +556,6 @@ class FCHMARLActionMapper:
                 "actions must be a "
                 "HierarchicalActionBundle."
             )
-
         if not isinstance(
             environment,
             VPPEnvironment,
@@ -616,7 +564,6 @@ class FCHMARLActionMapper:
                 "environment must be a "
                 "VPPEnvironment."
             )
-
         if len(
             actions.local_actions
         ) != environment.num_microgrids:
@@ -624,7 +571,6 @@ class FCHMARLActionMapper:
                 "Local action count does not match "
                 "number of microgrids."
             )
-
         # ----------------------------------------------------
         # LOCAL BESS ACTIONS
         # ----------------------------------------------------
