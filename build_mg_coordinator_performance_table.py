@@ -1,14 +1,6 @@
-"""
-STEP 7R-O2 — BUILD MG1–MG5 AND COORDINATOR PERFORMANCE TABLE
-
-Reads only the already locked FINAL TEST episode results.
-No model evaluation, training, checkpoint comparison, or re-selection occurs.
-"""
-
 from pathlib import Path
 import pandas as pd
 import numpy as np
-
 ROOT = Path(__file__).resolve().parent
 RESULT_DIR = ROOT / "outputs" / "results" / "real_fc_hmarl_final_v3_test"
 EPISODE_CSV = RESULT_DIR / "final_test_episode_results.csv"
