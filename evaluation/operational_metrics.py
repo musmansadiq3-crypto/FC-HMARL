@@ -1,27 +1,8 @@
-"""
-Operational metrics for FC-HMARL evaluation.
-
-This module contains generic, reproducible post-processing metrics for
-24-hour VPP evaluation. It does not change the trained policy or the
-environment. The metrics are computed only from recorded trajectories.
-
-Reconstructed implementation note:
-The manuscript does not uniquely specify software-level metric APIs.
-These functions provide transparent evaluation utilities consistent
-with the physical quantities already used in the FC-HMARL project.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass, asdict
 from typing import Any, Dict, Iterable, Mapping, Optional, Sequence
-
 import numpy as np
-
-
 _EPS = 1e-12
-
-
 def _as_1d(values: Iterable[float], name: str) -> np.ndarray:
     arr = np.asarray(values, dtype=float).reshape(-1)
     if arr.size == 0:
@@ -29,42 +10,27 @@ def _as_1d(values: Iterable[float], name: str) -> np.ndarray:
     if not np.all(np.isfinite(arr)):
         raise ValueError(f"{name} contains NaN or infinite values.")
     return arr
-
-
 def _nonnegative(arr: np.ndarray) -> np.ndarray:
     return np.maximum(arr, 0.0)
-
-
 def peak_value(values: Iterable[float]) -> float:
     """Maximum value in a trajectory."""
     return float(np.max(_as_1d(values, "values")))
-
-
 def minimum_value(values: Iterable[float]) -> float:
     """Minimum value in a trajectory."""
     return float(np.min(_as_1d(values, "values")))
-
-
 def mean_value(values: Iterable[float]) -> float:
     """Arithmetic mean."""
     return float(np.mean(_as_1d(values, "values")))
-
-
 def rms_value(values: Iterable[float]) -> float:
     """Root-mean-square value."""
     arr = _as_1d(values, "values")
     return float(np.sqrt(np.mean(arr ** 2)))
-
-
 def standard_deviation(values: Iterable[float]) -> float:
     """Population standard deviation."""
     return float(np.std(_as_1d(values, "values"), ddof=0))
-
-
 def peak_to_average_ratio(values: Iterable[float]) -> float:
     """
     Peak-to-average ratio using absolute magnitudes.
-
     Returns 0 when the mean absolute magnitude is numerically zero.
     """
     arr = np.abs(_as_1d(values, "values"))
@@ -118,8 +84,6 @@ def net_grid_energy_kwh(
     Positive = net import, negative = net export.
     """
     return energy_from_power(grid_power_kw, timestep_hours)
-
-
 def renewable_energy_kwh(
     pv_power_kw: Iterable[float],
     timestep_hours: float = 1.0,
@@ -127,8 +91,6 @@ def renewable_energy_kwh(
     """PV energy [kWh]."""
     return energy_from_power(_nonnegative(_as_1d(pv_power_kw, "pv_power_kw")),
                              timestep_hours)
-
-
 def load_energy_kwh(
     load_power_kw: Iterable[float],
     timestep_hours: float = 1.0,
@@ -136,8 +98,6 @@ def load_energy_kwh(
     """Load energy [kWh]."""
     return energy_from_power(_nonnegative(_as_1d(load_power_kw, "load_power_kw")),
                              timestep_hours)
-
-
 def ev_energy_kwh(
     ev_power_kw: Iterable[float],
     timestep_hours: float = 1.0,
@@ -178,7 +138,6 @@ def sharing_energy_kwh(
     """
     arr = _nonnegative(_as_1d(sharing_power_kw, "sharing_power_kw"))
     return energy_from_power(arr, timestep_hours)
-
 
 def renewable_fraction_of_demand(
     pv_power_kw: Iterable[float],
