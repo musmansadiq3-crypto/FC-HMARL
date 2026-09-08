@@ -1,45 +1,28 @@
-"""
-Integration tests for the FC-HMARL local Microgrid model.
-
-This file verifies that the separately tested physical modules can
-operate together inside one microgrid.
-
-Test parameters are selected for transparent analytical checking.
-"""
-
 import pytest
-
 from environment.bess import (
     BESSParameters,
     BatteryEnergyStorageSystem,
 )
-
 from environment.pv import (
     PVParameters,
     PhotovoltaicSystem,
 )
-
 from environment.ev_fleet import (
     EVFleet,
     EVFleetParameters,
     EVRecord,
 )
-
 from environment.market import (
     ElectricityMarket,
     MarketParameters,
 )
-
 from environment.microgrid import (
     Microgrid,
     MicrogridParameters,
 )
-
-
 # ============================================================
 # FIXTURE
 # ============================================================
-
 @pytest.fixture
 def microgrid():
 
@@ -122,8 +105,6 @@ def microgrid():
         ev_fleet=ev_fleet,
         market=market,
     )
-
-
 # ============================================================
 # BASIC CONFIGURATION
 # ============================================================
@@ -131,22 +112,17 @@ def microgrid():
 def test_microgrid_name(microgrid):
 
     assert microgrid.name == "MG1"
-
-
 def test_peak_load(microgrid):
 
     assert microgrid.peak_load_kw == pytest.approx(
         750.0
     )
-
-
 def test_transformer_rating(microgrid):
 
     assert (
         microgrid.transformer_rating_kva
         == pytest.approx(1000.0)
     )
-
 
 # ============================================================
 # LOCAL NET POWER EQUATION
