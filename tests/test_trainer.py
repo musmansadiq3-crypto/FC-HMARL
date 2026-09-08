@@ -1,18 +1,9 @@
-"""
-Tests for forecasting/trainer.py.
-
-The tests intentionally use a small neural network and small
-synthetic datasets so that the trainer can be verified quickly
-without running the full reconstructed transformer.
-"""
 
 import json
-
 import numpy as np
 import pytest
 import torch
 from torch import nn
-
 from forecasting.trainer import (
     ForecastTrainer,
     ForecastTrainerConfig,
@@ -26,8 +17,6 @@ from forecasting.trainer import (
     set_random_seed,
     train_forecasting_model,
 )
-
-
 # ============================================================
 # SMALL SYNTHETIC DATASET
 # ============================================================
@@ -36,7 +25,6 @@ class SmallForecastDataset:
     """
     Synthetic test-only forecasting dataset.
     """
-
     def __init__(
         self,
         number_of_samples=20,
@@ -87,8 +75,6 @@ class SmallForecastDataset:
             self.X[index],
             self.y[index],
         )
-
-
 # ============================================================
 # SMALL MODEL
 # ============================================================
