@@ -1,47 +1,6 @@
-# ============================================================
-# FC-HMARL
-# STEP 6A - BUILD UNIFIED 8760-HOUR FORECASTING DATASET
-# ============================================================
-#
-# Inputs:
-#   data/processed/pv/NSRDB_PV_2022_Clean.csv
-#   data/processed/load/PecanStreet_Load_2022_Clean.csv
-#   data/processed/ev/ACN_EV_Representative_Annual_8760.csv
-#   data/processed/price/PJM_DA_RTO_2019_Clean.csv
-#
-# Output:
-#   data/processed/FC_HMARL_Unified_Forecasting_8760.csv
-#
-# Purpose:
-#   Align four forecasting targets:
-#
-#       PV
-#       Load
-#       EV
-#       Price
-#
-#   into one common 8760-hour dataset.
-#
-# IMPORTANT:
-#   - This alignment does NOT claim that all four observations
-#     were measured in the same physical location or year.
-#   - Source provenance is preserved explicitly.
-#   - No normalization is performed here.
-#   - No three-sigma replacement is performed here.
-#   - No 70/15/15 split is performed here.
-#
-# ============================================================
-
-
 from pathlib import Path
 import pandas as pd
 import numpy as np
-
-
-# ============================================================
-# 1. PATHS
-# ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
@@ -84,25 +43,7 @@ OUTPUT_FILE = (
     / "processed"
     / "FC_HMARL_Unified_Forecasting_8760.csv"
 )
-
-
-# ============================================================
-# 2. COMMON CALENDAR
-# ============================================================
-#
-# We use 2022 only as the common simulation/index calendar
-# because the PV file is already a complete 2022 hourly series.
-#
-# This does NOT mean:
-#   - ACN EV observations were measured in 2022
-#   - PJM price observations were measured in 2022
-#   - Pecan Street source observations were measured in 2022
-#
-# ============================================================
-
 COMMON_YEAR = 2022
-
-
 # ============================================================
 # 3. HELPER FUNCTIONS
 # ============================================================
@@ -289,20 +230,6 @@ check_8760(
     price,
     "Price dataset",
 )
-
-
-# ============================================================
-# 8. IDENTIFY PV COLUMN
-# ============================================================
-#
-# At this stage the NSRDB file contains irradiance/weather.
-# If no explicit PV-power column exists, use GHI as the
-# forecasting PV-related target for now.
-#
-# Actual microgrid PV power scaling is done later using
-# installed capacities and the PV physical model.
-# ============================================================
-
 subsection(
     "IDENTIFYING TARGET COLUMNS"
 )
@@ -504,15 +431,6 @@ print(
     f"{len(calendar):,}"
 )
 
-
-# ============================================================
-# 13. PREPARE PV SERIES
-# ============================================================
-#
-# PV is already a complete 2022 hourly series.
-# Preserve its native chronological order.
-# ============================================================
-
 subsection(
     "PREPARING PV SERIES"
 )
@@ -532,21 +450,9 @@ print(
     f"PV missing values: "
     f"{pv_values.isna().sum():,}"
 )
-
-
-# ============================================================
-# 14. PREPARE LOAD SERIES
-# ============================================================
-#
-# The cleaned load file is already a representative 8760-hour
-# profile mapped to the 2022 simulation calendar.
-# ============================================================
-
 subsection(
     "PREPARING LOAD SERIES"
 )
-
-
 load_values = pd.to_numeric(
 
     load[
@@ -561,18 +467,6 @@ print(
     f"Load missing values: "
     f"{load_values.isna().sum():,}"
 )
-
-
-# ============================================================
-# 15. PREPARE EV SERIES
-# ============================================================
-#
-# EV profile has exactly 8760 month-day-hour representative
-# values derived from ACN 2018-2020.
-#
-# Align positionally to the common non-leap annual calendar.
-# ============================================================
-
 subsection(
     "PREPARING EV SERIES"
 )
@@ -593,16 +487,6 @@ print(
     f"{ev_values.isna().sum():,}"
 )
 
-
-# ============================================================
-# 16. PREPARE PRICE SERIES
-# ============================================================
-#
-# Price source is PJM-RTO Day-Ahead 2019.
-# Preserve the annual chronological price profile and align
-# positionally to the common 8760-hour simulation calendar.
-# ============================================================
-
 subsection(
     "PREPARING PRICE SERIES"
 )
@@ -622,17 +506,9 @@ print(
     f"Price missing values: "
     f"{price_values.isna().sum():,}"
 )
-
-
-# ============================================================
-# 17. BUILD UNIFIED DATASET
-# ============================================================
-
 subsection(
     "BUILDING FOUR-TARGET FORECASTING TABLE"
 )
-
-
 unified = calendar.copy()
 
 
@@ -666,16 +542,6 @@ unified[
     price_values
     .to_numpy()
 )
-
-
-# ============================================================
-# 18. ADD EXPLICIT UNITS
-# ============================================================
-#
-# PV target may currently be GHI rather than PV power.
-# Preserve that distinction explicitly.
-# ============================================================
-
 if pv_target_column.lower() in [
     "ghi_w_m2",
     "ghi",
@@ -988,22 +854,6 @@ for column in target_columns:
         f"upper={upper:.6f} | "
         f"flagged={unified[flag_column].sum():,}"
     )
-
-
-# ============================================================
-# 26. NO NORMALIZATION HERE
-# ============================================================
-#
-# Normalization must be fitted using the training portion only
-# to avoid leakage.
-#
-# Therefore it is intentionally deferred.
-# ============================================================
-
-
-# ============================================================
-# 27. OUTPUT COLUMN ORDER
-# ============================================================
 
 output_columns = [
 
