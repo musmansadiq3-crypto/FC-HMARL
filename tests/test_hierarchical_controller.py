@@ -1,10 +1,5 @@
-"""
-Tests for marl/hierarchical_controller.py.
-"""
-
 import numpy as np
 import pytest
-
 from marl.hierarchical_controller import (
     HierarchicalActionResult,
     HierarchicalController,
@@ -16,8 +11,6 @@ from marl.hierarchical_controller import (
     validate_agent_interface,
     validate_state_vector,
 )
-
-
 # ============================================================
 # TEST AGENTS
 # ============================================================
@@ -198,8 +191,6 @@ def coordinator_state():
         ],
         dtype=np.float32,
     )
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
@@ -724,8 +715,6 @@ def test_explicit_deterministic_override(
     )
 
     assert result is True
-
-
 # ============================================================
 # LOCAL ACTION SELECTION
 # ============================================================
@@ -794,8 +783,6 @@ def test_local_agents_receive_states(
             1
         ],
     )
-
-
 # ============================================================
 # COORDINATOR ACTION
 # ============================================================
@@ -830,8 +817,6 @@ def test_select_coordinator_action(
             0.9,
         ],
     )
-
-
 # ============================================================
 # COMPLETE ACTION SELECTION
 # ============================================================
