@@ -1,45 +1,7 @@
-"""
-Offline FC-HMARL training loop.
-
-This module implements the training sequence described in
-Algorithm 1 of the manuscript.
-
-Manuscript-supported procedure
-------------------------------
-1. Initialize local and coordinator networks.
-2. Initialize replay memory and target networks.
-3. Generate forecasts.
-4. Calculate forecasting confidence.
-5. Construct confidence-aware predictive states.
-6. Observe local and coordinator states.
-7. Execute local actions.
-8. Execute coordinator actions.
-9. Operate the VPP.
-10. Calculate rewards.
-11. Store transitions.
-12. Sample mini-batches.
-13. Update local SAC agents.
-14. Update coordinator SAC agent.
-15. Soft-update target networks.
-16. Repeat until convergence.
-
-Important implementation note
------------------------------
-The manuscript specifies the training workflow but does not
-specify the exact software API between the environment,
-forecasting module, state builder, and agents.
-
-This implementation therefore uses reset_function and
-step_function callbacks. These callbacks will later be connected
-to the concrete VPPEnvironment in train.py.
-"""
-
 from __future__ import annotations
-
 import random
 import numpy as np
 import torch
-
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
@@ -68,20 +30,6 @@ from agents.coordinator_agent import (
 
 @dataclass
 class TrainingLoopConfig:
-    """
-    FC-HMARL offline training configuration.
-
-    Manuscript-supported defaults
-    -----------------------------
-    maximum_episodes = 5000
-    steps_per_episode = 24
-
-    The manuscript describes a 24-hour operating episode and
-    maximum training of 5000 episodes.
-
-    Other software-specific options are reconstruction choices.
-    """
-
     maximum_episodes: int = 5000
 
     steps_per_episode: int = 24
