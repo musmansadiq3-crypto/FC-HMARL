@@ -1,38 +1,3 @@
-"""
-Inter-microgrid energy-sharing model for the FC-HMARL framework.
-
-Manuscript basis
-----------------
-The manuscript introduces directional sharing power P_ij^sh(t)
-between connected microgrids.
-
-The reconstructed physical constraints include:
-
-    0 <= P_ij^sh(t) <= a_ij * P_ij^sh,max
-
-where:
-
-    a_ij = 1  -> MG i and MG j are connected
-    a_ij = 0  -> transfer is disabled
-
-The manuscript also imposes conservation of scheduled exchanged power.
-
-Operational parameters further specify an energy-sharing efficiency
-of 0.98. Therefore this implementation distinguishes between:
-
-    scheduled transfer power
-and
-    power actually received after transfer efficiency.
-
-Important reconstruction note
------------------------------
-The manuscript does not provide a complete numerical MG-to-MG
-connectivity matrix or pairwise sharing capacities in the recovered
-configuration tables.
-
-Therefore topology and capacities are explicit inputs to this module.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
