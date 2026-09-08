@@ -1,23 +1,15 @@
 import numpy as np
 import pytest
-
 from train_real_fc_hmarl_reserve_corrected_v2 import build_real_microgrid, EV_COUNTS
-
-
 def make_mg():
     # Zero-based index 2 = manuscript MG3:
     # peak load 700 kW, transformer 1000 kVA, BESS 250 kW / 900 kWh.
     return build_real_microgrid(2)
-
-
 def zero_ev_requests_for_mg3():
     # Isolate PCC/transformer behavior by explicitly requesting zero EV charging.
     return np.zeros(int(EV_COUNTS[2]), dtype=float)
-
-
 def test_auto_grid_import_is_projected_to_combined_pcc_limit():
     mg = make_mg()
-
     r = mg.step(
         time=0.0,
         load_kw=700.0,
