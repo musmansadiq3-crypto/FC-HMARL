@@ -3,38 +3,10 @@ import os
 import time
 from pathlib import Path
 from urllib.parse import urljoin
-
 import requests
-
-
-# ============================================================
-# FC-HMARL - ACN-DATA DOWNLOADER
-# ============================================================
-# Purpose:
-# Download all Caltech EV charging sessions from the official
-# ACN-Data REST API using pagination and save them as one valid
-# JSON file for the FC-HMARL research pipeline.
-#
-# IMPORTANT:
-# Do NOT hardcode your private API token in this file.
-# Store it in the PowerShell environment variable:
-#
-# $env:ACN_API_TOKEN="YOUR_TOKEN"
-#
-# ============================================================
-
-
-# ============================================================
-# 1. CONFIGURATION
-# ============================================================
-
 SITE_ID = "caltech"
-
 BASE_API = "https://ev.caltech.edu/api/v1/"
-
 START_URL = f"{BASE_API}sessions/{SITE_ID}"
-
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
@@ -110,14 +82,6 @@ http.headers.update(
 # ============================================================
 
 def request_page(url, max_attempts=30):
-    """
-    Request one ACN-Data API page with robust retry handling.
-
-    - 401 / 403: stop immediately because authentication/access is wrong.
-    - 429: wait according to Retry-After when available.
-    - 500 / 502 / 503 / 504: retry with exponential backoff.
-    - Network timeout/connection errors: retry.
-    """
 
     retry_delays = [
         2, 4, 8, 16, 32,
