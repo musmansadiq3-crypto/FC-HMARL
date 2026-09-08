@@ -1,10 +1,5 @@
-"""
-Tests for agents/local_agent.py.
-"""
-
 import numpy as np
 import pytest
-
 from agents.local_agent import (
     LocalActionResult,
     LocalAgent,
@@ -17,8 +12,6 @@ from agents.sac_agent import (
     SACAgentConfig,
     SACUpdateResult,
 )
-
-
 # ============================================================
 # FIXTURES
 # ============================================================
