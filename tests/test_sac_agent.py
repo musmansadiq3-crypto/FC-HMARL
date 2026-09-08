@@ -1,12 +1,7 @@
-"""
-Tests for agents/sac_agent.py.
-"""
-
 import numpy as np
 import pytest
 import torch
 from torch import nn
-
 from agents.replay_buffer import ReplayBatch
 from agents.sac_agent import (
     SACAgent,
@@ -18,12 +13,9 @@ from agents.sac_agent import (
     torch_dtype_from_name,
     unfreeze_network,
 )
-
-
 # ============================================================
 # FIXTURES
 # ============================================================
-
 @pytest.fixture
 def config():
 
@@ -54,7 +46,6 @@ def config():
         device="cpu",
     )
 
-
 @pytest.fixture
 def agent(
     config,
@@ -63,7 +54,6 @@ def agent(
     return SACAgent(
         config
     )
-
 
 def random_transition(
     index=0,
@@ -130,7 +120,6 @@ def fill_buffer(
             )
         )
 
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
@@ -146,7 +135,6 @@ def test_manuscript_default_gamma():
         0.99
     )
 
-
 def test_manuscript_default_learning_rate():
 
     config = SACAgentConfig(
@@ -158,7 +146,6 @@ def test_manuscript_default_learning_rate():
         1e-4
     )
 
-
 def test_manuscript_default_buffer_capacity():
 
     config = SACAgentConfig(
@@ -168,7 +155,6 @@ def test_manuscript_default_buffer_capacity():
 
     assert config.replay_buffer_capacity == 1_000_000
 
-
 def test_manuscript_default_batch_size():
 
     config = SACAgentConfig(
@@ -177,7 +163,6 @@ def test_manuscript_default_batch_size():
     )
 
     assert config.batch_size == 512
-
 
 def test_manuscript_default_tau():
 
@@ -190,7 +175,6 @@ def test_manuscript_default_tau():
         0.005
     )
 
-
 def test_manuscript_default_exploration_noise():
 
     config = SACAgentConfig(
@@ -201,7 +185,6 @@ def test_manuscript_default_exploration_noise():
     assert config.initial_exploration_noise == pytest.approx(
         0.20
     )
-
 
 def test_manuscript_default_noise_decay():
 
@@ -214,13 +197,11 @@ def test_manuscript_default_noise_decay():
         0.999
     )
 
-
 def test_valid_config(
     config,
 ):
 
     config.validate()
-
 
 def test_invalid_gamma():
 
@@ -232,7 +213,6 @@ def test_invalid_gamma():
             discount_factor=1.1,
         ).validate()
 
-
 def test_invalid_learning_rate():
 
     with pytest.raises(ValueError):
@@ -243,7 +223,6 @@ def test_invalid_learning_rate():
             learning_rate=0.0,
         ).validate()
 
-
 def test_invalid_batch_size():
 
     with pytest.raises(ValueError):
@@ -253,7 +232,6 @@ def test_invalid_batch_size():
             action_dimension=2,
             batch_size=0,
         ).validate()
-
 
 def test_batch_larger_than_buffer():
 
@@ -266,7 +244,6 @@ def test_batch_larger_than_buffer():
             batch_size=20,
         ).validate()
 
-
 def test_invalid_tau():
 
     with pytest.raises(ValueError):
@@ -276,7 +253,6 @@ def test_invalid_tau():
             action_dimension=2,
             soft_update_coefficient=0.0,
         ).validate()
-
 
 def test_invalid_entropy_coefficient():
 
@@ -288,7 +264,6 @@ def test_invalid_entropy_coefficient():
             entropy_coefficient=-0.1,
         ).validate()
 
-
 def test_invalid_exploration_decay():
 
     with pytest.raises(ValueError):
@@ -298,7 +273,6 @@ def test_invalid_exploration_decay():
             action_dimension=2,
             exploration_noise_decay=1.5,
         ).validate()
-
 
 # ============================================================
 # DTYPE
@@ -313,7 +287,6 @@ def test_float32_dtype():
         == torch.float32
     )
 
-
 def test_float64_dtype():
 
     assert (
@@ -323,7 +296,6 @@ def test_float64_dtype():
         == torch.float64
     )
 
-
 def test_invalid_dtype():
 
     with pytest.raises(ValueError):
@@ -331,8 +303,6 @@ def test_invalid_dtype():
         torch_dtype_from_name(
             "int32"
         )
-
-
 # ============================================================
 # AGENT CONSTRUCTION
 # ============================================================
@@ -425,7 +395,6 @@ def test_target_is_frozen(
         in agent.target_critic.parameters()
     )
 
-
 # ============================================================
 # FREEZE / UNFREEZE
 # ============================================================
@@ -469,7 +438,6 @@ def test_unfreeze_network():
         for parameter in network.parameters()
     )
 
-
 # ============================================================
 # HARD UPDATE
 # ============================================================
@@ -501,7 +469,6 @@ def test_hard_update():
         target.weight,
         source.weight,
     )
-
 
 # ============================================================
 # SOFT UPDATE
@@ -571,7 +538,6 @@ def test_invalid_soft_update_tau():
             source,
             tau=0.0,
         )
-
 
 # ============================================================
 # ACTION SELECTION
