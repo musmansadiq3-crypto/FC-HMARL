@@ -1,41 +1,11 @@
-"""
-Experience replay buffer for FC-HMARL SAC agents.
-
-The buffer stores transitions of the form:
-
-    (state, action, reward, next_state, done)
-
-Manuscript-supported concept
-----------------------------
-The FC-HMARL training procedure stores transition samples in replay
-memory and samples mini-batches for actor-critic learning.
-
-The manuscript reports:
-
-    replay buffer capacity = 1,000,000
-    mini-batch size        = 512
-
-Reconstruction choice
----------------------
-The manuscript does not specify the exact software memory layout.
-
-This implementation uses a fixed-size circular NumPy replay buffer.
-When capacity is reached, the oldest transitions are overwritten.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional
-
 import numpy as np
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class ReplayBufferConfig:
     """
@@ -111,12 +81,9 @@ class ReplayBufferConfig:
             raise TypeError(
                 "seed must be an integer or None."
             )
-
-
 # ============================================================
 # BATCH CONTAINER
 # ============================================================
-
 @dataclass
 class ReplayBatch:
     """
