@@ -1,10 +1,5 @@
-"""
-Tests for agents/coordinator_agent.py.
-"""
-
 import numpy as np
 import pytest
-
 from agents.coordinator_agent import (
     CoordinatorActionResult,
     CoordinatorAgent,
@@ -17,8 +12,6 @@ from agents.sac_agent import (
     SACAgentConfig,
     SACUpdateResult,
 )
-
-
 # ============================================================
 # FIXTURES
 # ============================================================
@@ -64,27 +57,20 @@ def coordinator(
     return CoordinatorAgent(
         config
     )
-
-
 def make_state(
     value=0.0,
 ):
-
     return np.full(
         12,
         value,
         dtype=np.float32,
     )
-
-
 def make_transition(
     index,
 ):
-
     rng = np.random.default_rng(
         500 + index
     )
-
     state = rng.normal(
         size=12
     ).astype(
@@ -125,24 +111,18 @@ def make_transition(
         next_state,
         done,
     )
-
-
 def fill_buffer(
     coordinator,
     count=16,
 ):
-
     for index in range(
         count
     ):
-
         coordinator.store_transition(
             *make_transition(
                 index
             )
         )
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
@@ -150,75 +130,55 @@ def fill_buffer(
 def test_valid_config(
     config,
 ):
-
     config.validate()
-
-
 def test_invalid_coordinator_id():
 
     with pytest.raises(
         ValueError
     ):
-
         CoordinatorAgentConfig(
             coordinator_id=0,
             state_dimension=12,
             action_dimension=2,
         ).validate()
-
-
 def test_invalid_state_dimension():
 
     with pytest.raises(
         ValueError
     ):
-
         CoordinatorAgentConfig(
             state_dimension=0,
             action_dimension=2,
         ).validate()
-
-
 def test_invalid_action_dimension():
-
     with pytest.raises(
         ValueError
     ):
-
         CoordinatorAgentConfig(
             state_dimension=12,
             action_dimension=0,
         ).validate()
-
-
 def test_to_sac_config(
     config,
 ):
-
     sac_config = (
         config.to_sac_config()
     )
-
     assert isinstance(
         sac_config,
         SACAgentConfig,
     )
-
     assert (
         sac_config.state_dimension
         == 12
     )
-
     assert (
         sac_config.action_dimension
         == 2
     )
-
-
 def test_sac_parameters_preserved(
     config,
 ):
-
     sac = config.to_sac_config()
 
     assert (
@@ -227,22 +187,18 @@ def test_sac_parameters_preserved(
             0.99
         )
     )
-
     assert (
         sac.learning_rate
         == pytest.approx(
             1e-4
         )
     )
-
     assert (
         sac.soft_update_coefficient
         == pytest.approx(
             0.005
         )
     )
-
-
 # ============================================================
 # CONSTRUCTION
 # ============================================================
@@ -250,67 +206,48 @@ def test_sac_parameters_preserved(
 def test_coordinator_creation(
     coordinator,
 ):
-
     assert isinstance(
         coordinator,
         CoordinatorAgent,
     )
-
-
 def test_contains_sac_agent(
     coordinator,
 ):
-
     assert isinstance(
         coordinator.sac_agent,
         SACAgent,
     )
-
-
 def test_coordinator_identity(
     coordinator,
 ):
-
     assert (
         coordinator.coordinator_id
         == 1
     )
-
-
 def test_state_dimension_property(
     coordinator,
 ):
-
     assert (
         coordinator.state_dimension
         == 12
     )
-
-
 def test_action_dimension_property(
     coordinator,
 ):
-
     assert (
         coordinator.action_dimension
         == 2
     )
-
-
 def test_actor_property(
     coordinator,
 ):
-
     assert (
         coordinator.actor
         is coordinator.sac_agent.actor
     )
-
-
 def test_critic_property(
     coordinator,
 ):
-
     assert (
         coordinator.critic
         is coordinator.sac_agent.critic
@@ -335,8 +272,6 @@ def test_replay_buffer_property(
         coordinator.replay_buffer
         is coordinator.sac_agent.replay_buffer
     )
-
-
 # ============================================================
 # STATE VALIDATION
 # ============================================================
@@ -344,33 +279,25 @@ def test_replay_buffer_property(
 def test_valid_state(
     coordinator,
 ):
-
     state = (
         coordinator.validate_state(
             make_state()
         )
     )
-
     assert state.shape == (
         12,
     )
-
-
 def test_state_wrong_dimension(
     coordinator,
 ):
-
     with pytest.raises(
         ValueError
     ):
-
         coordinator.validate_state(
             np.zeros(
                 11
             )
         )
-
-
 def test_state_wrong_rank(
     coordinator,
 ):
@@ -378,7 +305,6 @@ def test_state_wrong_rank(
     with pytest.raises(
         ValueError
     ):
-
         coordinator.validate_state(
             np.zeros(
                 (
@@ -387,12 +313,9 @@ def test_state_wrong_rank(
                 )
             )
         )
-
-
 def test_state_nan_rejected(
     coordinator,
 ):
-
     state = make_state()
 
     state[
@@ -406,8 +329,6 @@ def test_state_nan_rejected(
         coordinator.validate_state(
             state
         )
-
-
 # ============================================================
 # ACTION VALIDATION
 # ============================================================
@@ -415,7 +336,6 @@ def test_state_nan_rejected(
 def test_valid_action(
     coordinator,
 ):
-
     action = (
         coordinator.validate_action(
             [
@@ -424,16 +344,12 @@ def test_valid_action(
             ]
         )
     )
-
     assert action.shape == (
         2,
     )
-
-
 def test_action_wrong_dimension(
     coordinator,
 ):
-
     with pytest.raises(
         ValueError
     ):
@@ -445,16 +361,12 @@ def test_action_wrong_dimension(
                 0.0,
             ]
         )
-
-
 def test_action_nan_rejected(
     coordinator,
 ):
-
     with pytest.raises(
         ValueError
     ):
-
         coordinator.validate_action(
             [
                 np.nan,
@@ -493,12 +405,9 @@ def test_action_above_bound(
                 2.0,
             ]
         )
-
-
 # ============================================================
 # ACTION SELECTION
 # ============================================================
-
 def test_select_action_shape(
     coordinator,
 ):
