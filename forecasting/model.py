@@ -1,81 +1,16 @@
-"""
-Transformer-based multi-horizon forecasting model for FC-HMARL.
-
-Manuscript-supported role
--------------------------
-The forecasting layer predicts multiple uncertain VPP variables:
-
-    1. PV generation
-    2. Load demand
-    3. EV charging demand
-    4. Electricity price
-
-using a historical observation window and producing multi-horizon
-future forecasts.
-
-Default manuscript forecasting dimensions
-------------------------------------------
-Historical input window : 168 hours
-Forecast horizon        : 24 hours
-Time resolution         : 1 hour
-
-Important reconstruction note
------------------------------
-The manuscript does not provide the exact internal neural-network
-architecture. It states that forecasting operators may use advanced
-temporal architectures such as transformers, attention-based
-networks, or hybrid temporal models.
-
-Therefore the Transformer configuration implemented here is a
-documented RECONSTRUCTION CHOICE.
-
-The default architecture is:
-
-    input features
-        ↓
-    linear feature embedding
-        ↓
-    learnable positional encoding
-        ↓
-    Transformer encoder
-        ↓
-    temporal representation
-        ↓
-    multi-horizon output head
-        ↓
-    24 × target variables
-
-Expected input shape
---------------------
-    (batch_size, 168, input_features)
-
-Default output shape
---------------------
-    (batch_size, 24, target_features)
-"""
-
 from __future__ import annotations
-
 from dataclasses import asdict, dataclass
 from typing import Dict, Optional
-
 import torch
 from torch import nn
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class ForecastModelConfig:
     """
     Configuration of the multi-horizon forecasting model.
-
-    Parameters marked below are reconstruction choices unless
-    explicitly tied to manuscript forecasting dimensions.
     """
-
     # Manuscript-supported dimensions
     input_window: int = 168
     forecast_horizon: int = 24
@@ -150,8 +85,6 @@ class ForecastModelConfig:
                 f"Supported values are "
                 f"{sorted(supported_activations)}."
             )
-
-
 # ============================================================
 # POSITIONAL ENCODING
 # ============================================================
