@@ -126,7 +126,6 @@ def _clip_normalized_action(
         )
     )
 
-
 # ============================================================
 # BESS MAPPING
 # ============================================================
@@ -164,14 +163,11 @@ def map_bess_action(
             )
 
         else:
-
             maximum_power = float(
                 bess
                 .maximum_feasible_charge_power_kw()
             )
-
     else:
-
         maximum_power = float(
             bess.rated_power_kw
         )
@@ -180,8 +176,6 @@ def map_bess_action(
         value
         * maximum_power
     )
-
-
 # ============================================================
 # LOCAL SHARING MAPPING
 # ============================================================
@@ -339,10 +333,7 @@ def build_local_sharing_matrix(
         matrix,
         0.0,
     )
-
     return matrix
-
-
 # ============================================================
 # COORDINATOR SHARING MODULATION
 # ============================================================
@@ -353,23 +344,6 @@ def apply_coordinator_sharing_multiplier(
     enabled: bool = True,
     tolerance: float = 1e-8,
 ) -> np.ndarray:
-    """
-    Apply coordinator-level global sharing modulation.
-
-    Reconstruction:
-        coordinator_action[2] in [-1, 1]
-
-    is transformed into:
-
-        multiplier = (a + 1) / 2
-
-    therefore:
-
-        -1 -> disable sharing
-         0 -> 50% local requested sharing
-        +1 -> 100% local requested sharing
-    """
-
     matrix = np.asarray(
         sharing_matrix,
         dtype=np.float64,
@@ -401,10 +375,7 @@ def apply_coordinator_sharing_multiplier(
     ) / 2.0
 
     matrix *= multiplier
-
     return matrix
-
-
 # ============================================================
 # RESERVE ACTION
 # ============================================================
@@ -531,15 +502,11 @@ def map_reserve_actions(
                 ),
             )
         )
-
         reserve[index] = min(
             raw_request_kw,
             physical_limit_kw,
         )
-
     return reserve
-
-
 # ============================================================
 # OPTIONAL GRID ACTION
 # ============================================================
@@ -550,19 +517,6 @@ def map_grid_actions(
     enabled: bool = False,
     tolerance: float = 1e-8,
 ) -> Optional[np.ndarray]:
-    """
-    Optional explicit grid-power control.
-
-    By default this is disabled because VPPEnvironment can close each
-    microgrid's physical balance automatically.
-
-    If enabled, coordinator action[0] is interpreted as a normalized
-    aggregate import/export command and distributed according to each
-    microgrid transformer rating.
-
-    Positive -> import
-    Negative -> export
-    """
 
     if not enabled:
         return None
