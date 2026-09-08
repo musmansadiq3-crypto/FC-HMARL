@@ -1,31 +1,4 @@
-"""
-Constraint utilities for the FC-HMARL VPP environment.
 
-This module implements the physical feasibility checks required by the
-manuscript, including:
-
-1. Microgrid power-balance validation
-2. PCC / transformer exchange limits
-3. Generic clipping utilities
-4. Constraint-violation magnitudes for RL penalty functions
-
-Manuscript basis
-----------------
-The microgrid power balance requires that generation, load, BESS,
-EV charging, internal sharing, and grid exchange balance at every
-scheduling instant.
-
-The manuscript also imposes a transformer / network capacity limit
-on the combined exchange through the PCC.
-
-Important reconstruction note
------------------------------
-Transformer ratings are reported in kVA in Table 2, while the power
-balance equations use active power in kW.
-
-The recovered manuscript does not provide a power factor conversion.
-Therefore, this implementation makes power factor an explicit input.
-"""
 
 from __future__ import annotations
 
