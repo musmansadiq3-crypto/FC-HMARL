@@ -1,26 +1,20 @@
 from pathlib import Path as FilePath
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.patches import Rectangle, PathPatch, Patch
 from matplotlib.path import Path as MplPath
-
 np.random.seed(2026)
-
 ROOT = FilePath(__file__).resolve().parent
 DATA_PATH = ROOT / "data" / "publication" / "uncertainty_propagation_figure_data.xlsx"
 OUTPUT_DIR = ROOT / "outputs" / "figures"
-
 FONT_FAMILY = "Times New Roman"
 FONT_WEIGHT = "bold"
 GLOBAL_FONT_SIZE = 22
-
 SPINE_LINEWIDTH = 1.5
 TICK_MAJOR_WIDTH = 1.2
 TICK_DIRECTION = "in"
-
 FIG_WIDTH = 14
 FIG_HEIGHT_PANEL_A = 5.2
 FIG_HEIGHT_PANEL_B = 5.5
