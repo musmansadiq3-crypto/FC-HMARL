@@ -1,19 +1,4 @@
-"""
-Tests for FC-HMARL physical microgrid constraints.
-
-The tests validate:
-
-1. Microgrid power-balance residual
-2. Grid power required for balance
-3. Transformer / PCC exchange limit
-4. Violation magnitudes
-5. Full constraint evaluation
-
-The numerical values are test values selected for analytical clarity.
-"""
-
 import pytest
-
 from environment.constraints import (
     ConstraintParameters,
     clip_pcc_exchange,
@@ -28,8 +13,6 @@ from environment.constraints import (
     required_grid_power_for_balance,
     transformer_violation_kw,
 )
-
-
 # ============================================================
 # BASIC UTILITIES
 # ============================================================
@@ -45,8 +28,6 @@ def test_clip_value_inside_range():
     assert result == pytest.approx(
         5.0
     )
-
-
 def test_clip_value_above_maximum():
 
     result = clip_value(
@@ -54,12 +35,9 @@ def test_clip_value_above_maximum():
         minimum=0.0,
         maximum=10.0,
     )
-
     assert result == pytest.approx(
         10.0
     )
-
-
 def test_clip_value_below_minimum():
 
     result = clip_value(
@@ -67,7 +45,6 @@ def test_clip_value_below_minimum():
         minimum=0.0,
         maximum=10.0,
     )
-
     assert result == pytest.approx(
         0.0
     )
@@ -100,62 +77,31 @@ def test_positive_part_negative():
     ) == pytest.approx(
         0.0
     )
-
-
 # ============================================================
 # POWER BALANCE RESIDUAL
 # ============================================================
 
 def test_exact_power_balance():
-    """
-    Example:
-
-        P_net = -100 kW
-        incoming sharing = 20 kW
-        outgoing sharing = 0
-        grid = 80 kW
-
-    Residual:
-
-        -100 + 20 - 0 + 80 = 0
-    """
-
     residual = microgrid_power_balance_residual(
         net_local_power_kw=-100.0,
         incoming_sharing_kw=20.0,
         outgoing_sharing_kw=0.0,
         grid_power_kw=80.0,
     )
-
     assert residual == pytest.approx(
         0.0
     )
-
-
 def test_power_balance_with_surplus_export():
-    """
-    Example:
-
-        P_net = +100
-        incoming = 0
-        outgoing = 60
-        grid = -40
-
-        100 + 0 - 60 - 40 = 0
-    """
-
+  
     residual = microgrid_power_balance_residual(
         net_local_power_kw=100.0,
         incoming_sharing_kw=0.0,
         outgoing_sharing_kw=60.0,
         grid_power_kw=-40.0,
     )
-
     assert residual == pytest.approx(
         0.0
     )
-
-
 def test_nonzero_power_balance_residual():
 
     residual = microgrid_power_balance_residual(
@@ -168,8 +114,6 @@ def test_nonzero_power_balance_residual():
     assert residual == pytest.approx(
         -50.0
     )
-
-
 # ============================================================
 # POWER BALANCE BOOLEAN
 # ============================================================
@@ -216,12 +160,9 @@ def test_negative_tolerance_rejected():
             grid_power_kw=0.0,
             tolerance_kw=-1.0,
         )
-
-
 # ============================================================
 # BALANCE VIOLATION MAGNITUDE
 # ============================================================
-
 def test_power_balance_violation():
 
     violation = power_balance_violation_kw(
@@ -234,24 +175,11 @@ def test_power_balance_violation():
     assert violation == pytest.approx(
         30.0
     )
-
-
 # ============================================================
 # REQUIRED GRID POWER
 # ============================================================
 
 def test_required_grid_power_for_deficit():
-    """
-    P_net = -100
-    incoming = 20
-    outgoing = 0
-
-    Required grid:
-
-        -(-100) - 20 + 0
-        = 80
-    """
-
     grid_power = required_grid_power_for_balance(
         net_local_power_kw=-100.0,
         incoming_sharing_kw=20.0,
@@ -261,35 +189,18 @@ def test_required_grid_power_for_deficit():
     assert grid_power == pytest.approx(
         80.0
     )
-
-
 def test_required_grid_power_for_surplus():
-    """
-    P_net = +100
-    incoming = 0
-    outgoing = 60
-
-    Required grid:
-
-        -100 - 0 + 60
-        = -40
-    """
-
     grid_power = required_grid_power_for_balance(
         net_local_power_kw=100.0,
         incoming_sharing_kw=0.0,
         outgoing_sharing_kw=60.0,
     )
-
     assert grid_power == pytest.approx(
         -40.0
     )
-
-
 # ============================================================
 # TRANSFORMER PARAMETERS
 # ============================================================
-
 def test_transformer_active_power_limit():
 
     parameters = ConstraintParameters(
@@ -301,21 +212,16 @@ def test_transformer_active_power_limit():
         parameters.transformer_active_power_limit_kw
         == pytest.approx(900.0)
     )
-
-
 def test_power_factor_one():
 
     parameters = ConstraintParameters(
         transformer_rating_kva=1000.0,
         power_factor=1.0,
     )
-
     assert (
         parameters.transformer_active_power_limit_kw
         == pytest.approx(1000.0)
     )
-
-
 def test_invalid_transformer_rating():
 
     parameters = ConstraintParameters(
@@ -326,19 +232,15 @@ def test_invalid_transformer_rating():
 
         parameters.validate()
 
-
 def test_invalid_power_factor_above_one():
 
     parameters = ConstraintParameters(
         transformer_rating_kva=1000.0,
         power_factor=1.20,
     )
-
     with pytest.raises(ValueError):
 
         parameters.validate()
-
-
 def test_invalid_power_factor_zero():
 
     parameters = ConstraintParameters(
