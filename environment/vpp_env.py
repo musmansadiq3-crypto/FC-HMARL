@@ -1,56 +1,3 @@
-"""
-Five-microgrid Virtual Power Plant environment for FC-HMARL.
-
-This module integrates:
-
-    MG1
-    MG2
-    MG3
-    MG4
-    MG5
-
-into one coordinated VPP environment.
-
-The VPP combines:
-
-- local photovoltaic generation
-- battery storage
-- EV charging demand
-- local electricity demand
-- inter-microgrid energy sharing
-- utility-grid exchange
-- reserve participation
-- market accounting
-- physical constraint checking
-
-Manuscript architecture
------------------------
-The manuscript models multiple interconnected microgrids coordinated
-by an upper-level VPP coordinator.
-
-Each local microgrid contains:
-
-    PV
-    BESS
-    EV fleet
-    local load
-
-The coordinator later determines system-level decisions such as:
-
-    energy sharing
-    market participation
-    reserve allocation
-
-Important reconstruction note
------------------------------
-The manuscript defines the sharing topology mathematically but the
-recovered manuscript does not provide a numerical 5x5 connectivity
-matrix or pairwise transfer capacities.
-
-Therefore those matrices are supplied explicitly to this class through
-the EnergySharingNetwork object.
-"""
-
 from __future__ import annotations
 
 from typing import Dict, Iterable, List, Mapping, Optional, Sequence
@@ -59,31 +6,11 @@ import numpy as np
 
 from environment.microgrid import Microgrid
 from environment.energy_sharing import EnergySharingNetwork
-
-
 # ============================================================
 # VPP ENVIRONMENT
 # ============================================================
 
 class VPPEnvironment:
-    """
-    Coordinated multi-microgrid VPP environment.
-
-    Parameters
-    ----------
-    microgrids:
-        Sequence of Microgrid objects.
-
-    energy_sharing_network:
-        EnergySharingNetwork connecting the microgrids.
-
-    episode_length_hours:
-        Number of simulation intervals per episode.
-
-    name:
-        Environment name.
-    """
-
     def __init__(
         self,
         microgrids: Sequence[Microgrid],
