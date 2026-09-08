@@ -1,26 +1,8 @@
-"""
-Unit tests for the FC-HMARL electricity-market model.
-
-These tests validate:
-
-1. Grid purchase cost
-2. Grid sale revenue
-3. Reserve-market revenue
-4. Import/export sign convention
-5. Complete market step
-6. Market parameter validation
-
-The tested price ranges match the manuscript configuration.
-"""
-
 import pytest
-
 from environment.market import (
     ElectricityMarket,
     MarketParameters,
 )
-
-
 # ============================================================
 # FIXTURE
 # ============================================================
@@ -36,13 +18,10 @@ def market():
         reserve_price_usd_per_kwh=0.05,
         time_step_hours=1.0,
     )
-
     return ElectricityMarket(
         parameters=parameters,
         name="Test_Market",
     )
-
-
 # ============================================================
 # PURCHASE COST
 # ============================================================
@@ -63,20 +42,15 @@ def test_grid_purchase_cost(market):
     assert cost == pytest.approx(
         20.0
     )
-
-
 def test_zero_import_cost(market):
 
     cost = market.grid_purchase_cost(
         import_power_kw=0.0,
         buy_price_usd_per_kwh=0.20,
     )
-
     assert cost == pytest.approx(
         0.0
     )
-
-
 def test_negative_import_rejected(market):
 
     with pytest.raises(ValueError):
@@ -85,29 +59,17 @@ def test_negative_import_rejected(market):
             import_power_kw=-10.0,
             buy_price_usd_per_kwh=0.20,
         )
-
-
 # ============================================================
 # GRID SALE
 # ============================================================
-
 def test_grid_sale_revenue(market):
-    """
-    100 kW exported for one hour at $0.10/kWh:
-
-        revenue = $10
-    """
-
     revenue = market.grid_sale_revenue(
         export_power_kw=100.0,
         sell_price_usd_per_kwh=0.10,
     )
-
     assert revenue == pytest.approx(
         10.0
     )
-
-
 def test_zero_export_revenue(market):
 
     revenue = market.grid_sale_revenue(
@@ -118,8 +80,6 @@ def test_zero_export_revenue(market):
     assert revenue == pytest.approx(
         0.0
     )
-
-
 def test_negative_export_rejected(market):
 
     with pytest.raises(ValueError):
@@ -128,20 +88,10 @@ def test_negative_export_rejected(market):
             export_power_kw=-10.0,
             sell_price_usd_per_kwh=0.10,
         )
-
-
 # ============================================================
 # RESERVE
 # ============================================================
-
 def test_reserve_revenue(market):
-    """
-    Reserve = 100 kW
-    Reserve price = $0.05/kWh
-
-    Revenue = $5 for one hour.
-    """
-
     revenue = market.reserve_revenue(
         reserve_power_kw=100.0
     )
@@ -149,8 +99,6 @@ def test_reserve_revenue(market):
     assert revenue == pytest.approx(
         5.0
     )
-
-
 def test_zero_reserve_revenue(market):
 
     assert market.reserve_revenue(
@@ -158,8 +106,6 @@ def test_zero_reserve_revenue(market):
     ) == pytest.approx(
         0.0
     )
-
-
 def test_negative_reserve_rejected(market):
 
     with pytest.raises(ValueError):
@@ -167,8 +113,6 @@ def test_negative_reserve_rejected(market):
         market.reserve_revenue(
             -1.0
         )
-
-
 # ============================================================
 # IMPORT INTERACTION
 # ============================================================
