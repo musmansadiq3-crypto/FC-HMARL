@@ -1,12 +1,7 @@
-"""
-Tests for agents/networks.py.
-"""
-
 import numpy as np
 import pytest
 import torch
 from torch import nn
-
 from agents.networks import (
     GaussianPolicyNetwork,
     QNetwork,
@@ -18,12 +13,9 @@ from agents.networks import (
     validate_action_tensor,
     validate_state_tensor,
 )
-
-
 # ============================================================
 # FIXTURE
 # ============================================================
-
 @pytest.fixture
 def config():
 
@@ -75,45 +67,28 @@ def critic(
 def test_valid_config(
     config,
 ):
-
     config.validate()
-
-
 def test_invalid_state_dimension():
-
     with pytest.raises(ValueError):
-
         SACNetworkConfig(
             state_dimension=0,
             action_dimension=2,
         ).validate()
-
-
 def test_invalid_action_dimension():
-
     with pytest.raises(ValueError):
-
         SACNetworkConfig(
             state_dimension=4,
             action_dimension=0,
         ).validate()
-
-
 def test_empty_hidden_dimensions():
-
     with pytest.raises(ValueError):
-
         SACNetworkConfig(
             state_dimension=4,
             action_dimension=2,
             hidden_dimensions=(),
         ).validate()
-
-
 def test_invalid_hidden_dimension():
-
     with pytest.raises(ValueError):
-
         SACNetworkConfig(
             state_dimension=4,
             action_dimension=2,
@@ -175,8 +150,6 @@ def test_vector_action_bounds():
     )
 
     config.validate()
-
-
 # ============================================================
 # ACTIVATION
 # ============================================================
@@ -746,8 +719,6 @@ def test_twin_q_are_independent(
             0
         ]
     )
-
-
 # ============================================================
 # BACKPROPAGATION
 # ============================================================
