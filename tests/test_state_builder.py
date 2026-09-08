@@ -1,10 +1,5 @@
-"""
-Tests for marl/state_builder.py.
-"""
-
 import numpy as np
 import pytest
-
 from marl.state_builder import (
     HierarchicalStateBuilder,
     HierarchicalStateResult,
@@ -17,7 +12,6 @@ from marl.state_builder import (
     flatten_predictive_state,
     validate_predictive_state,
 )
-
 
 # ============================================================
 # FIXTURES
@@ -33,7 +27,6 @@ def small_config():
         dtype="float32",
     )
 
-
 @pytest.fixture
 def predictive_state():
 
@@ -44,7 +37,6 @@ def predictive_state():
         4,
         2,
     )
-
 
 @pytest.fixture
 def observations():
@@ -73,7 +65,6 @@ def observations():
         },
     ]
 
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
@@ -90,7 +81,6 @@ def test_default_forecast_horizon():
     config = StateBuilderConfig()
 
     assert config.forecast_horizon == 24
-
 
 def test_default_forecast_features():
 
@@ -118,7 +108,6 @@ def test_default_local_dimension():
         == 101
     )
 
-
 def test_default_coordinator_dimension():
 
     config = StateBuilderConfig()
@@ -127,7 +116,6 @@ def test_default_coordinator_dimension():
         config.coordinator_state_dimension
         == 99
     )
-
 
 def test_default_global_dimension():
 
@@ -183,7 +171,6 @@ def test_invalid_dtype():
     with pytest.raises(ValueError):
         config.validate()
 
-
 # ============================================================
 # PREDICTIVE STATE
 # ============================================================
@@ -202,7 +189,6 @@ def test_validate_predictive_matrix(
         4,
         2,
     )
-
 
 def test_flatten_predictive_state(
     predictive_state,
@@ -443,7 +429,6 @@ def test_coordinator_first_values(
         ],
     )
 
-
 # ============================================================
 # VPP AGGREGATION
 # ============================================================
@@ -473,7 +458,6 @@ def test_vpp_power_rejects_nan():
                 np.nan,
             ]
         )
-
 
 # ============================================================
 # SHARING
@@ -577,7 +561,6 @@ def test_non_square_sharing_rejected():
         calculate_total_sharing_activity(
             matrix
         )
-
 
 # ============================================================
 # GLOBAL STATE
