@@ -1,43 +1,24 @@
-"""
-Tests for marl/environment_adapter.py.
-"""
-
 import numpy as np
 import pytest
-
 from marl.environment_adapter import (
     AdapterStepRecord,
     EnvironmentAdapterConfig,
     FCHMARLEnvironmentAdapter,
     RewardOutput,
 )
-
 from marl.training_loop import (
     EnvironmentStepResult,
     HierarchicalActionBundle,
     TrainingObservation,
 )
-
-
 NUMBER_OF_MICROGRIDS = 5
-
 LOCAL_STATE_DIMENSION = 6
-
 COORDINATOR_STATE_DIMENSION = 4
-
-
 # ============================================================
 # DUMMY PHYSICAL ENVIRONMENT
 # ============================================================
 
 class DummyPhysicalEnvironment:
-    """
-    Small deterministic physical-environment surrogate used
-    only for software testing.
-
-    This is NOT a manuscript physical model.
-    """
-
     def __init__(self):
 
         self.episode = None
@@ -50,7 +31,6 @@ class DummyPhysicalEnvironment:
         self,
         episode,
     ):
-
         self.episode = episode
 
         self.time_step = 0
@@ -100,8 +80,6 @@ class DummyPhysicalEnvironment:
             "physical_done":
                 False,
         }
-
-
 # ============================================================
 # BUILDERS
 # ============================================================
@@ -143,12 +121,9 @@ def observation_builder(
             coordinator_state
         ),
     )
-
-
 def action_converter(
     actions,
 ):
-
     return {
         "local_actions": [
             np.asarray(
@@ -166,15 +141,12 @@ def action_converter(
                 dtype=np.float32,
             ).copy(),
     }
-
-
 def reward_builder(
     previous_raw_state,
     next_raw_state,
     hierarchical_actions,
     physical_action,
 ):
-
     del (
         previous_raw_state,
         hierarchical_actions,
@@ -453,12 +425,9 @@ def test_coordinator_reward_nan():
         reward.validate(
             number_of_microgrids=5
         )
-
-
 # ============================================================
 # CONSTRUCTION
 # ============================================================
-
 def test_adapter_creation():
 
     adapter, _ = (
@@ -469,14 +438,11 @@ def test_adapter_creation():
         adapter,
         FCHMARLEnvironmentAdapter,
     )
-
-
 def test_invalid_reset_function():
 
     with pytest.raises(
         TypeError
     ):
-
         FCHMARLEnvironmentAdapter(
             environment_reset_function=None,
 
@@ -488,12 +454,9 @@ def test_invalid_reset_function():
 
             reward_builder=lambda a, b, c, d: d,
         )
-
-
 # ============================================================
 # RESET
 # ============================================================
-
 def test_reset_returns_training_observation():
 
     adapter, _ = (
