@@ -1,56 +1,11 @@
-"""
-Soft Actor-Critic agent for the FC-HMARL framework.
-
-This module connects:
-
-    - Gaussian stochastic actor
-    - twin Q critics
-    - target twin critics
-    - replay memory
-    - critic optimization
-    - actor optimization
-    - entropy regularization
-    - target-network soft updates
-    - stochastic/deterministic action selection
-
-Manuscript-supported training settings
---------------------------------------
-Discount factor gamma       = 0.99
-Learning rate               = 1e-4
-Replay-buffer capacity      = 1e6
-Mini-batch size             = 512
-Soft-update coefficient tau = 0.005
-Optimizer                   = Adam
-Initial exploration noise   = 0.20
-Noise decay                 = 0.999
-
-Reconstruction choices
-----------------------
-The manuscript identifies SAC / maximum-entropy learning but does
-not specify a numerical entropy-temperature coefficient alpha.
-
-Therefore:
-
-    entropy_coefficient = 0.20
-
-is a configurable reconstruction choice.
-
-The exact software update ordering, gradient clipping option,
-checkpoint representation, and warm-up behavior are also
-implementation choices.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Optional, Sequence, Tuple
-
 import numpy as np
 import torch
 from torch import nn
 from torch.optim import Adam
-
 from agents.networks import (
     GaussianPolicyNetwork,
     SACNetworkConfig,
@@ -62,12 +17,9 @@ from agents.replay_buffer import (
     ReplayBuffer,
     ReplayBufferConfig,
 )
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class SACAgentConfig:
     """
@@ -389,8 +341,6 @@ class SACUpdateResult:
             "exploration_noise":
                 self.exploration_noise,
         }
-
-
 # ============================================================
 # HELPER FUNCTIONS
 # ============================================================
@@ -408,8 +358,6 @@ def torch_dtype_from_name(
     raise ValueError(
         f"Unsupported dtype: {dtype}"
     )
-
-
 def resolve_device(
     device: str,
 ) -> torch.device:
@@ -457,8 +405,6 @@ def hard_update(
     target.load_state_dict(
         source.state_dict()
     )
-
-
 @torch.no_grad()
 def soft_update(
     target: nn.Module,
@@ -544,8 +490,6 @@ def unfreeze_network(
         parameter.requires_grad_(
             True
         )
-
-
 # ============================================================
 # SAC AGENT
 # ============================================================
@@ -562,7 +506,6 @@ class SACAgent:
     The hierarchical roles are added by local_agent.py and
     coordinator_agent.py.
     """
-
     def __init__(
         self,
         config: SACAgentConfig,
@@ -575,13 +518,11 @@ class SACAgent:
         self.device = resolve_device(
             config.device
         )
-
         self.torch_dtype = (
             torch_dtype_from_name(
                 config.dtype
             )
         )
-
         if config.seed is not None:
 
             np.random.seed(
@@ -591,13 +532,11 @@ class SACAgent:
             torch.manual_seed(
                 config.seed
             )
-
             if torch.cuda.is_available():
 
                 torch.cuda.manual_seed_all(
                     config.seed
                 )
-
         self.rng = np.random.default_rng(
             config.seed
         )
@@ -836,7 +775,6 @@ class SACAgent:
             .numpy()
             .copy()
         )
-
     # ========================================================
     # ACTION SELECTION
     # ========================================================
@@ -1718,8 +1656,6 @@ class SACAgent:
                 self.replay_buffer.rng.bit_generator.state = (
                     replay_rng_state
                 )
-
-
         # ========================================================
         # BACKWARD COMPATIBILITY
         # ========================================================
