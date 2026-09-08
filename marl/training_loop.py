@@ -311,11 +311,9 @@ class EnvironmentStepResult:
                     f"Local reward {index} contains "
                     "NaN or Inf."
                 )
-
         # --------------------------------------------------------
         # COORDINATOR REWARD
         # --------------------------------------------------------
-
         try:
             self.coordinator_reward = float(
                 self.coordinator_reward
@@ -334,7 +332,6 @@ class EnvironmentStepResult:
             raise ValueError(
                 "Coordinator reward contains NaN or Inf."
             )
-
         # --------------------------------------------------------
         # DONE FLAG
         # --------------------------------------------------------
@@ -365,8 +362,6 @@ class EnvironmentStepResult:
             raise TypeError(
                 "info must be a dictionary."
             )
-
-
 # ============================================================
 # ACTION BUNDLE
 # ============================================================
