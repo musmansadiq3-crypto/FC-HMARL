@@ -1,46 +1,22 @@
-"""
-Risk-penalty utilities for FC-HMARL.
-
-The core confidence-aware penalty follows the manuscript relationship
-
-    C_risk = rho * (1 - Phi)
-
-where rho >= 0 is the risk-aversion coefficient and Phi is the forecast
-confidence in [0, 1].
-
-Software aggregation helpers in this module are reconstructed evaluation
-utilities; they do not alter the trained policy or checkpoint.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass, asdict
 from typing import Any, Dict, Iterable
-
 import numpy as np
-
-
 def _confidence_array(confidence: Iterable[float]) -> np.ndarray:
     phi = np.asarray(confidence, dtype=float).reshape(-1)
-
     if phi.size == 0:
         raise ValueError(
             "confidence must contain at least one value."
         )
-
     if not np.all(np.isfinite(phi)):
         raise ValueError(
             "confidence contains NaN or infinite values."
         )
-
     if np.any(phi < 0.0) or np.any(phi > 1.0):
         raise ValueError(
             "confidence values must lie in [0, 1]."
         )
-
     return phi
-
-
 def confidence_risk_penalty(
     confidence: float,
     risk_aversion: float = 1.0,
