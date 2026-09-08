@@ -353,7 +353,6 @@ def apply_coordinator_sharing_multiplier(
 # ============================================================
 # RESERVE ACTION
 # ============================================================
-
 def map_reserve_actions(
     coordinator_action,
     environment: VPPEnvironment,
