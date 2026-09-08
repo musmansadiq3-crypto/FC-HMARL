@@ -1,59 +1,20 @@
-"""
-Prediction utilities for the FC-HMARL forecasting module.
-
-The forecasting predictor performs inference after model training.
-
-Manuscript-supported forecasting role
--------------------------------------
-The forecasting module provides multi-horizon predictions of:
-
-    1. PV generation
-    2. Load demand
-    3. EV charging demand
-    4. Electricity price
-
-The default forecasting arrangement used in the reconstructed
-implementation is:
-
-    Historical window : 168 h
-    Forecast horizon  : 24 h
-    Resolution        : 1 h
-
-This module performs:
-
-    trained model inference
-    batch prediction
-    dataset prediction
-    checkpoint loading
-    optional inverse normalization
-    optional attention extraction
-
-No model optimization or weight updates are performed here.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
-
 import numpy as np
 import pandas as pd
 import torch
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
-
 @dataclass
 class ForecastPredictorConfig:
     """
     Configuration for forecasting inference.
     """
-
     batch_size: int = 128
 
     device: str = "auto"
@@ -89,19 +50,15 @@ class ForecastPredictorConfig:
                 "device must be one of: "
                 "'auto', 'cpu', or 'cuda'."
             )
-
-
 # ============================================================
 # DEVICE
 # ============================================================
-
 def resolve_prediction_device(
     requested_device: str = "auto",
 ) -> torch.device:
     """
     Resolve device used for model inference.
     """
-
     requested_device = (
         requested_device.lower()
     )
@@ -141,8 +98,6 @@ def resolve_prediction_device(
         "requested_device must be "
         "'auto', 'cpu', or 'cuda'."
     )
-
-
 # ============================================================
 # INPUT CONVERSION
 # ============================================================
@@ -180,8 +135,6 @@ def to_float_tensor(
         )
 
     return tensor
-
-
 # ============================================================
 # PREDICTION-ONLY DATASET
 # ============================================================
@@ -522,8 +475,6 @@ class ForecastPredictionResult:
             "target_names":
                 self.target_names,
         }
-
-
 # ============================================================
 # MAIN PREDICTOR
 # ============================================================
@@ -952,43 +903,6 @@ def inverse_transform_predictions(
     scaler,
     target_columns: Sequence[str],
 ) -> np.ndarray:
-    """
-    Convert normalized forecasts back to physical units.
-
-    Parameters
-    ----------
-    predictions:
-        Shape:
-            (samples,
-             horizon,
-             number_of_targets)
-
-    scaler:
-        Fitted preprocessing scaler implementing:
-
-            inverse_transform(DataFrame)
-
-    target_columns:
-        Names corresponding to forecast variables.
-
-    Returns
-    -------
-    np.ndarray
-        Same shape as predictions.
-
-    Notes
-    -----
-    This function is designed to work with the
-    DataFrameMinMaxScaler implemented in preprocessing.py.
-
-    Examples of target variables may be:
-
-        PV
-        Load
-        EV
-        Price
-    """
-
     predictions = np.asarray(
         predictions,
         dtype=np.float64,
