@@ -1,21 +1,6 @@
-"""
-Tests for the FC-HMARL forecasting preprocessing pipeline.
-
-The manuscript-supported operations tested here are:
-
-- hourly conversion
-- linear interpolation
-- three-sigma abnormal-sample filtering
-- min-max scaling
-- chronological 70/15/15 split
-
-Synthetic numerical data are used only to verify the implementation.
-"""
-
 import numpy as np
 import pandas as pd
 import pytest
-
 from forecasting.preprocessing import (
     DataFrameMinMaxScaler,
     PreprocessingConfig,
@@ -28,12 +13,9 @@ from forecasting.preprocessing import (
     replace_three_sigma_outliers_with_nan,
     three_sigma_mask,
 )
-
-
 # ============================================================
 # DATETIME PREPARATION
 # ============================================================
-
 def test_prepare_datetime_index():
 
     data = pd.DataFrame(
@@ -95,19 +77,15 @@ def test_missing_timestamp_column_rejected():
             ]
         }
     )
-
     with pytest.raises(KeyError):
 
         prepare_datetime_index(
             data,
             timestamp_column="timestamp",
         )
-
-
 # ============================================================
 # HOURLY CONVERSION
 # ============================================================
-
 def test_convert_to_hourly_mean():
 
     data = pd.DataFrame(
@@ -126,12 +104,10 @@ def test_convert_to_hourly_mean():
             ],
         }
     )
-
     result = convert_to_hourly(
         data,
         aggregation="mean",
     )
-
     assert len(
         result
     ) == 2
@@ -143,7 +119,6 @@ def test_convert_to_hourly_mean():
     ] == pytest.approx(
         15.0
     )
-
     assert result.iloc[
         1
     ][
@@ -151,8 +126,6 @@ def test_convert_to_hourly_mean():
     ] == pytest.approx(
         40.0
     )
-
-
 def test_convert_to_hourly_sum():
 
     data = pd.DataFrame(
@@ -167,7 +140,6 @@ def test_convert_to_hourly_sum():
             ],
         }
     )
-
     result = convert_to_hourly(
         data,
         aggregation="sum",
@@ -180,10 +152,7 @@ def test_convert_to_hourly_sum():
     ] == pytest.approx(
         12.0
     )
-
-
 def test_invalid_hourly_aggregation_rejected():
-
     data = pd.DataFrame(
         {
             "timestamp": [
@@ -194,15 +163,12 @@ def test_invalid_hourly_aggregation_rejected():
             ],
         }
     )
-
     with pytest.raises(ValueError):
 
         convert_to_hourly(
             data,
             aggregation="unsupported",
         )
-
-
 # ============================================================
 # LINEAR INTERPOLATION
 # ============================================================
@@ -230,8 +196,6 @@ def test_linear_interpolation_middle_value():
     ] == pytest.approx(
         20.0
     )
-
-
 def test_interpolation_removes_missing_values():
 
     data = pd.DataFrame(
@@ -245,7 +209,6 @@ def test_interpolation_removes_missing_values():
             ]
         }
     )
-
     result = interpolate_missing_values(
         data
     )
@@ -253,8 +216,6 @@ def test_interpolation_removes_missing_values():
     assert not result[
         "pv"
     ].isna().any()
-
-
 # ============================================================
 # THREE-SIGMA FILTER
 # ============================================================
@@ -287,8 +248,6 @@ def test_three_sigma_detects_extreme_outlier():
             "load"
         ]
     )
-
-
 def test_three_sigma_normal_values_not_marked():
 
     data = pd.DataFrame(
@@ -298,16 +257,12 @@ def test_three_sigma_normal_values_not_marked():
             )
         }
     )
-
     mask = three_sigma_mask(
         data
     )
-
     assert not mask[
         "load"
     ].any()
-
-
 def test_outlier_replaced_with_nan():
 
     values = np.concatenate(
@@ -316,19 +271,16 @@ def test_outlier_replaced_with_nan():
             np.array([1000.0]),
         ]
     )
-
     data = pd.DataFrame(
         {
             "load": values
         }
     )
-
     cleaned, mask = (
         replace_three_sigma_outliers_with_nan(
             data
         )
     )
-
     assert bool(
         mask.iloc[
             -1
@@ -344,8 +296,6 @@ def test_outlier_replaced_with_nan():
             "load"
         ]
     )
-
-
 def test_outlier_filter_and_interpolation():
 
     # Place the outlier between two valid values so the expected
@@ -355,13 +305,11 @@ def test_outlier_filter_and_interpolation():
         + [1000.0]
         + [20.0] * 50
     )
-
     data = pd.DataFrame(
         {
             "load": values
         }
     )
-
     cleaned, mask = (
         filter_and_interpolate_outliers(
             data,
@@ -385,10 +333,7 @@ def test_outlier_filter_and_interpolation():
     ] == pytest.approx(
         15.0
     )
-
-
 def test_invalid_sigma_threshold():
-
     data = pd.DataFrame(
         {
             "load": [
@@ -397,15 +342,12 @@ def test_invalid_sigma_threshold():
             ]
         }
     )
-
     with pytest.raises(ValueError):
 
         three_sigma_mask(
             data,
             sigma_threshold=0.0,
         )
-
-
 # ============================================================
 # MIN-MAX SCALER
 # ============================================================
