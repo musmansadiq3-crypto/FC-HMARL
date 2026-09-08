@@ -1,23 +1,5 @@
-"""
-Tests for the FC-HMARL multi-horizon forecasting model.
-
-These tests verify:
-
-1. Manuscript input/output dimensions
-2. Transformer forward propagation
-3. Temporal attention
-4. Batch handling
-5. Gradient propagation
-6. Configuration validation
-7. Positional encoding
-8. Model factory and metadata
-
-The exact transformer layer dimensions are reconstruction choices.
-"""
-
 import pytest
 import torch
-
 from forecasting.model import (
     ForecastModelConfig,
     LearnablePositionalEncoding,
@@ -25,22 +7,6 @@ from forecasting.model import (
     SinusoidalPositionalEncoding,
     build_forecasting_model,
 )
-
-
-# ============================================================
-# SMALL TEST MODEL
-# ============================================================
-#
-# We intentionally use a smaller hidden dimension during unit tests.
-# The production reconstruction configuration remains:
-#
-# hidden_dimension = 128
-# heads            = 4
-# layers           = 2
-#
-# Smaller test dimensions make tests faster.
-# ============================================================
-
 @pytest.fixture
 def config():
 
@@ -57,7 +23,6 @@ def config():
         activation="gelu",
         use_learnable_positional_encoding=True,
     )
-
 
 @pytest.fixture
 def model(
@@ -77,8 +42,6 @@ def model(
     network.eval()
 
     return network
-
-
 # ============================================================
 # DEFAULT MANUSCRIPT DIMENSIONS
 # ============================================================
@@ -109,8 +72,6 @@ def test_default_target_features():
     config = ForecastModelConfig()
 
     assert config.target_features == 4
-
-
 # ============================================================
 # CONFIGURATION VALIDATION
 # ============================================================
@@ -808,8 +769,6 @@ def test_model_summary(
     assert summary[
         "trainable_parameters"
     ] > 0
-
-
 # ============================================================
 # REPRESENTATION
 # ============================================================
