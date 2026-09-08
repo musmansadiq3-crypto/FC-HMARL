@@ -119,39 +119,27 @@ def _validate_scalar(
     value,
     name: str,
 ) -> float:
-    """
-    Validate one scalar physical state value.
-    """
-
     array = np.asarray(
         value,
         dtype=np.float64,
     )
-
     if array.ndim != 0:
-
         raise ValueError(
             f"{name} must be a scalar."
         )
-
     value = float(
         array
     )
-
     if not np.isfinite(
         value
     ):
         raise ValueError(
             f"{name} must be finite."
         )
-
     return value
-
-
 def _resolve_dtype(
     dtype: str,
 ):
-
     if dtype == "float32":
         return np.float32
 
@@ -622,80 +610,42 @@ def build_global_state(
         )
 
     return global_state
-
-
 # ============================================================
 # AGGREGATE VPP POWER
 # ============================================================
-
 def calculate_vpp_power(
     grid_exchanges,
 ) -> float:
-    """
-    Calculate aggregate VPP grid power.
-
-    Reconstruction implementation:
-        aggregate power is the sum of local grid exchanges.
-
-    Sign convention follows the environment:
-        positive/negative meaning is inherited from each
-        microgrid's grid-exchange convention.
-    """
-
     grid_exchanges = np.asarray(
         grid_exchanges,
         dtype=np.float64,
     )
-
     if grid_exchanges.ndim != 1:
 
         raise ValueError(
             "grid_exchanges must be one-dimensional."
         )
-
     if grid_exchanges.size == 0:
-
         raise ValueError(
             "grid_exchanges cannot be empty."
         )
-
     if not np.isfinite(
         grid_exchanges
     ).all():
-
         raise ValueError(
             "grid_exchanges contain NaN or Inf."
         )
-
     return float(
         np.sum(
             grid_exchanges
         )
     )
-
-
 # ============================================================
 # TOTAL ENERGY-SHARING ACTIVITY
 # ============================================================
-
 def calculate_total_sharing_activity(
     sharing_matrix,
 ) -> float:
-    """
-    Calculate total inter-microgrid sharing activity.
-
-    The manuscript coordinator state contains total
-    energy-sharing activity but does not specify the exact
-    software reduction operation.
-
-    Reconstruction choice
-    ---------------------
-    Sum the non-negative directed sharing powers contained
-    in the sharing matrix.
-
-    Diagonal self-sharing values are ignored.
-    """
-
     matrix = np.asarray(
         sharing_matrix,
         dtype=np.float64,
@@ -752,19 +702,13 @@ def calculate_total_sharing_activity(
             matrix
         )
     )
-
-
 # ============================================================
 # COMPLETE STATE RESULT
 # ============================================================
 
 @dataclass
 class HierarchicalStateResult:
-    """
-    Complete FC-HMARL state bundle.
-    """
-
-    local_states: List[
+       local_states: List[
         np.ndarray
     ]
 
