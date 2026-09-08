@@ -1,22 +1,14 @@
 # ============================================================
 # FC-HMARL FIVE-MICROGRID VPP SYSTEM CONFIGURATION
 # ============================================================
-#
-# Source:
-# Manuscript Table 2 - Configuration Parameters of the
-# Five-Microgrid VPP Test System
-#
 # This file defines the physical VPP configuration.
 # ============================================================
-
 project:
   name: "FC-HMARL"
   description: "Forecast-Confidence-Aware Hierarchical Multi-Agent Reinforcement Learning for VPP Operation"
-
 # ------------------------------------------------------------
 # SIMULATION TIME SETTINGS
 # ------------------------------------------------------------
-
 simulation:
   time_resolution_hours: 1
   episode_length_hours: 24
@@ -159,20 +151,6 @@ microgrids:
 # ============================================================
 # INTERNAL ENERGY-SHARING NETWORK
 # ============================================================
-#
-# Manuscript basis:
-#   a_ij = 1 if MG_i and MG_j can exchange power
-#   a_ij = 0 otherwise
-#
-# IMPORTANT:
-# The manuscript defines the connectivity formulation but does not
-# provide an explicit numerical 5x5 matrix or pairwise transfer
-# ratings in the recovered tables.
-#
-# Therefore, the following topology is a RECONSTRUCTION CHOICE
-# used to make the implementation executable and testable.
-# ============================================================
-
 energy_sharing_network:
 
   source: "reconstruction_choice"
