@@ -1,20 +1,13 @@
-"""
-Tests for marl/training_loop.py.
-"""
-
 import numpy as np
 import pytest
-
 from agents.local_agent import (
     LocalAgent,
     LocalAgentConfig,
 )
-
 from agents.coordinator_agent import (
     CoordinatorAgent,
     CoordinatorAgentConfig,
 )
-
 from marl.training_loop import (
     TrainingLoopConfig,
     TrainingObservation,
@@ -24,8 +17,6 @@ from marl.training_loop import (
     TrainingHistory,
     FCHMARLTrainingLoop,
 )
-
-
 # ============================================================
 # TEST DIMENSIONS
 # ============================================================
@@ -39,7 +30,6 @@ LOCAL_ACTION_DIMENSION = 2
 COORDINATOR_STATE_DIMENSION = 4
 
 COORDINATOR_ACTION_DIMENSION = 2
-
 
 # ============================================================
 # FACTORIES
@@ -91,10 +81,7 @@ def build_test_local_agents():
                 config
             )
         )
-
     return agents
-
-
 def build_test_coordinator():
 
     config = CoordinatorAgentConfig(
@@ -303,8 +290,6 @@ def build_training_loop(
 
         config=config,
     )
-
-
 # ============================================================
 # CONFIGURATION
 # ============================================================
@@ -319,18 +304,13 @@ def test_training_config_defaults():
         config.maximum_episodes
         == 5000
     )
-
     assert (
         config.steps_per_episode
         == 24
     )
-
-
 def test_valid_training_config():
 
     TrainingLoopConfig().validate()
-
-
 def test_invalid_episodes():
 
     with pytest.raises(
@@ -456,7 +436,6 @@ def test_invalid_coordinator_state():
         observation.validate(
             NUMBER_OF_LOCAL_AGENTS
         )
-
 
 # ============================================================
 # ENVIRONMENT RESULT
@@ -664,7 +643,6 @@ def test_local_action_dimensions():
             LOCAL_ACTION_DIMENSION,
         )
 
-
 # ============================================================
 # STORE TRANSITIONS
 # ============================================================
@@ -751,7 +729,6 @@ def test_run_step():
             7.0
         )
     )
-
 
 def test_global_step_increments():
 
