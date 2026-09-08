@@ -1,10 +1,5 @@
-"""
-Tests for agents/replay_buffer.py.
-"""
-
 import numpy as np
 import pytest
-
 from agents.replay_buffer import (
     ReplayBatch,
     ReplayBuffer,
@@ -13,12 +8,9 @@ from agents.replay_buffer import (
     validate_scalar,
     validate_vector,
 )
-
-
 # ============================================================
 # FIXTURE
 # ============================================================
-
 @pytest.fixture
 def config():
 
@@ -29,8 +21,6 @@ def config():
         dtype="float32",
         seed=42,
     )
-
-
 @pytest.fixture
 def buffer(
     config,
