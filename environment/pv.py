@@ -1,51 +1,3 @@
-"""
-Photovoltaic (PV) generation model for the FC-HMARL VPP environment.
-
-Manuscript formulation
-----------------------
-
-PV output:
-
-    P_PV(t) = eta_PV * r(t) * P_PV_rated
-
-where the irradiance ratio r(t) is
-
-                    I(t)^2
-        ----------------------------------     0 <= I(t) < I_c
-                 I_c * I_STC
-
-r(t) = I(t) / I_STC                         I_c <= I(t) < I_STC
-
-       1                                     I(t) >= I_STC
-
-
-Definitions
------------
-I(t)
-    Solar irradiance at time t.
-
-I_c
-    Critical irradiance threshold.
-
-I_STC
-    Irradiance under standard test conditions.
-
-eta_PV
-    PV conversion efficiency coefficient used in the manuscript.
-
-P_PV_rated
-    Rated installed PV capacity of the microgrid.
-
-Important reconstruction note
------------------------------
-The manuscript provides the installed PV capacities for MG1-MG5,
-but it does not provide numerical values for eta_PV, I_c, or I_STC
-in the recovered model/configuration tables.
-
-Therefore these values are NOT hard-coded as manuscript parameters.
-They must be explicitly supplied when constructing the PV model.
-"""
-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -56,24 +8,6 @@ import numpy as np
 
 @dataclass
 class PVParameters:
-    """
-    Parameters of one photovoltaic generation system.
-
-    Parameters
-    ----------
-    rated_capacity_kw:
-        Installed/rated PV capacity of the microgrid [kW].
-
-    efficiency:
-        PV efficiency coefficient eta_PV from the manuscript.
-
-    critical_irradiance_w_m2:
-        Critical irradiance I_c [W/m^2].
-
-    stc_irradiance_w_m2:
-        Standard-test-condition irradiance I_STC [W/m^2].
-    """
-
     rated_capacity_kw: float
     efficiency: float
     critical_irradiance_w_m2: float
