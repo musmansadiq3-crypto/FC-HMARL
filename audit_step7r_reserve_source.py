@@ -1,24 +1,6 @@
-"""
-Step 7R-B: Source-level audit of BESS/reserve coupling.
-
-Diagnostic only. This script DOES NOT modify any project file.
-
-It scans the physical-environment and action-mapping source for the exact
-implementation of:
-- BESS power limits / SOC feasibility
-- reserve action mapping
-- reserve revenue calculation
-- microgrid/environment coupling
-- any reserve-headroom or reserve-energy constraints
-
-Run from the FC_HMARL project root.
-"""
-
 from pathlib import Path
 import re
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
-
 FILES = [
     PROJECT_ROOT / "environment" / "bess.py",
     PROJECT_ROOT / "environment" / "market.py",
@@ -27,7 +9,6 @@ FILES = [
     PROJECT_ROOT / "environment" / "constraints.py",
     PROJECT_ROOT / "marl" / "action_mapper.py",
 ]
-
 KEYWORDS = [
     "reserve",
     "headroom",
@@ -41,8 +22,6 @@ KEYWORDS = [
     "reserve_revenue",
     "reserve_power",
 ]
-
-
 def print_context(path: Path, keyword: str, radius: int = 5):
     text = path.read_text(encoding="utf-8")
     lines = text.splitlines()
@@ -51,16 +30,13 @@ def print_context(path: Path, keyword: str, radius: int = 5):
         i for i, line in enumerate(lines)
         if keyword.lower() in line.lower()
     ]
-
     if not matches:
         return False
-
     print()
     print("-" * 100)
     print(f"FILE: {path.relative_to(PROJECT_ROOT)}")
     print(f"KEYWORD: {keyword}")
     print("-" * 100)
-
     shown_ranges = []
 
     for idx in matches:
