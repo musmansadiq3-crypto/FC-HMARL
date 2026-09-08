@@ -1,33 +1,12 @@
-"""
-FC-HMARL training-history logging and convergence visualization.
-
-This module converts TrainingHistory produced by marl.training_loop
-into publication-ready numerical records.
-
-It does NOT modify the SAC algorithm or training process.
-It only records the results after training.
-
-Outputs
--------
-1. CSV training history
-2. Moving-average convergence data
-3. Convergence figure
-"""
-
 from __future__ import annotations
-
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
-
 # ============================================================
 # HELPER FUNCTIONS
 # ============================================================
-
 def calculate_moving_average(
     values,
     window: int = 20,
@@ -35,11 +14,7 @@ def calculate_moving_average(
     """
     Calculate trailing moving-average return.
 
-    For the first episodes where fewer than `window`
-    observations exist, all available previous episodes
-    are used.
     """
-
     array = np.asarray(
         values,
         dtype=np.float64,
@@ -92,8 +67,6 @@ def calculate_moving_average(
         )
 
     return output
-
-
 # ============================================================
 # EXTRACT HISTORY
 # ============================================================
@@ -104,18 +77,8 @@ def training_history_to_dataframe(
 ) -> pd.DataFrame:
     """
     Convert FC-HMARL TrainingHistory into a pandas DataFrame.
-
-    Expected EpisodeStatistics attributes
     --------------------------------------
-    episode
-    steps
-    local_returns
-    coordinator_return
-    total_return
-    local_update_count
-    coordinator_update_count
-    terminated_early
-    """
+        """
 
     if history is None:
         raise ValueError(
@@ -289,7 +252,6 @@ def training_history_to_dataframe(
     dataframe = pd.DataFrame(
         records
     )
-
     # ========================================================
     # MOVING AVERAGES
     # ========================================================
@@ -345,7 +307,6 @@ def training_history_to_dataframe(
 
     return dataframe
 
-
 # ============================================================
 # SAVE CSV
 # ============================================================
@@ -385,8 +346,6 @@ def save_training_history_csv(
     )
 
     return output_path
-
-
 # ============================================================
 # CONVERGENCE FIGURE
 # ============================================================
@@ -487,8 +446,6 @@ def save_convergence_figure(
     )
 
     return output_path
-
-
 # ============================================================
 # RETURN COMPONENT FIGURE
 # ============================================================
@@ -585,8 +542,6 @@ def save_return_components_figure(
     )
 
     return output_path
-
-
 # ============================================================
 # UPDATE COUNT FIGURE
 # ============================================================
