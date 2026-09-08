@@ -1,51 +1,12 @@
-"""
-STEP 7R-P2 — FINAL V3 POST-TRAINING ABLATION, LOCKED CHECKPOINT 200
-
-IMPORTANT
----------
-These are inference-time diagnostic ablations of the already-trained final
-policy. They are NOT separately retrained ablation agents.
-
-Modes
------
-1) full_fc_hmarl
-2) no_confidence_awareness
-   - S_pred = Z_hat instead of Phi * Z_hat
-   - Phi = 1 for the confidence-risk term
-3) no_energy_sharing
-   - all local sharing commands disabled
-   - coordinator sharing multiplier disabled
-4) no_upper_level_coordination
-   - trained local policies retained
-   - coordinator action replaced by a fixed non-adaptive action
-   - reserve disabled
-   - local sharing allowed to pass without adaptive coordinator scaling
-
-Protocol
---------
-- FINAL V3 physical environment
-- locked checkpoint 200
-- all 1268 rolling 24-hour TEST windows
-- deterministic actions
-- no learning / no replay writes
-- no checkpoint ranking or re-selection
-"""
-
 from __future__ import annotations
-
 import copy
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
-
 import evaluate_final_v3_benchmark_locked200 as bench
-
-
 ROOT = Path(__file__).resolve().parent
-
 LOCKED_SUMMARY = (
     ROOT
     / "outputs"
@@ -148,9 +109,6 @@ def modified_actions(
     elif mode == "no_upper_level_coordination":
 
         coordinator_action[:] = 0.0
-
-        # Current reconstructed software coordinator action:
-        # [market/grid-related, reserve, sharing multiplier]
         if coordinator_action.size >= 1:
             coordinator_action[0] = -1.0
 
