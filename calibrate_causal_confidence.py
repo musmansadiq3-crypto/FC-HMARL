@@ -1,61 +1,5 @@
-# ============================================================
-# FC-HMARL
-# STEP 7H
-# VALIDATION-BASED FORECAST SELECTION + CAUSAL CONFIDENCE
-# ============================================================
-#
-# PURPOSE
-# -------
-# 1. Generate validation predictions from the already-trained
-#    original Transformer checkpoint.
-#
-# 2. Compare three forecast candidates on VALIDATION only:
-#
-#       - daily seasonal
-#       - weekly seasonal
-#       - original Transformer
-#
-# 3. Select the best candidate independently for:
-#
-#       PV
-#       Load
-#       EV
-#       Price
-#
-#    using VALIDATION MAE.
-#
-# 4. Calculate horizon-dependent causal confidence:
-#
-#       ebar_PV,h
-#       ebar_Load,h
-#       ebar_EV,h
-#       ebar_Price,h
-#
-#       epsilon_RL,h =
-#           sqrt(ebar_PV,h^2 + ebar_Load,h^2)
-#
-#       omega_RL,h =
-#           exp(-epsilon_RL,h)
-#
-#       epsilon_EM,h =
-#           sqrt(ebar_EV,h^2 + ebar_Price,h^2)
-#
-#       Phi_h =
-#           exp(-(epsilon_RL,h + epsilon_EM,h))
-#
-# 5. Apply the VALIDATION-selected methods to TEST.
-#
-# IMPORTANT
-# ---------
-# Test data are NOT used to choose forecasting methods.
-#
-# No forecasting model is retrained in this script.
-#
-# ============================================================
-
 from pathlib import Path
 import json
-
 import numpy as np
 import pandas as pd
 import torch
@@ -64,24 +8,15 @@ from forecasting.model import (
     ForecastModelConfig,
     MultiHorizonTransformerForecaster,
 )
-
 from forecasting.confidence import (
     calculate_renewable_load_uncertainty,
     calculate_renewable_load_confidence,
     calculate_ev_market_uncertainty,
     calculate_global_confidence,
 )
-
-
-# ============================================================
-# 1. PATHS
-# ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
-
-
 SEQUENCE_FILE = (
     PROJECT_ROOT
     / "data"
@@ -89,8 +24,6 @@ SEQUENCE_FILE = (
     / "forecasting"
     / "forecasting_sequences.npz"
 )
-
-
 SCALER_FILE = (
     PROJECT_ROOT
     / "data"
@@ -99,31 +32,24 @@ SCALER_FILE = (
     / "forecasting_scaler.csv"
 )
 
-
 BEST_MODEL_FILE = (
     PROJECT_ROOT
     / "outputs"
     / "checkpoints"
     / "best_real_forecasting_model.pt"
 )
-
-
 TEST_TRANSFORMER_FILE = (
     PROJECT_ROOT
     / "outputs"
     / "forecasting"
     / "real_forecasting_test_predictions.npz"
 )
-
-
 OUTPUT_DIR = (
     PROJECT_ROOT
     / "outputs"
     / "forecasting"
     / "causal_confidence"
 )
-
-
 VALIDATION_TRANSFORMER_FILE = (
     OUTPUT_DIR
     / "validation_transformer_predictions.npz"
@@ -1228,23 +1154,10 @@ validation_absolute_error = np.abs(
     y_val
     - hybrid_val_norm
 )
-
-
-# ------------------------------------------------------------
-# Mean absolute normalized error for each horizon.
-#
-# Shape:
-#
-#   [24, 4]
-#
-# No test actual values are used here.
-# ------------------------------------------------------------
-
 mean_error_by_horizon = np.mean(
     validation_absolute_error,
     axis=0,
 )
-
 
 mean_pv_error = mean_error_by_horizon[
     :,
@@ -1268,11 +1181,6 @@ mean_price_error = mean_error_by_horizon[
     :,
     PRICE_INDEX
 ]
-
-
-# ============================================================
-# 16. CAUSAL CONFIDENCE EQUATIONS
-# ============================================================
 
 epsilon_RL = (
     calculate_renewable_load_uncertainty(
@@ -1320,10 +1228,6 @@ Phi_causal = (
 )
 
 
-# ============================================================
-# 17. DIRECT EQUATION CHECK
-# ============================================================
-
 epsilon_RL_direct = np.sqrt(
     mean_pv_error ** 2
     + mean_load_error ** 2
@@ -1367,11 +1271,6 @@ if not np.allclose(
     raise RuntimeError(
         "Causal confidence formula mismatch."
     )
-
-
-# ============================================================
-# 18. SAVE 24-HOUR CAUSAL CONFIDENCE PROFILE
-# ============================================================
 
 confidence_df = pd.DataFrame(
     {
@@ -1448,20 +1347,6 @@ print(
     f"Max causal Phi  : "
     f"{np.max(Phi_causal):.8f}"
 )
-
-
-# ============================================================
-# 19. TEST EVALUATION
-# ============================================================
-#
-# IMPORTANT:
-#
-# Forecast method selection has already finished.
-#
-# Test data are evaluated ONLY now.
-#
-# ============================================================
-
 section(
     "LEAKAGE-FREE FINAL TEST RESULTS"
 )
