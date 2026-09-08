@@ -114,17 +114,6 @@ def prepare_datetime_index(
     data: pd.DataFrame,
     timestamp_column: Optional[str] = "timestamp",
 ) -> pd.DataFrame:
-    """
-    Convert timestamp information to a sorted DatetimeIndex.
-
-    The function accepts either:
-
-    1. a timestamp column, or
-    2. an already existing DatetimeIndex.
-
-    Duplicate timestamps are retained here; hourly aggregation later
-    handles multiple observations within the same hour.
-    """
 
     frame = ensure_dataframe(
         data
@@ -178,33 +167,6 @@ def convert_to_hourly(
     timestamp_column: Optional[str] = "timestamp",
     aggregation: str = "mean",
 ) -> pd.DataFrame:
-    """
-    Convert a time-indexed dataset to hourly resolution.
-
-    Parameters
-    ----------
-    data:
-        Input DataFrame.
-
-    timestamp_column:
-        Timestamp column when the input does not already use a
-        DatetimeIndex.
-
-    aggregation:
-        Aggregation used when multiple measurements occur in one hour.
-
-        Supported:
-            "mean"
-            "sum"
-            "median"
-            "first"
-            "last"
-
-    Notes
-    -----
-    The manuscript states hourly conversion but does not identify the
-    aggregation operator. Therefore this is configurable.
-    """
 
     frame = prepare_datetime_index(
         data=data,
@@ -261,8 +223,6 @@ def convert_to_hourly(
         hourly = resampler.last()
 
     return hourly
-
-
 # ============================================================
 # MISSING-DATA INTERPOLATION
 # ============================================================
@@ -461,19 +421,7 @@ def filter_and_interpolate_outliers(
     interpolation_method: str = "linear",
     columns: Optional[Sequence[str]] = None,
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """
-    Complete manuscript-consistent abnormal-data treatment.
-
-    Sequence:
-
-        three-sigma detection
-                ↓
-        abnormal value -> NaN
-                ↓
-        linear interpolation
-
-    This preserves the regular hourly timeline.
-    """
+  
 
     filtered, mask = (
         replace_three_sigma_outliers_with_nan(
@@ -491,8 +439,6 @@ def filter_and_interpolate_outliers(
     )
 
     return reconstructed, mask
-
-
 # ============================================================
 # MIN-MAX SCALER
 # ============================================================
@@ -730,8 +676,6 @@ class DataFrameMinMaxScaler:
             }
             for column in self.columns_
         }
-
-
 # ============================================================
 # CHRONOLOGICAL 70 / 15 / 15 SPLIT
 # ============================================================
@@ -746,18 +690,7 @@ def chronological_split(
     pd.DataFrame,
     pd.DataFrame,
 ]:
-    """
-    Chronologically divide a time-series dataset.
-
-    Manuscript ratios:
-
-        training   = 70%
-        validation = 15%
-        testing    = 15%
-
-    No random shuffling is performed.
-    """
-
+    
     frame = ensure_dataframe(
         data
     )
@@ -834,8 +767,6 @@ def chronological_split(
         validation,
         test,
     )
-
-
 # ============================================================
 # COMPLETE PREPROCESSING PIPELINE
 # ============================================================
@@ -846,48 +777,7 @@ def preprocess_forecasting_data(
         PreprocessingConfig
     ] = None,
 ) -> Dict[str, object]:
-    """
-    Execute the complete manuscript preprocessing chain.
-
-    Pipeline
-    --------
-    raw data
-        ↓
-    datetime index
-        ↓
-    hourly conversion
-        ↓
-    linear interpolation of missing measurements
-        ↓
-    three-sigma abnormal-sample detection
-        ↓
-    abnormal values -> NaN
-        ↓
-    linear interpolation
-        ↓
-    chronological 70/15/15 split
-        ↓
-    fit min-max scaler on training data
-        ↓
-    transform train/validation/test
-
-    Returns
-    -------
-    dict containing:
-        hourly_data
-        cleaned_data
-        outlier_mask
-        train_raw
-        validation_raw
-        test_raw
-        train_scaled
-        validation_scaled
-        test_scaled
-        scaler
-        config
-    """
-
-    if config is None:
+      if config is None:
         config = PreprocessingConfig()
 
     config.validate()
