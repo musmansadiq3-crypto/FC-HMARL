@@ -54,7 +54,6 @@ BEST_MODEL_FILE = (
     CHECKPOINT_DIR
     / "best_real_forecasting_model.pt"
 )
-
 FINAL_MODEL_FILE = (
     OUTPUT_DIR
     / "final_real_forecasting_model.pt"
