@@ -1,41 +1,7 @@
-# ============================================================
-# FC-HMARL
-# STEP 3A - ACN-DATA RAW EV SESSION INSPECTION
-# ============================================================
-#
-# Purpose:
-#   Inspect the completed raw ACN-Data EV session dataset
-#   BEFORE preprocessing.
-#
-# This script:
-#   - reads the merged ACN JSON file
-#   - checks structure
-#   - counts sessions
-#   - verifies important fields
-#   - checks timestamps
-#   - checks delivered energy
-#   - checks session durations
-#   - checks stations/sites
-#   - checks duplicates
-#   - inspects userInputs
-#
-# This script DOES NOT:
-#   - clean records
-#   - interpolate data
-#   - calculate SOC
-#   - assume battery capacities
-#   - construct EV charging profiles
-#   - normalize the data
-#
-# ============================================================
-
-
 from pathlib import Path
 import json
 from collections import Counter
 import pandas as pd
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
@@ -151,24 +117,6 @@ for file_path in files:
         f"{file_path.name:45s} "
         f"| {size_mb:10.3f} MB"
     )
-
-
-# ============================================================
-# 6. SELECT CORRECT ACN FILE
-# ============================================================
-#
-# IMPORTANT:
-# We directly select acndata_sessions.json.
-#
-# We do NOT simply select the first JSON file because
-# the directory may also contain:
-#
-#   acn_failed_months.json
-#   checkpoint files
-#   monthly downloads
-#
-# ============================================================
-
 subsection(
     "SELECTED ACN DATASET"
 )
