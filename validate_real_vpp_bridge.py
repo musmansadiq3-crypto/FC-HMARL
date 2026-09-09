@@ -1,39 +1,6 @@
-# ============================================================
-# FC-HMARL
-# STEP 7K
-# REAL DATA -> PHYSICAL VPP -> TRAINING BRIDGE VALIDATION
-# ============================================================
-#
-# This script DOES NOT train the SAC agents.
-#
-# It verifies that:
-#
-#   Real/scaled PV
-#   Real/scaled Load
-#   Real/scaled EV demand
-#   Real market-price shape
-#   Real causal confidence-aware S_pred
-#
-# successfully pass through:
-#
-#   VPPEnvironment
-#       ->
-#   FCHMARLVPPTrainingBridge
-#       ->
-#   FC-HMARL observations/rewards
-#
-#
-# IMPORTANT:
-# Several mappings below are reconstruction choices because
-# the manuscript does not specify the exact mapping from the
-# benchmark data sets to individual MGs.
-# ============================================================
-
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-
 # ------------------------------------------------------------
 # PHYSICAL ENVIRONMENT
 # ------------------------------------------------------------
@@ -519,24 +486,6 @@ if len(predictive_states) < 24:
         "At least 24 rolling forecast samples "
         "are required."
     )
-
-
-# ============================================================
-# 8. ROLLING 24-HOUR EPISODE
-# ============================================================
-#
-# For decision time t:
-#
-# predictive_states[t]
-#     = 24-hour forecast available at time t
-#
-# actual_original[t, 0, :]
-#     = realized/current physical value associated with
-#       the first forecast lead.
-#
-# This avoids inserting future actual values into the state.
-#
-# ============================================================
 
 section(
     "BUILDING ROLLING 24-HOUR REAL-DATA EPISODE"
