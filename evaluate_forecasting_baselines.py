@@ -1,33 +1,6 @@
-# ============================================================
-# FC-HMARL
-# STEP 7C - FORECASTING BASELINE COMPARISON
-# ============================================================
-#
-# Compares the trained Transformer against:
-#
-#   1. Persistence baseline
-#      Future 24 h = last observed value
-#
-#   2. Daily seasonal naive baseline
-#      Future hour h = value from same hour yesterday
-#
-#   3. Transformer raw predictions
-#
-#   4. Transformer physically clipped predictions
-#      PV >= 0
-#      Load >= 0
-#      EV >= 0
-#
-# No retraining is performed.
-#
-# ============================================================
-
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-
-
 # ============================================================
 # 1. PATHS
 # ============================================================
@@ -79,9 +52,7 @@ FEATURE_NAMES = [
     "price_usd_per_kwh",
 ]
 
-
 EPSILON = 1e-8
-
 
 # ============================================================
 # 2. HELPERS
@@ -370,32 +341,19 @@ persistence_prediction = np.repeat(
 
     axis=1,
 )
-
-
 # ============================================================
 # 8. DAILY SEASONAL BASELINE
 # ============================================================
-#
-# The final 24 hours of the 168-hour historical window
-# correspond to the previous day.
-#
-# Use yesterday's 24-hour profile as tomorrow's forecast.
-# ============================================================
-
 seasonal_prediction = X_test[
     :,
     -24:,
     :
 ].copy()
-
-
 if seasonal_prediction.shape != actual.shape:
 
     raise RuntimeError(
         "Seasonal prediction shape mismatch."
     )
-
-
 # ============================================================
 # 9. PHYSICALLY CLIPPED TRANSFORMER
 # ============================================================
@@ -403,8 +361,6 @@ if seasonal_prediction.shape != actual.shape:
 transformer_clipped = (
     transformer_prediction.copy()
 )
-
-
 # PV cannot be negative
 
 transformer_clipped[
@@ -484,8 +440,6 @@ models = {
     "Daily_seasonal":
         seasonal_prediction,
 }
-
-
 # ============================================================
 # 11. EVALUATE
 # ============================================================
@@ -493,11 +447,7 @@ models = {
 section(
     "BASELINE COMPARISON"
 )
-
-
 rows = []
-
-
 for model_name, prediction in models.items():
 
     print()
@@ -509,7 +459,6 @@ for model_name, prediction in models.items():
     print(
         "-" * 80
     )
-
 
     for feature_index, feature_name in enumerate(
         FEATURE_NAMES
