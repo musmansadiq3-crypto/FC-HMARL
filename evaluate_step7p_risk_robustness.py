@@ -1,32 +1,10 @@
-"""
-Step 7P: Risk and robustness comparison
-Passive grid-only vs rule-based BESS EMS vs FC-HMARL
-
-Uses the already-generated Step 7O-B held-out TEST episode results.
-NO retraining. NO checkpoint selection. NO TEST-driven tuning.
-
-Risk metrics:
-- Mean / standard deviation / median
-- Worst and best episode
-- 95% VaR of episode net market cost
-- 95% CVaR of episode net market cost
-- Lower-tail 5% VaR/CVaR of episode return
-- Coefficient of variation of episode net market cost
-- Constraint-violation counts
-"""
-
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
-
 INPUT_FILE = (
     PROJECT_ROOT
     / "outputs"
