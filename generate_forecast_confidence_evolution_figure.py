@@ -1,15 +1,12 @@
 from pathlib import Path as FilePath
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.gridspec as gridspec
 from matplotlib.patches import Patch
-
 ROOT = FilePath(__file__).resolve().parent
 DATA_PATH = ROOT / "forecasting" / "confidence_data" / "forecast_confidence_evolution_data.xlsx"
 OUTPUT_DIR = ROOT / "outputs" / "figures"
-
 plt.rcParams["font.family"] = "Times New Roman"
 plt.rcParams["font.size"] = 22
 plt.rcParams["font.weight"] = "bold"
@@ -21,7 +18,6 @@ plt.rcParams["xtick.major.width"] = 2.5
 plt.rcParams["ytick.major.width"] = 2.5
 plt.rcParams["xtick.minor.visible"] = True
 plt.rcParams["ytick.minor.visible"] = True
-
 if not DATA_PATH.exists():
     raise FileNotFoundError(
         f"Data file not found:\n{DATA_PATH}\n\n"
