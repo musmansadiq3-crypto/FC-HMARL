@@ -1,35 +1,8 @@
-# ============================================================
-# FC-HMARL
-# STEP 7E - PREPARE SEASONAL-RESIDUAL FORECASTING DATASET
-# ============================================================
-#
-# Selected seasonal structure from Step 7D:
-#
-#   PV    -> Daily seasonal baseline (t - 24 h)
-#   Load  -> Daily seasonal baseline (t - 24 h)
-#   EV    -> Weekly seasonal baseline (t - 168 h)
-#   Price -> Daily seasonal baseline (t - 24 h)
-#
-# Transformer target:
-#
-#   residual = actual_future - seasonal_baseline
-#
-# Final future forecast later:
-#
-#   forecast = seasonal_baseline + predicted_residual
-#
-# No neural-network training is performed in this step.
-#
-# ============================================================
-
 from pathlib import Path
 import numpy as np
-
-
 # ============================================================
 # 1. PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
