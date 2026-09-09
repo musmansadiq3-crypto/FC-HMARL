@@ -1,56 +1,12 @@
-# ============================================================
-# FC-HMARL
-# STEP 5B - PREPARE REPRESENTATIVE ANNUAL EV FORECASTING PROFILE
-# ============================================================
-#
-# Input:
-#   data/processed/ev/ACN_EV_Hourly_Profile_2018_2020.csv
-#
-# Output:
-#   data/processed/ev/ACN_EV_Representative_Annual_8760.csv
-#
-# Purpose:
-#   Convert the multi-year ACN hourly EV charging series into
-#   one representative non-leap annual profile with exactly
-#   8760 hourly values.
-#
-# Method:
-#   1. Keep the observed local calendar structure.
-#   2. Exclude Feb 29.
-#   3. Group by:
-#        month, day, hour
-#   4. Average available ACN observations across source years.
-#   5. Build a complete non-leap calendar with 8760 hours.
-#   6. If any month-day-hour combination is unavailable,
-#      fill transparently from the same month-hour mean,
-#      then hour-of-day mean as fallback.
-#
-# IMPORTANT:
-#   - This is a representative profile derived from
-#     2018-2020 ACN observations.
-#   - It is NOT claimed to be measured 2022 EV data.
-#   - No SOC is generated.
-#   - No battery capacity is generated.
-#   - No V2G discharge is generated.
-#   - No scaling to manuscript EV fleet sizes is done here.
-#   - No 96-point trajectory is generated.
-#
-# ============================================================
-
-
 from pathlib import Path
 import pandas as pd
 import numpy as np
-
-
 # ============================================================
 # 1. PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
-
 INPUT_FILE = (
     PROJECT_ROOT
     / "data"
@@ -58,7 +14,6 @@ INPUT_FILE = (
     / "ev"
     / "ACN_EV_Hourly_Profile_2018_2020.csv"
 )
-
 OUTPUT_DIR = (
     PROJECT_ROOT
     / "data"
@@ -75,14 +30,7 @@ OUTPUT_FILE = (
 # ============================================================
 # 2. REPRESENTATIVE CALENDAR YEAR
 # ============================================================
-#
-# 2021 is used only as a convenient non-leap calendar template.
-# It does NOT mean the ACN observations were collected in 2021.
-# ============================================================
-
 REPRESENTATIVE_CALENDAR_YEAR = 2021
-
-
 # ============================================================
 # 3. HELPER FUNCTIONS
 # ============================================================
@@ -908,20 +856,6 @@ print(
     f"Hours outside bounds: "
     f"{three_sigma_flag.sum():,}"
 )
-
-
-# ============================================================
-# 24. DO NOT REPLACE THREE-SIGMA VALUES HERE
-# ============================================================
-#
-# Reason:
-#   We first want to preserve the representative annual profile
-#   exactly as constructed from ACN observations.
-#
-# A later common preprocessing stage can apply the manuscript's
-# three-sigma filtering consistently across PV, load, EV, price.
-# ============================================================
-
 
 # ============================================================
 # 25. PROFILE QUALITY CHECK
