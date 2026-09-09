@@ -1,38 +1,11 @@
-"""
-Step 7O-B: FC-HMARL vs passive grid-only vs active rule-based BESS EMS
-on the same 30 held-out TEST episodes.
-
-IMPORTANT
----------
-The rule-based EMS is a transparent reconstructed benchmark, not a manuscript-
-claimed controller and not an optimized MPC/EMS.
-
-Rule-based policy:
-1. No inter-MG energy sharing.
-2. No reserve participation.
-3. If PV surplus exists -> charge BESS.
-4. If net deficit exists and SOC > 50% -> discharge BESS.
-5. Otherwise BESS idles.
-6. Grid automatically closes the remaining physical balance.
-
-The BESS command magnitude is proportional to the local net imbalance and is
-converted to the normalized local action using the manuscript microgrid BESS
-rated powers.
-"""
-
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
-
 import evaluate_real_fc_hmarl_test as t
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
 OUTPUT_DIR = (
     PROJECT_ROOT
@@ -40,20 +13,15 @@ OUTPUT_DIR = (
     / "evaluation"
     / "step7o_rule_based_comparison"
 )
-
 LOCKED_CHECKPOINT = 1000
 NUMBER_OF_MGS = 5
 EPISODE_LENGTH = 24
-
 # Manuscript Table-2 BESS rated powers, kW.
 BESS_RATED_POWER_KW = np.array(
     [250.0, 300.0, 250.0, 300.0, 350.0],
     dtype=float,
 )
-
 SOC_DISCHARGE_THRESHOLD = 0.50
-
-
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--checkpoint", type=int, default=1000)
@@ -142,8 +110,6 @@ def rule_based_actions(observation):
         local_actions=local_actions,
         coordinator_action=coordinator_action,
     )
-
-
 def evaluate(
     mode,
     bridge,
@@ -160,7 +126,6 @@ def evaluate(
         total_return = 0.0
         local_return = np.zeros(NUMBER_OF_MGS, dtype=float)
         coordinator_return = 0.0
-
         grid_import = 0.0
         grid_export = 0.0
         purchase_cost = 0.0
@@ -170,11 +135,9 @@ def evaluate(
         bess_throughput = 0.0
         sharing = 0.0
         sharing_loss = 0.0
-
         grid_power = []
         balance_violations = 0
         transformer_violations = 0
-
         with torch.no_grad():
             for _ in range(EPISODE_LENGTH):
 
