@@ -1,57 +1,19 @@
-# ============================================================
-# FC-HMARL FINAL V3
-# VALIDATION CHECKPOINT SELECTION
-# ============================================================
-#
-# PURPOSE
-# -------
-# Evaluate FINAL V3 checkpoints on VALIDATION only.
-# No training, no optimizer updates, no replay-buffer writes.
-# Deterministic SAC actions only.
-#
-# IMPORTANT
-# ---------
-# This program expects a validation RL archive with the same core
-# schema used by the training archive:
-#   current_actual_original
-#   current_actual_normalized
-#   forecast_original
-#   forecast_normalized
-#   predictive_state_matrix
-#   predictive_state_flat
-#   causal_confidence_24h
-#
-# Default validation archive:
-#   outputs/rl_data/real_rl_validation_archive.npz
-#
-# It imports the FINAL V3 training launcher so the physical VPP,
-# action mapper, state builder, reward builder, and scaling constants
-# are exactly the same as those used in training.
-# ============================================================
-
 from __future__ import annotations
-
 import argparse
 import csv
 import importlib.util
 import json
 from pathlib import Path
-
 import numpy as np
 import torch
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
-
 V3_LAUNCHER = PROJECT_ROOT / "train_real_fc_hmarl_final_v3.py"
-
 VALIDATION_ARCHIVE = (
     PROJECT_ROOT
     / "outputs"
     / "rl_data"
     / "real_rl_validation_archive.npz"
 )
-
 CHECKPOINT_DIRECTORY = (
     PROJECT_ROOT
     / "outputs"
