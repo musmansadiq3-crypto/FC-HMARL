@@ -1,53 +1,8 @@
-# ============================================================
-# FC-HMARL
-# STEP 7R-N
-# PREPARE LOCKED-CHECKPOINT REAL-DATA RL TEST ARCHIVE
-# ============================================================
-#
-# PURPOSE
-# -------
-# Build the real-data TEST archive used only for final evaluation.
-# FC-HMARL checkpoint selection.
-#
-# IMPORTANT:
-#
-#   TRAIN       -> RL training only
-#   VALIDATION  -> forecast-method/confidence/checkpoint selection (already frozen)
-#                  + previously calibrated Phi
-#   TEST         -> final evaluation only
-#
-# The TEST split is NOT loaded into RL validation variables.
-#
-#
-# Final validation-selected forecast methods:
-#
-#   PV    -> daily seasonal
-#   Load  -> Transformer
-#   EV    -> Transformer
-#   Price -> daily seasonal
-#
-#
-# Predictive state:
-#
-#   S_pred = Phi * Z_hat
-#
-# Output:
-#
-#   current physical values    : (5941, 4)
-#   forecasts                  : (5941, 24, 4)
-#   S_pred                     : (5941, 24, 4)
-#   flattened S_pred           : (5941, 96)
-#
-# ============================================================
-
 from pathlib import Path
 import json
-
 import numpy as np
 import pandas as pd
 import torch
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
