@@ -1,30 +1,17 @@
-"""
-Step 7N-B: Operational, economic, and risk evaluation of locked FC-HMARL
-checkpoint 1000 on the same 30 held-out TEST episodes.
-
-No learning, no checkpoint selection, no TEST-driven tuning.
-"""
-
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
-
 import evaluate_real_fc_hmarl_test as t
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
 OUTPUT_DIR = PROJECT_ROOT / "outputs" / "evaluation" / "step7n_operational_economic"
 LOCKED_CHECKPOINT = 1000
 DEGRADATION_USD_PER_KWH = 0.02
 RISK_AVERSION = 1.0
 CVAR_ALPHA = 0.95
-
-
 def empirical_upper_cvar(values, alpha=0.95):
     x = np.asarray(values, dtype=float).reshape(-1)
     if x.size == 0:
@@ -32,8 +19,6 @@ def empirical_upper_cvar(values, alpha=0.95):
     var = float(np.quantile(x, alpha))
     tail = x[x >= var]
     return var, float(tail.mean()) if tail.size else var
-
-
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--checkpoint", type=int, default=1000)
@@ -41,8 +26,6 @@ def parse_args():
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--device", type=str, default="cpu")
     return p.parse_args()
-
-
 def main():
     args = parse_args()
     if args.checkpoint != LOCKED_CHECKPOINT:
