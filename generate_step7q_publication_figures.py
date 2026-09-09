@@ -1,25 +1,8 @@
-"""
-Step 7Q-A: Publication-quality FC-HMARL benchmark and risk figures.
-
-Uses only already validated result files:
-1) Step 7O-B three-way benchmark summary
-2) Step 7P risk/robustness summary
-
-No training, no model selection, no TEST tuning.
-
-Outputs:
-- Fig_7Q_A1_Benchmark_Comparison.png/.pdf
-- Fig_7Q_A2_Risk_Comparison.png/.pdf
-- Table_7Q_A_Benchmark_Risk.csv
-"""
-
 from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
-
 BENCHMARK_FILE = (
     PROJECT_ROOT / "outputs" / "evaluation"
     / "step7o_rule_based_comparison"
