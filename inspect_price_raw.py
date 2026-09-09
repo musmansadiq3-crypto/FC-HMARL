@@ -1,38 +1,10 @@
-# ============================================================
-# FC-HMARL
-# STEP 4A - PJM RAW ELECTRICITY PRICE INSPECTION
-# ============================================================
-#
-# Input:
-#   data/raw/price/price_pjm.zip
-#
-# Purpose:
-#   Inspect the downloaded PJM electricity-price archive,
-#   identify available files/years/market types, and inspect
-#   the 2019 Day-Ahead PJM-RTO price data.
-#
-# IMPORTANT:
-#   This script DOES NOT:
-#       - modify the raw ZIP
-#       - interpolate prices
-#       - remove outliers
-#       - normalize prices
-#       - map 2019 observations to 2022
-#       - create synthetic prices
-#
-# ============================================================
-
-
 from pathlib import Path
 import zipfile
 import io
 import pandas as pd
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
@@ -303,7 +275,6 @@ for name in files_2019:
         name
     )
 
-
 # ============================================================
 # 12. SEARCH FOR DAY-AHEAD FILES
 # ============================================================
@@ -358,9 +329,6 @@ else:
 
 # ============================================================
 # 13. INSPECT ALL 2019 CANDIDATES
-# ============================================================
-#
-# We inspect headers rather than assuming a filename.
 # ============================================================
 
 subsection(
@@ -644,7 +612,6 @@ if selected_file is not None:
             index=False
         )
     )
-
 
     # ========================================================
     # 19. MISSING VALUES
