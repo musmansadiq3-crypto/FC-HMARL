@@ -1,17 +1,8 @@
-"""
-Step 7N-A diagnostic:
-Inspect the exact physical/economic information exposed by one held-out TEST
-step before building the final operational/economic evaluator.
-"""
-
 import numpy as np
 import evaluate_real_fc_hmarl_test as t
-
 CHECKPOINT = 1000
 SEED = 42
 DEVICE = "cpu"
-
-
 def show(name, value, indent=0):
     pad = " " * indent
     if isinstance(value, dict):
@@ -109,7 +100,5 @@ def main():
                 print(f"{name}: ERROR reading value: {exc}")
 
     print("\n[OK] Step 7N-A inspection complete.")
-
-
 if __name__ == "__main__":
     main()
