@@ -1,59 +1,18 @@
-# ============================================================
-# FC-HMARL
-# STEP 7B - RIGOROUS REAL-DATA FORECASTING EVALUATION
-# ============================================================
-#
-# Uses the predictions already produced by Step 7A.
-#
-# No retraining is performed.
-#
-# Input:
-#   outputs/forecasting/
-#       real_forecasting_test_predictions.npz
-#
-# Output:
-#   outputs/forecasting/evaluation/
-#
-# Metrics:
-#   MAE
-#   RMSE
-#   MSE
-#   R2
-#   NMAE
-#   NRMSE
-#   CVRMSE
-#   MAPE
-#   sMAPE
-#
-# Additional evaluation:
-#   - daylight-only PV metrics
-#   - active-EV metrics
-#   - horizon-wise metrics h = 1,...,24
-#
-# ============================================================
-
-
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
-
 INPUT_FILE = (
     PROJECT_ROOT
     / "outputs"
     / "forecasting"
     / "real_forecasting_test_predictions.npz"
 )
-
 OUTPUT_DIR = (
     PROJECT_ROOT
     / "outputs"
@@ -80,8 +39,6 @@ SUMMARY_FILE = (
     OUTPUT_DIR
     / "forecasting_evaluation_summary.txt"
 )
-
-
 # ============================================================
 # 2. FEATURE DEFINITIONS
 # ============================================================
@@ -92,34 +49,12 @@ FEATURE_NAMES = [
     "ev_power_kw",
     "price_usd_per_kwh",
 ]
-
-
 # ============================================================
 # 3. SPECIAL THRESHOLDS
 # ============================================================
-#
-# PV:
-# Evaluate PV MAPE only when actual reference PV output is
-# clearly above zero.
-#
-# Since PV is represented using a 1-kW reference plant:
-# 0.05 kW = 5% of rated output.
-#
-# EV:
-# Evaluate active-EV percentage metrics when actual EV power
-# exceeds 1 kW.
-#
-# These thresholds are evaluation choices and are explicitly
-# documented. They are NOT claimed to be manuscript constants.
-# ============================================================
-
 PV_DAYLIGHT_THRESHOLD_KW = 0.05
-
 EV_ACTIVE_THRESHOLD_KW = 1.0
-
 EPSILON = 1e-8
-
-
 # ============================================================
 # 4. PRINT HELPERS
 # ============================================================
@@ -486,8 +421,6 @@ def calculate_metrics(
                 actual.size
             ),
     }
-
-
 # ============================================================
 # 6. START
 # ============================================================
