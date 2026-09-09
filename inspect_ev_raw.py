@@ -1510,7 +1510,6 @@ if (
     "disconnectTime"
     in parsed_timestamps
 ):
-
     invalid_order = (
 
         parsed_timestamps[
