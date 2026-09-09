@@ -1,63 +1,25 @@
-# ============================================================
-# FC-HMARL
-# STEP 7L-C
-# FIXED VALIDATION EVALUATION OF SAVED CHECKPOINTS
-# ============================================================
-#
-# PURPOSE
-# -------
-# Compare FC-HMARL checkpoints on the SAME fixed validation
-# episodes using deterministic SAC actions.
-#
-# Default comparison:
-#
-#     Episode-100 checkpoint
-#     Episode-200 checkpoint
-#
-# No learning occurs in this script.
-# No TEST data are loaded.
-#
-# Forecast selection:
-#     PV    -> daily seasonal
-#     Load  -> Transformer
-#     EV    -> Transformer
-#     Price -> daily seasonal
-#
-# Confidence:
-#     Validation-calibrated causal Phi
-#
-# ============================================================
-
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
-
-
 # ============================================================
 # EXISTING PROJECT MODULES
 # ============================================================
-
 from marl.state_builder import (
     StateBuilderConfig,
     HierarchicalStateBuilder,
 )
-
 from marl.rewards import (
     RewardConfig,
     HierarchicalRewardBuilder,
 )
-
 from marl.action_mapper import (
     ActionMapperConfig,
     FCHMARLActionMapper,
 )
-
 from marl.vpp_training_bridge import (
     FCHMARLVPPTrainingBridge,
     VPPTrainingBridgeConfig,
@@ -159,25 +121,6 @@ OUTPUT_DIRECTORY = (
     / "real_fc_hmarl_validation"
 )
 
-
-# ============================================================
-# FIXED EVALUATION SETTINGS
-# ============================================================
-
-NUMBER_OF_VALIDATION_EPISODES = 30
-RANDOM_SEED = 42
-
-FORECAST_HORIZON = 24
-FORECAST_FEATURES = 4
-
-# Immediate control action corresponds to horizon 1.
-USE_LEAD_ONE_CONFIDENCE = True
-
-
-# ============================================================
-# UTILITIES
-# ============================================================
-
 def section(title: str) -> None:
 
     print()
@@ -202,8 +145,6 @@ def inverse_transform(
         * ranges
         + minimums
     )
-
-
 # ============================================================
 # LOAD VALIDATION DATA
 # ============================================================
@@ -310,19 +251,11 @@ class ValidationData:
         # ----------------------------------------------------
         # Build validation-selected hybrid forecast
         # ----------------------------------------------------
-        #
-        # Daily seasonal forecast:
-        #
-        # The previous 24 hours are the last 24 samples in
-        # the 168-hour input window.
-        # ----------------------------------------------------
-
+        
         daily = (
             self.X_val[:, -24:, :]
             .copy()
         )
-
-
         hybrid = np.empty_like(
             daily,
             dtype=np.float32,
@@ -361,8 +294,6 @@ class ValidationData:
             )
             .astype(np.float32)
         )
-
-
         # ----------------------------------------------------
         # Inverse-transform forecast
         # ----------------------------------------------------
@@ -375,12 +306,8 @@ class ValidationData:
             )
             .astype(np.float32)
         )
-
-
         # ----------------------------------------------------
         # Actual current realization
-        #
-        # Only y_val[:,0,:] is used as the current physical
         # realization at each rolling decision.
         # ----------------------------------------------------
 
@@ -397,8 +324,6 @@ class ValidationData:
             )
             .astype(np.float32)
         )
-
-
         # ----------------------------------------------------
         # Causal confidence
         # ----------------------------------------------------
@@ -414,23 +339,17 @@ class ValidationData:
             raise RuntimeError(
                 "Phi_causal column was not found."
             )
-
-
         self.phi = (
             confidence_df[
                 "Phi_causal"
             ]
             .to_numpy(dtype=np.float32)
         )
-
-
         if self.phi.shape != (24,):
 
             raise RuntimeError(
                 "Causal Phi must contain 24 values."
             )
-
-
         # ----------------------------------------------------
         # S_pred = Phi * Z_hat
         # ----------------------------------------------------
@@ -677,8 +596,7 @@ class ValidationExogenousProvider:
 
         # ====================================================
         # LOAD
-        #
-        # IMPORTANT:
+       # IMPORTANT:
         # Fixed TRAINING scale only.
         # No validation-day maximum is used.
         # ====================================================
