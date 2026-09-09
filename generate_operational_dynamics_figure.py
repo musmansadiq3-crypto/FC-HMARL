@@ -1,17 +1,13 @@
 from pathlib import Path as FilePath
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.gridspec as gridspec
-
 ROOT = FilePath(__file__).resolve().parent
 DATA_PATH = ROOT / "evaluation" / "data" / "operational" / "fc_hmarl_operational_dynamics.xlsx"
 OUTPUT_DIR = ROOT / "outputs" / "figures"
-
 FONT_FAMILY = "Times New Roman"
 FONT_WEIGHT = "bold"
-
 GLOBAL_FONT_SIZE = 26
 TITLE_FONT_SIZE = 26
 AXIS_LABEL_FONT_SIZE = 26
@@ -19,12 +15,10 @@ TICK_LABEL_FONT_SIZE = 26
 LEGEND_FONT_SIZE = 18
 ANNOTATION_FONT_SIZE = 16
 STATS_BOX_FONT_SIZE = 14
-
 FIG_WIDTH = 18
 FIG_HEIGHT = 13
 GS_HSPACE = 0.53
 GS_WSPACE = 0.38
-
 SPINE_LINEWIDTH = 1.5
 TICK_MAJOR_WIDTH = 1.5
 TICK_MAJOR_SIZE = 5.0
