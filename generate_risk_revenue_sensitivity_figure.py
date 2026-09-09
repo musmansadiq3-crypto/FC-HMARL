@@ -1,15 +1,11 @@
 ﻿from pathlib import Path as FilePath
-
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import matplotlib.gridspec as gridspec
 from matplotlib.patches import Rectangle, Patch
-
-
 FONT_FAMILY = 'Times New Roman'
 FONT_WEIGHT = 'bold'
-
 GLOBAL_FONT_SIZE = 33
 TITLE_FONT_SIZE = 33
 AXIS_LABEL_FONT_SIZE = 33
@@ -18,12 +14,10 @@ LEGEND_FONT_SIZE = 27
 ANNOTATION_FONT_SIZE = 25
 DATA_LABEL_FONT_SIZE = 22         # Base size for bar labels (e.g., "$430")
 DATA_LABEL_DUAL_FONT_SIZE = 20    # Slightly smaller for dual-bar charts (Panel E)
-
 FIG_WIDTH = 30
 FIG_HEIGHT = 20
 GS_HSPACE = 0.42                  # Vertical space between rows
 GS_WSPACE = 0.2                  # Horizontal space between columns
-
 SPINE_LINEWIDTH = 2             # Plot border thickness
 TICK_MAJOR_WIDTH = 2.0
 TICK_MAJOR_SIZE = 10.0            # Very prominent ticks as requested
@@ -32,27 +26,21 @@ ERROR_BAR_LINEWIDTH = 2.0         # Thickness of error bars
 ERROR_BAR_CAPSIZE = 5.0          # Width of error bar caps
 ZERO_LINE_WIDTH = 1.5             # Thickness of the Y=0 baseline
 OPTIMAL_LINE_WIDTH = 2.0          # Thickness of the Panel F optimal threshold line
-
 BAR_WIDTH_SINGLE = 0.50           # Width of bars in single-bar panels
 BAR_WIDTH_DUAL = 0.25             # Width of bars in dual-bar panels (Panel E)
 SHADOW_OFFSET = 0.03              # Amount of shift for the 3D shadow effect
 SHADOW_ALPHA = 0.20               # Transparency of the shadow
 BAR_ALPHA = 0.85                  # Transparency of the main colored bars
 DATA_LABEL_OFFSET_REL = 0.04      # Percentage of data range for label offset
-
 C_POS = '#28B463'                 # Green for positive/above target
 C_NEG = '#E74C3C'                 # Red for negative/below target
 C_RISK = '#2E86C1'                # Blue for Risk Deviation (Panel E)
 C_CVAR = '#8E44AD'                # Purple for CVaR Deviation (Panel E)
 C_OPTIMAL = '#FFD700'             # Gold for Optimal Threshold (Panel F)
-
 HATCH_POS = '////'
 HATCH_NEG = '\\\\\\\\'
 HATCH_RISK = '////'
 HATCH_CVAR = '\\\\\\\\'
-
-
-
 plt.rcParams['font.family'] = FONT_FAMILY
 plt.rcParams['font.size'] = GLOBAL_FONT_SIZE
 plt.rcParams['font.weight'] = FONT_WEIGHT
@@ -60,7 +48,6 @@ plt.rcParams['axes.linewidth'] = SPINE_LINEWIDTH
 plt.rcParams['axes.edgecolor'] = 'black'
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
-
 plt.rcParams['xtick.labelsize'] = TICK_LABEL_FONT_SIZE
 plt.rcParams['ytick.labelsize'] = TICK_LABEL_FONT_SIZE
 plt.rcParams['xtick.major.width'] = TICK_MAJOR_WIDTH
@@ -446,19 +433,15 @@ legend_elements = [Patch(facecolor=C_POS, edgecolor='black', hatch=HATCH_POS, la
                    Patch(facecolor=C_OPTIMAL, edgecolor='black', label='Optimal Threshold')]
 ax6.legend(handles=legend_elements, loc='lower right', fontsize=LEGEND_FONT_SIZE, frameon=True, edgecolor='black', fancybox=False)
 
-
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 output_dir = OUTPUT_DIR
-
 svg_path = output_dir / 'Figure8_Risk_Revenue_Sensitivity.svg'
 pdf_path = output_dir / 'Figure8_Risk_Revenue_Sensitivity.pdf'
 png_path = output_dir / 'Figure8_Risk_Revenue_Sensitivity.png'
-
 plt.tight_layout()
 plt.savefig(svg_path, dpi=300, bbox_inches='tight', facecolor='white', edgecolor='none', format='svg')
 plt.savefig(pdf_path, dpi=300, bbox_inches='tight', facecolor='white', edgecolor='none', format='pdf')
 plt.savefig(png_path, dpi=300, bbox_inches='tight', facecolor='white', edgecolor='none', format='png')
-
 plt.show()
 
 print(f"\nSuccess: Figure 8 saved as SVG at '{svg_path}'")
