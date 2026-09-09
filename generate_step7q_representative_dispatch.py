@@ -1,47 +1,13 @@
-"""
-Step 7Q-B: Representative 24-hour FC-HMARL operational profiles.
-
-Purpose
--------
-Create publication-ready 24-hour figures from the locked checkpoint-1000
-FC-HMARL policy using the same held-out TEST episode set already used in
-Steps 7O/7P.
-
-Representative episode
-----------------------
-The episode whose FC-HMARL total return is closest to the median FC-HMARL
-return across the 30 held-out TEST episodes is selected automatically.
-
-No retraining.
-No checkpoint selection.
-No TEST-driven tuning.
-
-Outputs
--------
-outputs/figures/step7q/
-    Fig_7Q_B1_Load_PV_EV.png/.pdf
-    Fig_7Q_B2_Grid_BESS.png/.pdf
-    Fig_7Q_B3_BESS_SOC.png/.pdf
-    Fig_7Q_B4_Sharing_Price.png/.pdf
-    Table_7Q_B_Representative_24h.csv
-    Step_7Q_B_Metadata.json
-"""
 
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import torch
-
 import evaluate_real_fc_hmarl_test as t
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
-
 STEP7O_FILE = (
     PROJECT_ROOT
     / "outputs"
@@ -49,7 +15,6 @@ STEP7O_FILE = (
     / "step7o_rule_based_comparison"
     / "step7o_three_way_episode_results.csv"
 )
-
 OUTPUT_DIR = (
     PROJECT_ROOT
     / "outputs"
@@ -690,7 +655,6 @@ def main():
         json.dumps(metadata, indent=4),
         encoding="utf-8",
     )
-
     print()
     print("=" * 80)
     print("STEP 7Q-B SUMMARY")
