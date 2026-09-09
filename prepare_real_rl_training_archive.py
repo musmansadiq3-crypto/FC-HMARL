@@ -1,56 +1,11 @@
-# ============================================================
-# FC-HMARL
-# STEP 7L-A
-# PREPARE LEAKAGE-FREE REAL-DATA RL TRAINING ARCHIVE
-# ============================================================
-#
-# PURPOSE
-# -------
-# Build the real-data archive that will be consumed by
-# FC-HMARL training.
-#
-# IMPORTANT:
-#
-#   TRAIN split -> RL training
-#   VALIDATION   -> model/method selection + Phi calibration
-#   TEST         -> final evaluation only
-#
-# The TEST split is NOT used in this script.
-#
-#
-# Final validation-selected forecast methods:
-#
-#   PV    -> daily seasonal
-#   Load  -> Transformer
-#   EV    -> Transformer
-#   Price -> daily seasonal
-#
-#
-# Predictive state:
-#
-#   S_pred = Phi * Z_hat
-#
-# Output:
-#
-#   current physical values    : (5941, 4)
-#   forecasts                  : (5941, 24, 4)
-#   S_pred                     : (5941, 24, 4)
-#   flattened S_pred           : (5941, 96)
-#
-# ============================================================
-
 from pathlib import Path
 import json
-
 import numpy as np
 import pandas as pd
 import torch
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
