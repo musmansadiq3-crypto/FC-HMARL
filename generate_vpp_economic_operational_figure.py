@@ -1,24 +1,19 @@
 from pathlib import Path as FilePath
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
-
 ROOT = FilePath(__file__).resolve().parent
 DATA_PATH = ROOT / "evaluation" / "data" / "vpp_performance" / "vpp_economic_operational_performance.xlsx"
 OUTPUT_DIR = ROOT / "outputs" / "figures"
 BATTERY_RATED_POWER_KW = 1450.0
-
 FONT_FAMILY = "Times New Roman"
 FONT_WEIGHT = "bold"
 GLOBAL_FONT_SIZE = 24
-
 FIG_WIDTH = 16
 FIG_HEIGHT = 16
 FIG_DPI = 100
 SUBPLOT_HSPACE = 0.7
-
 PANEL_TITLE_SIZE = 30
 AXIS_LABEL_SIZE = 30
 TICK_LABEL_SIZE = 30
