@@ -1,74 +1,6 @@
-# ============================================================
-# FC-HMARL
-# STEP 7J
-# REAL CONFIDENCE-AWARE PREDICTIVE STATE INTEGRATION
-# ============================================================
-#
-# PURPOSE
-# -------
-# Connect the leakage-free, causal 24x4 predictive state:
-#
-#       S_pred = Phi * Z_hat
-#
-# generated in Step 7I to the EXISTING FC-HMARL
-# HierarchicalStateBuilder.
-#
-#
-# Manuscript local-agent state:
-#
-#   s_i = [
-#       SOC_i,
-#       P_i^PV,
-#       P_i^load,
-#       P_i^EV,
-#       P_i^grid,
-#       S_pred
-#   ]^T
-#
-#   5 scalar physical states + 96 predictive elements
-#
-#   dimension = 101
-#
-#
-# Manuscript coordinator state:
-#
-#   s_c = [
-#       P^VPP,
-#       E^share,
-#       lambda,
-#       S_pred
-#   ]^T
-#
-#   3 scalar system states + 96 predictive elements
-#
-#   dimension = 99
-#
-#
-# Global software state:
-#
-#   5 x 101 + 99 = 604
-#
-#
-# IMPORTANT
-# ---------
-# This script is an INTEGRATION VALIDATION step.
-#
-# The physical scalar values below are neutral placeholders
-# used ONLY to verify the real S_pred -> MARL state interface.
-#
-# We do NOT yet claim that zero physical values represent
-# actual VPP operation.
-#
-# The next stage will connect real/scaled exogenous physical
-# profiles to VPPTrainingBridge.
-#
-# ============================================================
-
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
-
 from marl.state_builder import (
     StateBuilderConfig,
     HierarchicalStateBuilder,
@@ -78,8 +10,6 @@ from marl.state_builder import (
     flatten_predictive_state,
     validate_predictive_state,
 )
-
-
 # ============================================================
 # 1. PATHS
 # ============================================================
@@ -438,19 +368,6 @@ print(
     "[OK] Existing state_builder accepts all "
     "real Step 7I predictive states."
 )
-
-
-# ============================================================
-# 7. NEUTRAL PHYSICAL VALUES FOR INTERFACE VALIDATION
-# ============================================================
-#
-# These values are NOT simulation results.
-#
-# They are neutral placeholders used only to test the state
-# interface before real physical exogenous profiles are wired
-# into VPPTrainingBridge.
-#
-# ============================================================
 
 local_soc = np.zeros(
     NUMBER_OF_MICROGRIDS,
@@ -877,24 +794,9 @@ print(
     f"+ {EXPECTED_COORDINATOR_DIMENSION} "
     f"= {EXPECTED_GLOBAL_DIMENSION}"
 )
-
-
-# ============================================================
-# 13. BUILD ALL-SAMPLE PREDICTIVE STATE BATCH
-# ============================================================
-#
-# We do NOT create complete 604-dimensional physical states
-# for all 1291 samples here because their physical local
-# quantities will come from the actual VPP environment.
-#
-# We preserve the real S_pred sequence for the bridge.
-#
-# ============================================================
-
 section(
     "PREPARING PREDICTIVE STATES FOR VPP TRAINING BRIDGE"
 )
-
 
 bridge_predictive_states = (
     predictive_state_matrix.copy()
