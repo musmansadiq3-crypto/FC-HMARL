@@ -1,28 +1,22 @@
 from pathlib import Path as FilePath
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-
 ROOT = FilePath(__file__).resolve().parent
 DATA_PATH = ROOT / "evaluation" / "data" / "forecast_horizon" / "forecast_horizon_metrics.xlsx"
 OUTPUT_DIR = ROOT / "outputs" / "figures"
-
 plt.rcParams["font.family"] = "Times New Roman"
 plt.rcParams["font.weight"] = "bold"
 plt.rcParams["axes.linewidth"] = 3
-
 if not DATA_PATH.exists():
     raise FileNotFoundError(
         f"Data file not found:\n{DATA_PATH}\n\n"
         "Place the Excel workbook at:\n"
         r"evaluation\data\forecast_horizon\forecast_horizon_metrics.xlsx"
     )
-
 forecast_df = pd.read_excel(DATA_PATH, sheet_name="Forecast_Magnitudes")
 error_df = pd.read_excel(DATA_PATH, sheet_name="Forecast_Errors")
-
 required_forecast_columns = [
     "Hour",
     "PV_Generation",
@@ -30,7 +24,6 @@ required_forecast_columns = [
     "EV_Charging",
     "Electricity_Price",
 ]
-
 required_error_columns = [
     "PV_RMSE",
     "PV_MAE",
