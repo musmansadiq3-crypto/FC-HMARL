@@ -1,75 +1,10 @@
-# ============================================================
-# FC-HMARL
-# STEP 6B - FINAL FORECASTING DATA PREPARATION
-# ============================================================
-#
-# Input:
-#   data/processed/FC_HMARL_Unified_Forecasting_8760.csv
-#
-# Outputs:
-#
-#   data/processed/forecasting/
-#       FC_HMARL_Forecasting_Clean.csv
-#       FC_HMARL_Forecasting_Train.csv
-#       FC_HMARL_Forecasting_Validation.csv
-#       FC_HMARL_Forecasting_Test.csv
-#       forecasting_scaler.csv
-#       forecasting_sequences.npz
-#       forecasting_metadata.txt
-#
-# Manuscript-aligned processing:
-#
-#   1. Four targets:
-#          PV power
-#          Load
-#          EV
-#          Price
-#
-#   2. Three-sigma filtering
-#
-#   3. Linear interpolation
-#
-#   4. Chronological:
-#          70% training
-#          15% validation
-#          15% testing
-#
-#   5. Min-max normalization
-#      fitted ONLY on training data.
-#
-#   6. Input window:
-#          168 hours
-#
-#   7. Forecast horizon:
-#          24 hours
-#
-# IMPORTANT:
-#
-#   PV electrical-power conversion from GHI is a reconstruction.
-#   We use a transparent 1-kW reference PV plant:
-#
-#       P_pv = P_rated * clip(GHI / 1000, 0, 1)
-#
-#   where:
-#       P_rated = 1 kW
-#
-#   This allows the resulting profile to be scaled later
-#   to each microgrid's installed PV capacity.
-#
-# ============================================================
-
-
 from pathlib import Path
 import json
-
 import numpy as np
 import pandas as pd
-
-
 # ============================================================
 # 1. CONFIGURATION
 # ============================================================
-
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
 )
