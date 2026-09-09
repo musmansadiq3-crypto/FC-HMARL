@@ -1,37 +1,13 @@
-# ============================================================
-# FC-HMARL
-# STEP 7L-B
-# REAL-DATA HIERARCHICAL SAC TRAINING
-# ============================================================
-#
-# TRAINING DATA:
-#   outputs/rl_data/real_rl_training_archive.npz
-#
-# DATA SEPARATION:
-#   TRAIN      -> FC-HMARL learning
-#   VALIDATION -> forecast selection + confidence calibration
-#   TEST       -> final evaluation only
-#
-# IMPORTANT:
-# This script does NOT load the forecasting TEST archive.
-#
-# ============================================================
-
 from __future__ import annotations
-
 import argparse
 import json
 import random
 from pathlib import Path
-
 import numpy as np
 import torch
-
-
 # ============================================================
 # EXISTING PROJECT MODULES
 # ============================================================
-
 from environment.bess import (
     BESSParameters,
     BatteryEnergyStorageSystem,
