@@ -1,29 +1,3 @@
-# ============================================================
-# FC-HMARL
-# STEP 7F - SEASONAL-RESIDUAL TRANSFORMER TRAINING
-# ============================================================
-#
-# Residual forecasting formulation:
-#
-#   residual = actual_future - seasonal_baseline
-#
-# Transformer learns:
-#
-#   historical 168 h  ->  future 24 h residual
-#
-# Final forecast:
-#
-#   forecast = seasonal_baseline + predicted_residual
-#
-# Seasonal baseline selected in Step 7D:
-#
-#   PV    -> daily  (t-24)
-#   Load  -> daily  (t-24)
-#   EV    -> weekly (t-168)
-#   Price -> daily  (t-24)
-#
-# ============================================================
-
 from pathlib import Path
 import json
 import time
