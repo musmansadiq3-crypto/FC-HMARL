@@ -1,37 +1,13 @@
-# ============================================================
-# FC-HMARL
-# FINAL V3
-# FINAL CORRECTED REAL-DATA HIERARCHICAL SAC TRAINING
-# ============================================================
-#
-# TRAINING DATA:
-#   outputs/rl_data/real_rl_training_archive.npz
-#
-# DATA SEPARATION:
-#   TRAIN      -> FC-HMARL learning
-#   VALIDATION -> forecast selection + confidence calibration
-#   TEST       -> final evaluation only
-#
-# IMPORTANT:
-# This script does NOT load the forecasting TEST archive.
-#
-# ============================================================
-
 from __future__ import annotations
-
 import argparse
 import json
 import random
 from pathlib import Path
-
 import numpy as np
 import torch
-
-
 # ============================================================
 # EXISTING PROJECT MODULES
 # ============================================================
-
 from environment.bess import (
     BESSParameters,
     BatteryEnergyStorageSystem,
@@ -93,12 +69,9 @@ from marl.training_loop import (
     FCHMARLTrainingLoop,
     TrainingLoopConfig,
 )
-
-
 # ------------------------------------------------------------
 # Reuse already validated agent builders from train.py.
 # ------------------------------------------------------------
-
 from train import (
     build_local_agents,
     build_coordinator_agent,
@@ -108,8 +81,6 @@ from train import (
     resolve_device,
     set_global_seed,
 )
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
@@ -306,15 +277,6 @@ IMBALANCE_PENALTY_PER_KW = 1.0
 # ============================================================
 # 5. FIXED TRAINING-DATA SCALING
 # ============================================================
-#
-# These values come from the TRAINING scaler.
-#
-# We deliberately do NOT normalize using the maximum value
-# inside each 24-hour episode.
-#
-# Therefore episode-future information is not required to
-# scale the physical state.
-# ============================================================
 
 TRAIN_LOAD_MIN = 0.164380
 TRAIN_LOAD_MAX = 0.925029
@@ -324,7 +286,6 @@ TRAIN_EV_MAX = 42.707362
 
 TRAIN_PRICE_MIN = 0.008954
 TRAIN_PRICE_MAX = 0.056380
-
 
 # ============================================================
 # 6. UTILITY FUNCTIONS
@@ -912,20 +873,6 @@ class RealTrainingExogenousProvider:
             .copy()
         )
 
-
-        # ====================================================
-        # CAUSAL SCALAR CONFIDENCE
-        # ====================================================
-        #
-        # Reconstruction choice:
-        #
-        # Use horizon-1 Phi for the immediate coordinator
-        # action because every rolling decision acts on the
-        # immediate next control interval.
-        #
-        # The complete 24-h confidence information remains
-        # embedded in S_pred.
-        # ====================================================
 
         scalar_confidence = float(
             self.data
