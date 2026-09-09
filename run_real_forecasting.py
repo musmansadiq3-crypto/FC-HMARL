@@ -1,53 +1,18 @@
-# ============================================================
-# FC-HMARL
-# STEP 7A - TRAIN FORECASTING MODEL ON PREPARED REAL DATA
-# ============================================================
-#
-# Input:
-#   data/processed/forecasting/forecasting_sequences.npz
-#   data/processed/forecasting/forecasting_scaler.csv
-#
-# Existing project modules used:
-#   forecasting.model
-#   forecasting.trainer
-#
-# Model:
-#   Multi-Horizon Transformer
-#
-# Input:
-#   168 hours x 4 variables
-#
-# Output:
-#   24 hours x 4 variables
-#
-# Variables:
-#   0 = PV power
-#   1 = Load
-#   2 = EV charging power
-#   3 = Electricity price
-#
-# ============================================================
-
 from pathlib import Path
 import json
 import time
-
 import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
-
 from forecasting.model import (
     ForecastModelConfig,
     MultiHorizonTransformerForecaster,
 )
-
 from forecasting.trainer import (
     ForecastTrainerConfig,
     train_forecasting_model,
 )
-
-
 # ============================================================
 # 1. PROJECT PATHS
 # ============================================================
@@ -251,13 +216,6 @@ def subsection(title):
 # ============================================================
 # 7. DATASET WRAPPER
 # ============================================================
-#
-# forecasting_sequences.npz already contains the correct
-# chronological windows.
-#
-# Therefore we should NOT create windows again.
-# ============================================================
-
 class PreparedForecastDataset(Dataset):
 
     def __init__(
