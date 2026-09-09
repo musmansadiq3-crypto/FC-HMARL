@@ -1,40 +1,11 @@
-"""
-Step 7R-D: Re-run the representative FC-HMARL physical audit after
-the corrected reserve-feasibility model has been installed.
-
-IMPORTANT
----------
-This is still a DIAGNOSTIC on the OLD checkpoint-1000 policy.
-It is NOT a valid final economic evaluation because the policy was
-trained before the reserve model was corrected.
-
-Purpose
--------
-Verify that the corrected environment now enforces:
-1) reserve <= instantaneous discharge-power headroom,
-2) reserve <= SOC/energy-based reserve capability,
-3) zero reserve at minimum SOC,
-4) no reserve-headroom excess,
-5) power-balance and transformer feasibility remain intact.
-
-Run from project root:
-    python validate_step7r_corrected_reserve.py
-"""
-
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
-
 import evaluate_real_fc_hmarl_test as t
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
-
 STEP7O_FILE = (
     PROJECT_ROOT
     / "outputs"
