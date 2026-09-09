@@ -1,33 +1,11 @@
-"""
-Step 7O-A: FC-HMARL versus passive grid-only baseline
-on the same 30 held-out TEST episodes.
-
-Baseline definition
--------------------
-Passive grid-only:
-- BESS request = 0 for every MG.
-- Inter-MG energy sharing = 0.
-- Coordinator reserve participation = 0.
-- Coordinator sharing multiplier = 0.
-- Grid auto-balances each microgrid through the validated physical environment.
-
-This is a deterministic, non-learning reference baseline. It is NOT claimed to
-be an optimized conventional EMS.
-"""
-
 from __future__ import annotations
-
 import argparse
 import json
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 import torch
-
 import evaluate_real_fc_hmarl_test as t
-
-
 PROJECT_ROOT = Path(r"D:\Molvi paper review\FC_HMARL")
 OUTPUT_DIR = (
     PROJECT_ROOT
@@ -35,13 +13,10 @@ OUTPUT_DIR = (
     / "evaluation"
     / "step7o_baseline_comparison"
 )
-
 LOCKED_CHECKPOINT = 1000
 NUMBER_OF_MGS = 5
 EPISODE_LENGTH = 24
 DEGRADATION_USD_PER_KWH = 0.02
-
-
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--checkpoint", type=int, default=1000)
@@ -49,23 +24,8 @@ def parse_args():
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--device", type=str, default="cpu")
     return p.parse_args()
-
-
 def make_passive_grid_only_actions():
-    """
-    Local reconstructed software action:
-        [BESS, share_to_MG2, share_to_MG3, share_to_MG4, share_to_MG5]
-    with destination order adjusted internally per MG.
-
-    BESS=0 -> zero requested battery power.
-    Sharing=-1 -> no sharing request.
-
-    Coordinator reconstructed action:
-        [market/grid-related, reserve, sharing multiplier]
-    -1 values disable reserve/sharing in the current mapper.
-    """
     local_actions = []
-
     for _ in range(NUMBER_OF_MGS):
         action = np.zeros(5, dtype=np.float32)
         action[0] = 0.0
@@ -76,13 +36,10 @@ def make_passive_grid_only_actions():
         [-1.0, -1.0, -1.0],
         dtype=np.float32,
     )
-
     return t.val.HierarchicalActionBundle(
         local_actions=local_actions,
         coordinator_action=coordinator_action,
     )
-
-
 def summarize_episode(
     mode,
     episode,
