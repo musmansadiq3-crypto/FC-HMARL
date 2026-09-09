@@ -1,97 +1,14 @@
-"""
-FC-HMARL offline training entry point.
-
-This file connects the complete reconstructed implementation:
-
-    Five-microgrid VPP
-        ->
-    Exogenous operating data
-        ->
-    Predictive state / confidence
-        ->
-    Hierarchical state builder
-        ->
-    5 local SAC agents
-        ->
-    1 coordinator SAC agent
-        ->
-    FC-HMARL action mapper
-        ->
-    Physical VPP environment
-        ->
-    Local + coordinator rewards
-        ->
-    Replay buffers
-        ->
-    SAC training loop
-
-Two execution modes are supported.
-
-1. Smoke test
-   -----------
-   python train.py --smoke-test
-
-   Runs:
-       1 episode
-       24 hourly steps
-
-   A deliberately smaller replay/batch configuration is used so
-   gradient updates can actually occur during the 24-step smoke run.
-
-   Extended smoke test:
-   --------------------
-   python train.py --smoke-test --episodes 10
-
-   Runs:
-       10 episodes
-       24 hourly steps
-
-   The reduced replay buffer and batch size are retained so SAC
-   updates begin quickly during validation.
-
-2. Full reconstructed manuscript-scale training
-   ----------------------------------------------
-   python train.py
-
-   Runs:
-       5000 episodes
-       24 steps per episode
-
-   Manuscript-supported SAC settings:
-       gamma                  = 0.99
-       learning rate          = 1e-4
-       replay capacity        = 1,000,000
-       batch size             = 512
-       tau                    = 0.005
-       initial noise          = 0.20
-       noise decay            = 0.999
-
-Important:
-----------
-The deterministic exogenous profiles in this file are currently an
-integration/reconstruction dataset. They are NOT claimed to be the
-lost original manuscript training data.
-
-After this executable training chain is validated, the synthetic
-provider can be replaced by the final forecasting/data pipeline.
-"""
-
 from __future__ import annotations
-
 import argparse
 import json
 import random
 from pathlib import Path
 from typing import List
-
 import numpy as np
 import torch
-
-
 # ============================================================
 # PHYSICAL ENVIRONMENT
 # ============================================================
-
 from environment.bess import (
     BESSParameters,
     BatteryEnergyStorageSystem,
@@ -126,8 +43,6 @@ from environment.energy_sharing import (
 from environment.vpp_env import (
     VPPEnvironment,
 )
-
-
 # ============================================================
 # AGENTS
 # ============================================================
@@ -1908,16 +1823,6 @@ def main():
         args.seed
     )
 
-    # --------------------------------------------------------
-    # Determine number of episodes
-    # --------------------------------------------------------
-    #
-    # --smoke-test without --episodes -> 1 episode
-    # --smoke-test --episodes 10      -> 10 episodes
-    # no flags                         -> 5000 episodes
-    # --episodes 100                   -> 100 episodes
-    # --------------------------------------------------------
-
     if args.smoke_test:
 
         if args.episodes is None:
@@ -2110,8 +2015,6 @@ def main():
             "the replay buffers reach batch "
             "size 16."
         )
-
-
 # ============================================================
 # ENTRY POINT
 # ============================================================
