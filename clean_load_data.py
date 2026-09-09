@@ -143,9 +143,6 @@ if duplicate_count > 0:
 # 6. PRESERVE RAW GRID VALUES
 # ============================================================
 
-# Negative grid values are retained.
-# They may represent net export and are not automatically errors.
-
 print("\nGRID VALUE CHECK")
 print("-" * 80)
 
@@ -188,9 +185,7 @@ df["year"] = local_clock.dt.year
 # 8. THREE-SIGMA QUALITY CHECK BY HOUSEHOLD
 # ============================================================
 
-# This follows the manuscript-style 3-sigma screening concept.
-# Extreme measurements are marked as missing rather than
-# blindly clipped.
+
 
 print("\nTHREE-SIGMA SCREENING")
 print("-" * 80)
@@ -323,13 +318,6 @@ print(
 # ============================================================
 # 11. BUILD REPRESENTATIVE CALENDAR PROFILE
 # ============================================================
-
-# Aggregate across households and historical years according
-# to month/day/hour.
-#
-# This preserves real Pecan Street load behavior while creating
-# a representative profile suitable for the 2022 simulation
-# calendar.
 
 hourly_household["month"] = (
     hourly_household[
