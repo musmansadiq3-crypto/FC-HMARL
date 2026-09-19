@@ -1,34 +1,4 @@
-# ============================================================
-# FC-HMARL
-# STEP 7G - FINAL HYBRID FORECAST + CONFIDENCE EVALUATION
-# ============================================================
-#
-# Final forecasting strategy selected from Steps 7C-7F:
-#
-#   PV    -> Daily seasonal baseline
-#   Load  -> Daily seasonal baseline
-#   EV    -> Original Transformer forecast, physically clipped
-#   Price -> Daily seasonal baseline
-#
-# Confidence equations:
-#
-#   epsilon_RL = sqrt(e_PV^2 + e_Load^2)
-#
-#   omega_RL = exp(-epsilon_RL)
-#
-#   epsilon_EM = sqrt(e_EV^2 + e_Price^2)
-#
-#   Phi = omega_RL * exp(-epsilon_EM)
-#
-#       = exp(-(epsilon_RL + epsilon_EM))
-#
-# IMPORTANT:
-# Confidence in this script is REALIZED TEST-SET confidence.
-# Actual future values are used only for offline evaluation.
-# This confidence must NOT yet be used as causal RL input.
-#
-# ============================================================
-
+﻿
 from pathlib import Path
 
 import numpy as np
@@ -43,9 +13,6 @@ from forecasting.confidence import (
 )
 
 
-# ============================================================
-# 1. PROJECT PATHS
-# ============================================================
 
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
@@ -125,9 +92,6 @@ HORIZON_FILE = (
 )
 
 
-# ============================================================
-# 2. FEATURE DEFINITIONS
-# ============================================================
 
 FEATURE_NAMES = [
     "pv_power_kw",
@@ -145,9 +109,6 @@ PRICE_INDEX = 3
 EPS = 1e-12
 
 
-# ============================================================
-# 3. HELPERS
-# ============================================================
 
 def section(title):
 
@@ -282,9 +243,6 @@ def print_npz_keys(
         )
 
 
-# ============================================================
-# 4. CHECK INPUT FILES
-# ============================================================
 
 section(
     "FC-HMARL - STEP 7G FINAL HYBRID FORECAST"
@@ -319,9 +277,6 @@ OUTPUT_DIR.mkdir(
 )
 
 
-# ============================================================
-# 5. LOAD FORECAST DATA
-# ============================================================
 
 sequences = np.load(
     SEQUENCE_FILE,
@@ -361,9 +316,6 @@ print_npz_keys(
 )
 
 
-# ============================================================
-# 6. LOAD NORMALIZED TEST TARGETS
-# ============================================================
 
 y_test_norm = np.asarray(
     sequences["y_test"],
@@ -401,26 +353,6 @@ if y_test_norm.shape[1:] != (
     )
 
 
-# ============================================================
-# 7. SEASONAL BASELINE
-# ============================================================
-#
-# Step 7D selected:
-#
-# PV    -> daily
-# Load  -> daily
-# EV    -> weekly
-# Price -> daily
-#
-# For the final hybrid forecast we need:
-#
-# PV    daily
-# Load  daily
-# Price daily
-#
-# EV seasonal baseline is retained only for comparison.
-#
-# ============================================================
 
 seasonal_test_norm = np.asarray(
     residual_data[
@@ -437,20 +369,6 @@ if seasonal_test_norm.shape != y_test_norm.shape:
     )
 
 
-# ============================================================
-# 8. LOAD ORIGINAL TRANSFORMER FORECAST
-# ============================================================
-#
-# We attempt several possible archive names so the script
-# remains compatible with the Step 7A output.
-#
-# Preference:
-#
-#   predictions_original
-#   predictions_original_clipped
-#   predictions
-#
-# ============================================================
 
 possible_prediction_keys = [
 
@@ -521,9 +439,6 @@ print(
 )
 
 
-# ============================================================
-# 9. LOAD SCALER
-# ============================================================
 
 scaler = pd.read_csv(
     SCALER_FILE
@@ -622,9 +537,6 @@ def normalize_feature(
     ) / scale
 
 
-# ============================================================
-# 10. ORIGINAL-SCALE ACTUAL TARGET
-# ============================================================
 
 actual_original = np.zeros_like(
     y_test_norm,
@@ -674,16 +586,6 @@ for feature_index, feature_name in enumerate(
     )
 
 
-# ============================================================
-# 11. PHYSICAL CLIPPING OF TRANSFORMER
-# ============================================================
-#
-# The original Transformer performed best for EV.
-#
-# EV charging demand cannot be negative in the present
-# forecasting representation.
-#
-# ============================================================
 
 transformer_original_clipped = (
     transformer_original.copy()
@@ -744,9 +646,6 @@ transformer_original_clipped[
 )
 
 
-# ============================================================
-# 12. BUILD FINAL HYBRID IN PHYSICAL UNITS
-# ============================================================
 
 section(
     "BUILDING FINAL HYBRID FORECAST"
@@ -759,9 +658,6 @@ hybrid_original = np.zeros_like(
 )
 
 
-# ------------------------------------------------------------
-# PV -> daily seasonal
-# ------------------------------------------------------------
 
 hybrid_original[
     :,
@@ -774,9 +670,6 @@ hybrid_original[
 ]
 
 
-# ------------------------------------------------------------
-# Load -> daily seasonal
-# ------------------------------------------------------------
 
 hybrid_original[
     :,
@@ -789,9 +682,6 @@ hybrid_original[
 ]
 
 
-# ------------------------------------------------------------
-# EV -> clipped original Transformer
-# ------------------------------------------------------------
 
 hybrid_original[
     :,
@@ -804,9 +694,6 @@ hybrid_original[
 ]
 
 
-# ------------------------------------------------------------
-# Price -> daily seasonal
-# ------------------------------------------------------------
 
 hybrid_original[
     :,
@@ -836,20 +723,6 @@ print(
 )
 
 
-# ============================================================
-# 13. CONVERT HYBRID FORECAST TO NORMALIZED SPACE
-# ============================================================
-#
-# Confidence equations combine different targets.
-#
-# Therefore the forecast errors are calculated in normalized
-# dimensionless space rather than mixing:
-#
-#   kW + USD/kWh
-#
-# directly.
-#
-# ============================================================
 
 hybrid_norm = np.zeros_like(
     hybrid_original,
@@ -877,9 +750,6 @@ for feature_index, feature_name in enumerate(
     )
 
 
-# ============================================================
-# 14. ERROR ARRAYS
-# ============================================================
 
 section(
     "CALCULATING NORMALIZED FORECAST ERRORS"
@@ -941,9 +811,6 @@ print(
 )
 
 
-# ============================================================
-# 15. MANUSCRIPT CONFIDENCE COMPONENTS
-# ============================================================
 
 section(
     "CALCULATING FC-HMARL CONFIDENCE"
@@ -990,9 +857,6 @@ Phi = (
 )
 
 
-# ============================================================
-# 16. DIRECT FORMULA VERIFICATION
-# ============================================================
 
 epsilon_RL_direct = np.sqrt(
     pv_error ** 2
@@ -1092,14 +956,6 @@ print(
 )
 
 
-# ============================================================
-# 17. SECOND API CROSS-CHECK
-# ============================================================
-#
-# calculate_confidence_from_errors should produce the
-# same global Phi.
-#
-# ============================================================
 
 Phi_from_combined_function = (
     calculate_confidence_from_errors(
@@ -1145,9 +1001,6 @@ if not np.allclose(
     )
 
 
-# ============================================================
-# 18. CONFIDENCE STATISTICS
-# ============================================================
 
 section(
     "REALIZED CONFIDENCE STATISTICS"
@@ -1285,9 +1138,6 @@ for name, statistics in (
     )
 
 
-# ============================================================
-# 19. FINAL HYBRID FORECAST METRICS
-# ============================================================
 
 section(
     "FINAL HYBRID FORECAST TEST METRICS"
@@ -1402,9 +1252,6 @@ metrics_df = pd.DataFrame(
 )
 
 
-# ============================================================
-# 20. HORIZON-WISE METRICS
-# ============================================================
 
 section(
     "24-HOUR HORIZON-WISE HYBRID METRICS"
@@ -1476,9 +1323,6 @@ horizon_df = pd.DataFrame(
 )
 
 
-# ============================================================
-# 21. SAVE FULL CONFIDENCE TABLE
-# ============================================================
 
 number_of_samples = (
     y_test_norm.shape[0]
@@ -1577,9 +1421,6 @@ confidence_df = pd.DataFrame(
 )
 
 
-# ============================================================
-# 22. CONFIDENCE SUMMARY TABLE
-# ============================================================
 
 confidence_summary_rows = []
 
@@ -1696,9 +1537,6 @@ confidence_summary_df = pd.DataFrame(
 )
 
 
-# ============================================================
-# 23. SAVE RESULTS
-# ============================================================
 
 section(
     "SAVING FINAL HYBRID OUTPUTS"
@@ -1734,49 +1572,31 @@ np.savez_compressed(
     HYBRID_ARCHIVE_FILE,
 
 
-    # --------------------------------
-    # Final forecast in physical units
-    # --------------------------------
 
     hybrid_forecast_original=
         hybrid_original,
 
 
-    # --------------------------------
-    # Ground truth
-    # --------------------------------
 
     actual_original=
         actual_original,
 
 
-    # --------------------------------
-    # Normalized final forecast
-    # --------------------------------
 
     hybrid_forecast_normalized=
         hybrid_norm,
 
 
-    # --------------------------------
-    # Normalized actual
-    # --------------------------------
 
     actual_normalized=
         y_test_norm,
 
 
-    # --------------------------------
-    # Forecast error
-    # --------------------------------
 
     absolute_error_normalized=
         absolute_error_norm,
 
 
-    # --------------------------------
-    # Confidence components
-    # --------------------------------
 
     epsilon_RL=
         epsilon_RL,
@@ -1791,9 +1611,6 @@ np.savez_compressed(
         Phi,
 
 
-    # --------------------------------
-    # Component forecasts
-    # --------------------------------
 
     seasonal_baseline_original=
         seasonal_original,
@@ -1802,9 +1619,6 @@ np.savez_compressed(
         transformer_original_clipped,
 
 
-    # --------------------------------
-    # Metadata
-    # --------------------------------
 
     feature_names=
         np.array(
@@ -1857,9 +1671,6 @@ print(
 )
 
 
-# ============================================================
-# 24. FINAL CHECKS
-# ============================================================
 
 section(
     "FINAL VALIDATION"
@@ -1926,9 +1737,6 @@ print(
 )
 
 
-# ============================================================
-# 25. COMPLETE
-# ============================================================
 
 section(
     "STEP 7G COMPLETE"

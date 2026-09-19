@@ -1101,6 +1101,9 @@ def test_local_pcc_penalty_is_symmetric_for_requested_export(
         "constraints": {
             "total_power_balance_violation_kw": 0.0,
         },
+        "sharing": {
+            "feasible_matrix_kw": np.zeros((5, 5), dtype=np.float64),
+        },
     }
 
     reward = real_bridge._build_reward(

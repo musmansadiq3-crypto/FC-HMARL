@@ -1,4 +1,4 @@
-"""
+﻿"""
 Local microgrid model for the FC-HMARL VPP environment.
 
 This module integrates:
@@ -66,9 +66,6 @@ from environment.market import (
 )
 
 
-# ============================================================
-# MICROGRID PARAMETERS
-# ============================================================
 
 @dataclass
 class MicrogridParameters:
@@ -129,9 +126,6 @@ class MicrogridParameters:
             )
 
 
-# ============================================================
-# MICROGRID MODEL
-# ============================================================
 
 class Microgrid:
     """
@@ -188,9 +182,6 @@ class Microgrid:
         self.last_market_result = {}
         self.last_constraint_result = {}
 
-    # ========================================================
-    # BASIC PROPERTIES
-    # ========================================================
 
     @property
     def name(self) -> str:
@@ -204,9 +195,6 @@ class Microgrid:
     def transformer_rating_kva(self) -> float:
         return self.parameters.transformer_rating_kva
 
-    # ========================================================
-    # LOAD VALIDATION
-    # ========================================================
 
     def validate_load(
         self,
@@ -241,9 +229,6 @@ class Microgrid:
 
         return load_kw
 
-    # ========================================================
-    # LOCAL NET POWER
-    # ========================================================
 
     @staticmethod
     def calculate_local_net_power(
@@ -275,9 +260,6 @@ class Microgrid:
             - float(ev_power_kw)
         )
 
-    # ========================================================
-    # GRID POWER
-    # ========================================================
 
     @staticmethod
     def calculate_required_grid_power(
@@ -295,9 +277,6 @@ class Microgrid:
             outgoing_sharing_kw=outgoing_sharing_kw,
         )
 
-    # ========================================================
-    # MAIN MICROGRID STEP
-    # ========================================================
 
     def step(
         self,
@@ -357,9 +336,6 @@ class Microgrid:
                 "outgoing_sharing_kw cannot be negative."
             )
 
-        # ----------------------------------------------------
-        # PV
-        # ----------------------------------------------------
 
         pv_result = self.pv_system.step(
             irradiance_w_m2
@@ -369,9 +345,6 @@ class Microgrid:
             "pv_power_kw"
         ]
 
-        # ----------------------------------------------------
-        # BESS
-        # ----------------------------------------------------
 
         bess_result = self.bess.step(
             bess_requested_power_kw
@@ -381,9 +354,6 @@ class Microgrid:
             "net_bess_power_kw"
         ]
 
-        # ----------------------------------------------------
-        # EV FLEET
-        # ----------------------------------------------------
 
         ev_result = self.ev_fleet.step(
             time=time,
@@ -396,9 +366,6 @@ class Microgrid:
             "ev_power_kw"
         ]
 
-        # ----------------------------------------------------
-        # LOCAL NET POWER
-        # ----------------------------------------------------
 
         net_local_power_kw = (
             self.calculate_local_net_power(
@@ -409,11 +376,7 @@ class Microgrid:
             )
         )
 
-        # ----------------------------------------------------
-        # GRID POWER
-        # ----------------------------------------------------
 
-        # First determine the requested grid exchange.
         if grid_power_kw is None:
 
             requested_grid_power_kw = (
@@ -443,36 +406,11 @@ class Microgrid:
                     "grid_power_kw must be finite."
                 )
 
-        # ----------------------------------------------------
-        # TRANSFORMER / PCC FEASIBILITY SAFETY LAYER
-        # ----------------------------------------------------
-        # The transformer rating is an apparent-power limit.
-        # Under the reconstruction power factor, the corresponding
-        # active-power magnitude is:
-        #
-        #     P_grid,max = S_transformer * power_factor
-        #
-        # The actual utility-grid exchange is clipped to this
-        # physical PCC limit. Any remaining deficit/surplus is NOT
-        # hidden: it remains in the power-balance residual and is
-        # therefore available to the constraint/reward layer.
-        #
-        # This prevents market settlement of physically impossible
-        # imports/exports while preserving a violation signal for RL.
         transformer_active_power_limit_kw = float(
             self.parameters.transformer_rating_kva
             * self.parameters.power_factor
         )
 
-        # IMPORTANT:
-        # The reconstructed transformer/PCC constraint is defined on the
-        # combined exchange:
-        #
-        #     |P_grid + P_share,out| <= P_max
-        #
-        # Therefore the feasible grid interval depends on outgoing sharing.
-        # Use the canonical constraint-layer projection instead of clipping
-        # P_grid alone to [-P_max, +P_max].
         grid_power_kw = float(
             clip_pcc_exchange(
                 grid_power_kw=requested_grid_power_kw,
@@ -488,9 +426,6 @@ class Microgrid:
             - grid_power_kw
         )
 
-        # ----------------------------------------------------
-        # PHYSICAL CONSTRAINTS
-        # ----------------------------------------------------
 
         constraint_result = (
             evaluate_microgrid_constraints(
@@ -512,9 +447,6 @@ class Microgrid:
             )
         )
 
-        # ----------------------------------------------------
-        # MARKET
-        # ----------------------------------------------------
 
         market_result = self.market.step(
             grid_power_kw=grid_power_kw,
@@ -529,9 +461,6 @@ class Microgrid:
             ),
         )
 
-        # ----------------------------------------------------
-        # SAVE STATE
-        # ----------------------------------------------------
 
         self.current_time = time
 
@@ -635,9 +564,6 @@ class Microgrid:
                 market_result,
         }
 
-    # ========================================================
-    # STATE
-    # ========================================================
 
     def get_state(
         self,
@@ -687,9 +613,6 @@ class Microgrid:
                 self.last_market_result.copy(),
         }
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -725,9 +648,6 @@ class Microgrid:
         self.last_market_result = {}
         self.last_constraint_result = {}
 
-    # ========================================================
-    # REPRESENTATION
-    # ========================================================
 
     def __repr__(
         self,

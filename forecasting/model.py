@@ -1,4 +1,4 @@
-"""
+﻿"""
 Transformer-based multi-horizon forecasting model for FC-HMARL.
 
 Manuscript-supported role
@@ -32,18 +32,18 @@ documented RECONSTRUCTION CHOICE.
 The default architecture is:
 
     input features
-        ↓
+        â†“
     linear feature embedding
-        ↓
+        â†“
     learnable positional encoding
-        ↓
+        â†“
     Transformer encoder
-        ↓
+        â†“
     temporal representation
-        ↓
+        â†“
     multi-horizon output head
-        ↓
-    24 × target variables
+        â†“
+    24 Ã— target variables
 
 Expected input shape
 --------------------
@@ -63,9 +63,6 @@ import torch
 from torch import nn
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class ForecastModelConfig:
@@ -76,15 +73,12 @@ class ForecastModelConfig:
     explicitly tied to manuscript forecasting dimensions.
     """
 
-    # Manuscript-supported dimensions
     input_window: int = 168
     forecast_horizon: int = 24
 
-    # Number of operational variables.
     input_features: int = 4
     target_features: int = 4
 
-    # Reconstruction choices
     hidden_dimension: int = 128
     number_of_attention_heads: int = 4
     number_of_encoder_layers: int = 2
@@ -152,9 +146,6 @@ class ForecastModelConfig:
             )
 
 
-# ============================================================
-# POSITIONAL ENCODING
-# ============================================================
 
 class LearnablePositionalEncoding(nn.Module):
     """
@@ -243,9 +234,6 @@ class LearnablePositionalEncoding(nn.Module):
         )
 
 
-# ============================================================
-# FIXED SINUSOIDAL POSITIONAL ENCODING
-# ============================================================
 
 class SinusoidalPositionalEncoding(nn.Module):
     """
@@ -313,7 +301,6 @@ class SinusoidalPositionalEncoding(nn.Module):
             * denominator
         )
 
-        # Handle odd hidden dimensions safely.
         odd_width = encoding[
             :,
             1::2
@@ -371,9 +358,6 @@ class SinusoidalPositionalEncoding(nn.Module):
         )
 
 
-# ============================================================
-# MAIN FORECASTING MODEL
-# ============================================================
 
 class MultiHorizonTransformerForecaster(
     nn.Module
@@ -414,18 +398,12 @@ class MultiHorizonTransformerForecaster(
 
         self.config = config
 
-        # ----------------------------------------------------
-        # INPUT EMBEDDING
-        # ----------------------------------------------------
 
         self.input_projection = nn.Linear(
             config.input_features,
             config.hidden_dimension,
         )
 
-        # ----------------------------------------------------
-        # POSITIONAL ENCODING
-        # ----------------------------------------------------
 
         if (
             config.use_learnable_positional_encoding
@@ -455,9 +433,6 @@ class MultiHorizonTransformerForecaster(
                 )
             )
 
-        # ----------------------------------------------------
-        # TRANSFORMER ENCODER
-        # ----------------------------------------------------
 
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=(
@@ -488,34 +463,17 @@ class MultiHorizonTransformerForecaster(
             )
         )
 
-        # ----------------------------------------------------
-        # FINAL NORMALIZATION
-        # ----------------------------------------------------
 
         self.output_norm = nn.LayerNorm(
             config.hidden_dimension
         )
 
-        # ----------------------------------------------------
-        # TEMPORAL ATTENTION POOLING
-        # ----------------------------------------------------
-        #
-        # Instead of using only the final hour, the model learns
-        # which historical time steps are most important.
-        #
-        # This produces one global temporal representation:
-        #
-        #     (batch, hidden_dimension)
-        # ----------------------------------------------------
 
         self.temporal_attention = nn.Linear(
             config.hidden_dimension,
             1,
         )
 
-        # ----------------------------------------------------
-        # MULTI-HORIZON OUTPUT HEAD
-        # ----------------------------------------------------
 
         output_dimension = (
             config.forecast_horizon
@@ -539,9 +497,6 @@ class MultiHorizonTransformerForecaster(
 
         self._initialize_weights()
 
-    # ========================================================
-    # INITIALIZATION
-    # ========================================================
 
     def _initialize_weights(
         self,
@@ -567,9 +522,6 @@ class MultiHorizonTransformerForecaster(
                         module.bias
                     )
 
-    # ========================================================
-    # INPUT VALIDATION
-    # ========================================================
 
     def _validate_input(
         self,
@@ -618,9 +570,6 @@ class MultiHorizonTransformerForecaster(
                 "Model input contains NaN or Inf values."
             )
 
-    # ========================================================
-    # ENCODE
-    # ========================================================
 
     def encode(
         self,
@@ -660,9 +609,6 @@ class MultiHorizonTransformerForecaster(
 
         return hidden
 
-    # ========================================================
-    # TEMPORAL POOLING
-    # ========================================================
 
     def temporal_pool(
         self,
@@ -714,9 +660,6 @@ class MultiHorizonTransformerForecaster(
             attention_weights,
         )
 
-    # ========================================================
-    # FORWARD
-    # ========================================================
 
     def forward(
         self,
@@ -782,9 +725,6 @@ class MultiHorizonTransformerForecaster(
 
         return forecast
 
-    # ========================================================
-    # MODEL INFORMATION
-    # ========================================================
 
     def number_of_parameters(
         self,
@@ -863,9 +803,6 @@ class MultiHorizonTransformerForecaster(
         )
 
 
-# ============================================================
-# FACTORY
-# ============================================================
 
 def build_forecasting_model(
     input_features: int = 4,

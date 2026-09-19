@@ -1,4 +1,4 @@
-"""
+﻿"""
 Constraint utilities for the FC-HMARL VPP environment.
 
 This module implements the physical feasibility checks required by the
@@ -35,9 +35,6 @@ from typing import Dict, Optional
 import numpy as np
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class ConstraintParameters:
@@ -99,9 +96,6 @@ class ConstraintParameters:
         )
 
 
-# ============================================================
-# BASIC CLIPPING UTILITIES
-# ============================================================
 
 def clip_value(
     value: float,
@@ -147,9 +141,6 @@ def positive_part(
     )
 
 
-# ============================================================
-# POWER BALANCE
-# ============================================================
 
 def microgrid_power_balance_residual(
     net_local_power_kw: float,
@@ -260,9 +251,6 @@ def power_balance_violation_kw(
     )
 
 
-# ============================================================
-# GRID POWER REQUIRED FOR EXACT BALANCE
-# ============================================================
 
 def required_grid_power_for_balance(
     net_local_power_kw: float,
@@ -295,9 +283,6 @@ def required_grid_power_for_balance(
     )
 
 
-# ============================================================
-# PCC / TRANSFORMER LIMIT
-# ============================================================
 
 def pcc_exchange_kw(
     grid_power_kw: float,
@@ -420,9 +405,6 @@ def clip_pcc_exchange(
     )
 
 
-# ============================================================
-# FULL CONSTRAINT EVALUATION
-# ============================================================
 
 def evaluate_microgrid_constraints(
     net_local_power_kw: float,

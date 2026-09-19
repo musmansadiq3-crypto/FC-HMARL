@@ -1,4 +1,4 @@
-"""
+﻿"""
 Hierarchical controller for the FC-HMARL framework.
 
 Purpose
@@ -55,9 +55,6 @@ from typing import Dict, List, Optional, Sequence
 import numpy as np
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class HierarchicalControllerConfig:
@@ -113,9 +110,6 @@ class HierarchicalControllerConfig:
             )
 
 
-# ============================================================
-# GENERAL HELPERS
-# ============================================================
 
 def _resolve_dtype(
     dtype: str,
@@ -230,9 +224,6 @@ def validate_agent_interface(
         )
 
 
-# ============================================================
-# HIERARCHICAL ACTION RESULT
-# ============================================================
 
 @dataclass
 class HierarchicalActionResult:
@@ -385,9 +376,6 @@ class HierarchicalActionResult:
         }
 
 
-# ============================================================
-# HIERARCHICAL STATE INPUT
-# ============================================================
 
 @dataclass
 class HierarchicalControllerState:
@@ -430,9 +418,6 @@ class HierarchicalControllerState:
         )
 
 
-# ============================================================
-# ACTION FLATTENING
-# ============================================================
 
 def flatten_hierarchical_actions(
     local_actions: Sequence[
@@ -507,9 +492,6 @@ def flatten_hierarchical_actions(
     )
 
 
-# ============================================================
-# SINGLE AGENT ACTION CALL
-# ============================================================
 
 def request_agent_action(
     agent,
@@ -563,9 +545,6 @@ def request_agent_action(
     )
 
 
-# ============================================================
-# MAIN CONTROLLER
-# ============================================================
 
 class HierarchicalController:
     """
@@ -624,9 +603,6 @@ class HierarchicalController:
 
         self.config = config
 
-    # ========================================================
-    # MODE RESOLUTION
-    # ========================================================
 
     def resolve_deterministic_mode(
         self,
@@ -676,9 +652,6 @@ class HierarchicalController:
             .deterministic_evaluation
         )
 
-    # ========================================================
-    # LOCAL ACTIONS
-    # ========================================================
 
     def select_local_actions(
         self,
@@ -736,9 +709,6 @@ class HierarchicalController:
 
         return actions
 
-    # ========================================================
-    # COORDINATOR ACTION
-    # ========================================================
 
     def select_coordinator_action(
         self,
@@ -769,9 +739,6 @@ class HierarchicalController:
             copy=False,
         )
 
-    # ========================================================
-    # FULL HIERARCHICAL ACTION
-    # ========================================================
 
     def select_actions(
         self,
@@ -877,9 +844,6 @@ class HierarchicalController:
 
         return result
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -910,9 +874,6 @@ class HierarchicalController:
 
             self.coordinator_agent.reset()
 
-    # ========================================================
-    # TRAIN / EVAL PROPAGATION
-    # ========================================================
 
     def set_training_mode(
         self,
@@ -984,9 +945,6 @@ class HierarchicalController:
 
                     agent.eval()
 
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     def summary(
         self,

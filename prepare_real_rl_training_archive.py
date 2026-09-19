@@ -1,44 +1,4 @@
-# ============================================================
-# FC-HMARL
-# STEP 7L-A
-# PREPARE LEAKAGE-FREE REAL-DATA RL TRAINING ARCHIVE
-# ============================================================
-#
-# PURPOSE
-# -------
-# Build the real-data archive that will be consumed by
-# FC-HMARL training.
-#
-# IMPORTANT:
-#
-#   TRAIN split -> RL training
-#   VALIDATION   -> model/method selection + Phi calibration
-#   TEST         -> final evaluation only
-#
-# The TEST split is NOT used in this script.
-#
-#
-# Final validation-selected forecast methods:
-#
-#   PV    -> daily seasonal
-#   Load  -> Transformer
-#   EV    -> Transformer
-#   Price -> daily seasonal
-#
-#
-# Predictive state:
-#
-#   S_pred = Phi * Z_hat
-#
-# Output:
-#
-#   current physical values    : (5941, 4)
-#   forecasts                  : (5941, 24, 4)
-#   S_pred                     : (5941, 24, 4)
-#   flattened S_pred           : (5941, 96)
-#
-# ============================================================
-
+﻿
 from pathlib import Path
 import json
 
@@ -47,9 +7,6 @@ import pandas as pd
 import torch
 
 
-# ============================================================
-# 1. PROJECT PATHS
-# ============================================================
 
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
@@ -113,9 +70,6 @@ METADATA_FILE = (
 )
 
 
-# ============================================================
-# 2. CONSTANTS
-# ============================================================
 
 INPUT_HORIZON = 168
 FORECAST_HORIZON = 24
@@ -134,9 +88,6 @@ FEATURE_NAMES = [
 ]
 
 
-# ============================================================
-# 3. HELPERS
-# ============================================================
 
 def section(title):
 
@@ -166,36 +117,28 @@ def clip_normalized_physical(values):
         dtype=np.float32,
     ).copy()
 
-    # PV cannot be negative.
     values[..., PV_INDEX] = np.clip(
         values[..., PV_INDEX],
         0.0,
         1.0,
     )
 
-    # Load cannot be negative.
     values[..., LOAD_INDEX] = np.clip(
         values[..., LOAD_INDEX],
         0.0,
         None,
     )
 
-    # EV charging demand cannot be negative.
     values[..., EV_INDEX] = np.clip(
         values[..., EV_INDEX],
         0.0,
         None,
     )
 
-    # Price is allowed to remain according to normalized
-    # training range. For our current data it remains positive.
 
     return values
 
 
-# ============================================================
-# 4. LOAD TRAINING SEQUENCES
-# ============================================================
 
 section(
     "FC-HMARL STEP 7L-A - LOADING TRAINING DATA"
@@ -306,9 +249,6 @@ print(
 )
 
 
-# ============================================================
-# 5. LOAD TRAINING-ONLY SCALER
-# ============================================================
 
 section(
     "LOADING TRAINING-ONLY SCALER"
@@ -355,9 +295,6 @@ for feature in FEATURE_NAMES:
         )
 
 
-# ============================================================
-# 6. LOAD CAUSAL VALIDATION-CALIBRATED CONFIDENCE
-# ============================================================
 
 section(
     "LOADING CAUSAL CONFIDENCE"
@@ -388,7 +325,6 @@ print(
 )
 
 
-# Robustly identify Phi column.
 
 possible_phi_columns = [
     "Phi_causal",
@@ -414,7 +350,6 @@ for candidate in possible_phi_columns:
 
 if phi_column is None:
 
-    # Find a column containing confidence/Phi terminology.
 
     for column in confidence_df.columns:
 
@@ -479,23 +414,12 @@ print(
 )
 
 
-# ============================================================
-# 7. BUILD SEASONAL FORECASTS
-# ============================================================
 
 section(
     "BUILDING TRAINING-SEASONAL FORECASTS"
 )
 
 
-# X_train contains the preceding 168 hours.
-#
-# A daily seasonal forecast for the next 24 hours can be
-# constructed from the most recent 24-hour historical block:
-#
-#   X[:, -24:, :]
-#
-# This uses ONLY information available before forecast issue.
 
 daily_seasonal_forecast = (
     X_train[
@@ -515,9 +439,6 @@ print(
 )
 
 
-# ============================================================
-# 8. LOAD BEST TRANSFORMER MODEL
-# ============================================================
 
 section(
     "LOADING BEST TRANSFORMER CHECKPOINT"
@@ -538,10 +459,6 @@ from forecasting.model import (
 )
 
 
-# The trained architecture already used in Step 7A.
-#
-# These architecture settings are reconstruction choices
-# established previously in the project.
 
 model_config = ForecastModelConfig(
 
@@ -598,9 +515,6 @@ print(
 )
 
 
-# ------------------------------------------------------------
-# Support common checkpoint formats.
-# ------------------------------------------------------------
 
 if isinstance(
     checkpoint,
@@ -634,7 +548,6 @@ if isinstance(
 
     if state_dict is None:
 
-        # It may already be a raw PyTorch state_dict.
         if all(
             torch.is_tensor(v)
             for v
@@ -669,9 +582,6 @@ print(
 )
 
 
-# ============================================================
-# 9. GENERATE TRAINING TRANSFORMER FORECASTS
-# ============================================================
 
 section(
     "GENERATING TRAINING TRANSFORMER FORECASTS"
@@ -711,10 +621,6 @@ with torch.no_grad():
         )
 
 
-        # ----------------------------------------------------
-        # Accommodate model wrappers that may return tensors,
-        # tuples, or dictionaries.
-        # ----------------------------------------------------
 
         if torch.is_tensor(
             output
@@ -828,9 +734,6 @@ if transformer_forecast.shape != (
     )
 
 
-# ============================================================
-# 10. BUILD VALIDATION-SELECTED HYBRID FORECAST
-# ============================================================
 
 section(
     "BUILDING VALIDATION-SELECTED HYBRID FORECAST"
@@ -842,7 +745,6 @@ hybrid_forecast_normalized = np.empty_like(
 )
 
 
-# PV -> daily seasonal
 
 hybrid_forecast_normalized[
     :,
@@ -855,7 +757,6 @@ hybrid_forecast_normalized[
 ]
 
 
-# Load -> Transformer
 
 hybrid_forecast_normalized[
     :,
@@ -868,7 +769,6 @@ hybrid_forecast_normalized[
 ]
 
 
-# EV -> Transformer
 
 hybrid_forecast_normalized[
     :,
@@ -881,7 +781,6 @@ hybrid_forecast_normalized[
 ]
 
 
-# Price -> daily seasonal
 
 hybrid_forecast_normalized[
     :,
@@ -930,28 +829,233 @@ print(
 )
 
 
-# ============================================================
-# 11. CONFIDENCE-AWARE PREDICTIVE STATE
-# ============================================================
 
 section(
-    "BUILDING S_pred = Phi * Z_hat"
+    "BUILDING S_pred = [Z_hat, Phi]"
 )
 
 
-confidence_batch = np.broadcast_to(
+from forecasting.confidence import (
+    ConfidenceCalibration,
+    ForecastConfidenceConfig,
+    ForecastConfidenceEstimator,
+    build_confidence_aware_predictive_state,
+)
 
-    causal_phi[
-        None,
-        :
-    ],
+CALIBRATION_FILE = (
+    PROJECT_ROOT
+    / "outputs"
+    / "forecasting"
+    / "hybrid"
+    / "final_hybrid_confidence.csv"
+)
 
+if not CALIBRATION_FILE.exists():
+    raise FileNotFoundError(
+        f"Confidence calibration file not found:\n"
+        f"{CALIBRATION_FILE}"
+    )
+
+import pandas as pd
+
+calibration_df = pd.read_csv(
+    CALIBRATION_FILE
+)
+
+required_error_columns = [
+    "pv_error_normalized",
+    "load_error_normalized",
+    "ev_error_normalized",
+    "price_error_normalized",
+]
+
+for column in required_error_columns:
+    if column not in calibration_df.columns:
+        raise RuntimeError(
+            f"Missing calibration column: {column}"
+        )
+
+if "forecast_hour" not in calibration_df.columns:
+    raise RuntimeError(
+        "Calibration file must contain forecast_hour."
+    )
+
+validation_error_scale = np.zeros(
     (
-        number_of_samples,
         FORECAST_HORIZON,
+        NUMBER_OF_FEATURES,
     ),
+    dtype=np.float64,
+)
 
-).copy()
+for horizon_index in range(
+    FORECAST_HORIZON
+):
+    hour_rows = calibration_df[
+        calibration_df[
+            "forecast_hour"
+        ] == (
+            horizon_index + 1
+        )
+    ]
+
+    if len(hour_rows) == 0:
+        raise RuntimeError(
+            f"No calibration rows for forecast hour "
+            f"{horizon_index + 1}."
+        )
+
+    for feature_index, column in enumerate(
+        required_error_columns
+    ):
+        values = np.asarray(
+            hour_rows[column],
+            dtype=np.float64,
+        )
+
+        values = values[
+            np.isfinite(values)
+        ]
+
+        if values.size == 0:
+            raise RuntimeError(
+                f"No finite calibration values for "
+                f"{column}, hour {horizon_index + 1}."
+            )
+
+        validation_error_scale[
+            horizon_index,
+            feature_index,
+        ] = max(
+            float(
+                np.quantile(
+                    values,
+                    0.95,
+                )
+            ),
+            1e-6,
+        )
+
+lower_bound = (
+    hybrid_forecast_normalized
+    -
+    validation_error_scale[
+        None,
+        :,
+        :
+    ]
+)
+
+upper_bound = (
+    hybrid_forecast_normalized
+    +
+    validation_error_scale[
+        None,
+        :,
+        :
+    ]
+)
+
+confidence_config = (
+    ForecastConfidenceConfig(
+        delta=1e-6,
+        feature_weights=(
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+        ),
+    )
+)
+
+calibration = ConfidenceCalibration(
+    location=np.zeros(
+        (
+            FORECAST_HORIZON,
+            NUMBER_OF_FEATURES,
+        ),
+        dtype=np.float64,
+    ),
+    scale=np.ones(
+        (
+            FORECAST_HORIZON,
+            NUMBER_OF_FEATURES,
+        ),
+        dtype=np.float64,
+    ),
+    feature_weights=np.asarray(
+        confidence_config.feature_weights,
+        dtype=np.float64,
+    ),
+)
+
+confidence_estimator = (
+    ForecastConfidenceEstimator(
+        calibration=calibration,
+        config=confidence_config,
+    )
+)
+
+confidence_result = (
+    confidence_estimator.calculate(
+        forecast=
+            hybrid_forecast_normalized,
+        lower=
+            lower_bound,
+        upper=
+            upper_bound,
+    )
+)
+
+confidence_batch = np.asarray(
+    confidence_result.global_confidence,
+    dtype=np.float32,
+)
+
+if confidence_batch.shape != (
+    number_of_samples,
+    FORECAST_HORIZON,
+):
+    raise RuntimeError(
+        "Unexpected adaptive-confidence shape: "
+        f"{confidence_batch.shape}"
+    )
+
+if not np.isfinite(
+    confidence_batch
+).all():
+    raise RuntimeError(
+        "Adaptive confidence contains NaN or Inf."
+    )
+
+if np.any(
+    confidence_batch < 0.0
+) or np.any(
+    confidence_batch > 1.0
+):
+    raise RuntimeError(
+        "Adaptive confidence must lie in [0,1]."
+    )
+
+print(
+    f"Adaptive confidence shape: "
+    f"{confidence_batch.shape}"
+)
+
+print(
+    f"Adaptive confidence mean : "
+    f"{confidence_batch.mean():.8f}"
+)
+
+print(
+    f"Adaptive confidence min  : "
+    f"{confidence_batch.min():.8f}"
+)
+
+print(
+    f"Adaptive confidence max  : "
+    f"{confidence_batch.max():.8f}"
+)
 
 
 try:
@@ -997,31 +1101,23 @@ except Exception as exc:
     )
 
 
-    predictive_state = (
-
-        hybrid_forecast_normalized
-        *
-        causal_phi[
-            None,
-            :,
-            None
-        ]
-
+    predictive_state = np.concatenate(
+        [
+            hybrid_forecast_normalized,
+            confidence_batch[..., None],
+        ],
+        axis=2,
     ).astype(
         np.float32
     )
 
 
-direct_predictive_state = (
-
-    hybrid_forecast_normalized
-    *
-    causal_phi[
-        None,
-        :,
-        None
-    ]
-
+direct_predictive_state = np.concatenate(
+    [
+        hybrid_forecast_normalized,
+        confidence_batch[..., None],
+    ],
+    axis=2,
 ).astype(
     np.float32
 )
@@ -1059,13 +1155,10 @@ if not np.allclose(
 ):
 
     raise RuntimeError(
-        "S_pred does not match Phi * Z_hat."
+        "S_pred does not match [Z_hat, Phi]."
     )
 
 
-# ============================================================
-# 12. FLATTEN PREDICTIVE STATE
-# ============================================================
 
 predictive_state_flat = (
     predictive_state.reshape(
@@ -1083,32 +1176,20 @@ print(
 
 if predictive_state_flat.shape != (
     number_of_samples,
-    96,
+    120,
 ):
 
     raise RuntimeError(
-        "Expected a 96-dimensional predictive state."
+        "Expected a 120-dimensional predictive state."
     )
 
 
-# ============================================================
-# 13. CURRENT PHYSICAL VALUES
-# ============================================================
 
 section(
     "BUILDING CURRENT PHYSICAL TRAINING VALUES"
 )
 
 
-# At training sample t:
-#
-# y_train[t, 0, :]
-#
-# is the current realized first lead associated with that
-# decision/sample.
-#
-# The remaining future y values are NOT inserted into
-# the predictive state.
 
 current_actual_normalized = (
     y_train[
@@ -1125,9 +1206,6 @@ print(
 )
 
 
-# ============================================================
-# 14. INVERSE SCALE CURRENT PHYSICAL VALUES
-# ============================================================
 
 current_actual_original = np.empty_like(
     current_actual_normalized,
@@ -1188,7 +1266,6 @@ for feature_index, feature_name in enumerate(
     )
 
 
-# Physical non-negativity.
 
 current_actual_original[
     :,
@@ -1293,9 +1370,6 @@ for i, feature in enumerate(
     )
 
 
-# ============================================================
-# 15. LEAKAGE CHECK
-# ============================================================
 
 section(
     "LEAKAGE CHECK"
@@ -1342,7 +1416,6 @@ print(
 )
 
 
-# Explicitly guarantee we never created test arrays.
 
 assert "X_test" in sequence_archive.files
 assert "y_test" in sequence_archive.files
@@ -1355,9 +1428,6 @@ print(
 )
 
 
-# ============================================================
-# 16. SAVE TRAINING ARCHIVE
-# ============================================================
 
 section(
     "SAVING RL TRAINING ARCHIVE"
@@ -1431,9 +1501,6 @@ print(
 )
 
 
-# ============================================================
-# 17. SUMMARY
-# ============================================================
 
 summary_rows = [
     {
@@ -1539,7 +1606,7 @@ metadata = {
         NUMBER_OF_FEATURES,
 
     "predictive_state_dimension":
-        96,
+        120,
 
     "feature_order":
         FEATURE_NAMES,
@@ -1565,7 +1632,7 @@ metadata = {
         False,
 
     "predictive_state_equation":
-        "S_pred = Phi * Z_hat",
+        "S_pred = [Z_hat, Phi]",
 
     "notes": [
         (
@@ -1597,9 +1664,6 @@ with open(
     )
 
 
-# ============================================================
-# 18. FINAL CHECKS
-# ============================================================
 
 section(
     "STEP 7L-A FINAL VALIDATION"
@@ -1683,7 +1747,7 @@ print(
 )
 
 print(
-    "[OK] Each S_pred has 24 x 4 = 96 elements."
+    "[OK] Each S_pred has 24 x 5 = 120 elements."
 )
 
 print(

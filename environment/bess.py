@@ -1,4 +1,4 @@
-"""
+﻿"""
 Battery Energy Storage System (BESS) model for FC-HMARL.
 
 The implementation follows the BESS formulation in the manuscript:
@@ -142,16 +142,6 @@ class BatteryEnergyStorageSystem:
         self.parameters = parameters
         self.name = name
 
-        # ----------------------------------------------------
-        # Initial SOC
-        # ----------------------------------------------------
-        # The manuscript gives SOC operating limits but does not
-        # specify one universal initial SOC value.
-        #
-        # Therefore, if initial_soc is not supplied, the midpoint
-        # between minimum and maximum SOC is used as an explicit
-        # reconstruction choice.
-        # ----------------------------------------------------
 
         if initial_soc is None:
             initial_soc = (
@@ -170,9 +160,6 @@ class BatteryEnergyStorageSystem:
         self.last_discharging_power_kw = 0.0
         self.last_energy_throughput_kwh = 0.0
 
-    # ========================================================
-    # BASIC PROPERTIES
-    # ========================================================
 
     @property
     def capacity_kwh(self) -> float:
@@ -206,9 +193,6 @@ class BatteryEnergyStorageSystem:
     def time_step_hours(self) -> float:
         return self.parameters.time_step_hours
 
-    # ========================================================
-    # VALIDATION
-    # ========================================================
 
     def _validate_initial_soc(self, soc: float) -> None:
         """Check that initial SOC is inside the operating range."""
@@ -220,9 +204,6 @@ class BatteryEnergyStorageSystem:
                 f"{self.maximum_soc:.4f}]."
             )
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -249,9 +230,6 @@ class BatteryEnergyStorageSystem:
 
         return self.soc
 
-    # ========================================================
-    # AVAILABLE POWER
-    # ========================================================
 
     def maximum_feasible_charge_power_kw(self) -> float:
         """
@@ -263,7 +241,6 @@ class BatteryEnergyStorageSystem:
 
         dt = self.time_step_hours
 
-        # SOC after self-discharge before charging.
         soc_after_loss = (
             1.0 - self.self_discharge_rate
         ) * self.soc
@@ -273,13 +250,6 @@ class BatteryEnergyStorageSystem:
             self.maximum_soc - soc_after_loss,
         )
 
-        # From:
-        #
-        # delta_SOC = eta_ch * P_ch * dt / E_capacity
-        #
-        # Therefore:
-        #
-        # P_ch = delta_SOC * E_capacity / (eta_ch * dt)
 
         soc_limited_power = (
             available_soc_room
@@ -316,15 +286,6 @@ class BatteryEnergyStorageSystem:
             soc_after_loss - self.minimum_soc,
         )
 
-        # From:
-        #
-        # delta_SOC =
-        # P_dis * dt / (eta_dis * E_capacity)
-        #
-        # Therefore:
-        #
-        # P_dis =
-        # delta_SOC * eta_dis * E_capacity / dt
 
         soc_limited_power = (
             available_soc_energy
@@ -400,8 +361,6 @@ class BatteryEnergyStorageSystem:
                 "and greater than zero."
             )
 
-        # Re-apply the ordinary BESS feasibility limiter without
-        # mutating the state.
         feasible_schedule_kw = (
             self.constrain_power(
                 scheduled_power_kw
@@ -413,22 +372,12 @@ class BatteryEnergyStorageSystem:
             0.0,
         )
 
-        # ----------------------------------------------------
-        # POWER HEADROOM
-        # ----------------------------------------------------
-        # Additional upward reserve cannot exceed unused discharge
-        # inverter / converter capability.
         power_headroom_kw = max(
             0.0,
             self.rated_power_kw
             - scheduled_discharge_kw,
         )
 
-        # ----------------------------------------------------
-        # ENERGY HEADROOM
-        # ----------------------------------------------------
-        # Energy above SOC_min after self-discharge, expressed as
-        # deliverable AC-side discharge energy.
         soc_after_loss = (
             1.0
             - self.self_discharge_rate
@@ -446,8 +395,6 @@ class BatteryEnergyStorageSystem:
             * self.discharging_efficiency
         )
 
-        # Scheduled discharge already consumes part of that energy
-        # during the current operating interval.
         scheduled_discharge_energy_kwh = (
             scheduled_discharge_kw
             * self.time_step_hours
@@ -472,9 +419,6 @@ class BatteryEnergyStorageSystem:
         )
 
 
-    # ========================================================
-    # ACTION CONVERSION
-    # ========================================================
 
     def constrain_power(
         self,
@@ -519,9 +463,6 @@ class BatteryEnergyStorageSystem:
 
         return 0.0
 
-    # ========================================================
-    # SOC TRANSITION
-    # ========================================================
 
     def calculate_next_soc(
         self,
@@ -545,7 +486,6 @@ class BatteryEnergyStorageSystem:
                 "discharging_power_kw must be non-negative."
             )
 
-        # A battery cannot simultaneously charge and discharge.
         if (
             charging_power_kw > 0.0
             and discharging_power_kw > 0.0
@@ -586,9 +526,6 @@ class BatteryEnergyStorageSystem:
 
         return float(next_soc)
 
-    # ========================================================
-    # MAIN BESS STEP
-    # ========================================================
 
     def step(
         self,
@@ -616,19 +553,10 @@ class BatteryEnergyStorageSystem:
 
         old_soc = self.soc
 
-        # Enforce power and SOC feasibility.
         feasible_power_kw = self.constrain_power(
             requested_power_kw
         )
 
-        # Manuscript convention:
-        #
-        # P_BESS = P_dis - P_ch
-        #
-        # Therefore:
-        #
-        # positive signed power => P_dis > 0
-        # negative signed power => P_ch > 0
 
         if feasible_power_kw >= 0.0:
 
@@ -645,7 +573,6 @@ class BatteryEnergyStorageSystem:
             discharging_power_kw=discharging_power_kw,
         )
 
-        # Numerical protection.
         next_soc = float(
             np.clip(
                 next_soc,
@@ -699,9 +626,6 @@ class BatteryEnergyStorageSystem:
                 energy_throughput_kwh,
         }
 
-    # ========================================================
-    # INFORMATION
-    # ========================================================
 
     def get_state(self) -> Dict[str, float]:
         """

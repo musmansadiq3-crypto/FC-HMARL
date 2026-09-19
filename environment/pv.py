@@ -1,4 +1,4 @@
-"""
+﻿"""
 Photovoltaic (PV) generation model for the FC-HMARL VPP environment.
 
 Manuscript formulation
@@ -136,9 +136,6 @@ class PhotovoltaicSystem:
         self.last_irradiance_ratio = 0.0
         self.last_power_kw = 0.0
 
-    # ========================================================
-    # BASIC PROPERTIES
-    # ========================================================
 
     @property
     def rated_capacity_kw(self) -> float:
@@ -156,9 +153,6 @@ class PhotovoltaicSystem:
     def stc_irradiance_w_m2(self) -> float:
         return self.parameters.stc_irradiance_w_m2
 
-    # ========================================================
-    # IRRADIANCE RATIO
-    # ========================================================
 
     def irradiance_ratio(
         self,
@@ -188,11 +182,6 @@ class PhotovoltaicSystem:
         critical = self.critical_irradiance_w_m2
         stc = self.stc_irradiance_w_m2
 
-        # ----------------------------------------------------
-        # Region 1: low irradiance
-        #
-        # r(t) = I(t)^2 / (I_c * I_STC)
-        # ----------------------------------------------------
 
         if irradiance < critical:
 
@@ -201,21 +190,11 @@ class PhotovoltaicSystem:
                 / (critical * stc)
             )
 
-        # ----------------------------------------------------
-        # Region 2: medium irradiance
-        #
-        # r(t) = I(t) / I_STC
-        # ----------------------------------------------------
 
         elif irradiance < stc:
 
             ratio = irradiance / stc
 
-        # ----------------------------------------------------
-        # Region 3: irradiance >= STC
-        #
-        # r(t) = 1
-        # ----------------------------------------------------
 
         else:
 
@@ -223,9 +202,6 @@ class PhotovoltaicSystem:
 
         return float(ratio)
 
-    # ========================================================
-    # PV POWER
-    # ========================================================
 
     def power_from_irradiance(
         self,
@@ -252,11 +228,8 @@ class PhotovoltaicSystem:
             * self.rated_capacity_kw
         )
 
-        # Numerical protection.
         power_kw = max(0.0, power_kw)
 
-        # Since r(t) <= 1 and efficiency <= 1,
-        # this normally cannot exceed rated capacity.
         power_kw = min(
             power_kw,
             self.rated_capacity_kw,
@@ -264,9 +237,6 @@ class PhotovoltaicSystem:
 
         return float(power_kw)
 
-    # ========================================================
-    # MAIN ENVIRONMENT STEP
-    # ========================================================
 
     def step(
         self,
@@ -306,9 +276,6 @@ class PhotovoltaicSystem:
                 self.rated_capacity_kw,
         }
 
-    # ========================================================
-    # VECTOR / PROFILE CALCULATION
-    # ========================================================
 
     def power_profile(
         self,
@@ -348,9 +315,6 @@ class PhotovoltaicSystem:
 
         return output
 
-    # ========================================================
-    # HISTORICAL PROFILE SUPPORT
-    # ========================================================
 
     def validate_historical_power(
         self,
@@ -381,9 +345,6 @@ class PhotovoltaicSystem:
 
         return power
 
-    # ========================================================
-    # STATE INFORMATION
-    # ========================================================
 
     def get_state(self) -> Dict[str, float]:
         """Return current PV-system information."""

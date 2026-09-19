@@ -1,4 +1,4 @@
-"""
+﻿"""
 Neural-network components for the FC-HMARL SAC agents.
 
 This module provides:
@@ -47,9 +47,6 @@ from torch import nn
 from torch.distributions import Normal
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class SACNetworkConfig:
@@ -187,9 +184,6 @@ class SACNetworkConfig:
             )
 
 
-# ============================================================
-# HELPERS
-# ============================================================
 
 def _expand_action_bound(
     bound,
@@ -447,9 +441,6 @@ def validate_action_tensor(
         )
 
 
-# ============================================================
-# GAUSSIAN ACTOR
-# ============================================================
 
 class GaussianPolicyNetwork(
     nn.Module
@@ -570,9 +561,6 @@ class GaussianPolicyNetwork(
             ),
         )
 
-    # ========================================================
-    # DISTRIBUTION PARAMETERS
-    # ========================================================
 
     def forward(
         self,
@@ -612,9 +600,6 @@ class GaussianPolicyNetwork(
             log_std,
         )
 
-    # ========================================================
-    # ACTION SCALING
-    # ========================================================
 
     def scale_action(
         self,
@@ -630,9 +615,6 @@ class GaussianPolicyNetwork(
             + self.action_bias
         )
 
-    # ========================================================
-    # SAMPLING
-    # ========================================================
 
     def sample(
         self,
@@ -734,9 +716,6 @@ class GaussianPolicyNetwork(
             deterministic_action,
         )
 
-    # ========================================================
-    # DETERMINISTIC
-    # ========================================================
 
     def deterministic(
         self,
@@ -758,9 +737,6 @@ class GaussianPolicyNetwork(
             normalized
         )
 
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     def parameter_count(
         self,
@@ -797,9 +773,6 @@ class GaussianPolicyNetwork(
         }
 
 
-# ============================================================
-# SINGLE Q NETWORK
-# ============================================================
 
 class QNetwork(
     nn.Module
@@ -915,9 +888,6 @@ class QNetwork(
         )
 
 
-# ============================================================
-# TWIN Q CRITIC
-# ============================================================
 
 class TwinQNetwork(
     nn.Module
@@ -1030,9 +1000,6 @@ class TwinQNetwork(
         }
 
 
-# ============================================================
-# NETWORK FACTORY
-# ============================================================
 
 def build_sac_networks(
     config: SACNetworkConfig,

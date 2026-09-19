@@ -1,4 +1,4 @@
-"""
+﻿"""
 Electric Vehicle (EV) fleet aggregation model for FC-HMARL.
 
 The implementation follows the EV formulation in the manuscript.
@@ -52,9 +52,6 @@ from typing import Dict, Iterable, List, Optional, Sequence
 import numpy as np
 
 
-# ============================================================
-# INDIVIDUAL EV RECORD
-# ============================================================
 
 @dataclass
 class EVRecord:
@@ -96,12 +93,6 @@ class EVRecord:
                 "departure_time must be non-negative."
             )
 
-        # The manuscript availability equation is written directly as:
-        #
-        # T_arr <= t <= T_dep
-        #
-        # Therefore this implementation requires departure >= arrival.
-        # Cross-midnight wrapping is not silently introduced.
         if self.departure_time < self.arrival_time:
             raise ValueError(
                 "departure_time must be greater than or equal "
@@ -114,9 +105,6 @@ class EVRecord:
             )
 
 
-# ============================================================
-# FLEET PARAMETERS
-# ============================================================
 
 @dataclass
 class EVFleetParameters:
@@ -167,9 +155,6 @@ class EVFleetParameters:
             )
 
 
-# ============================================================
-# EV FLEET
-# ============================================================
 
 class EVFleet:
     """
@@ -178,11 +163,11 @@ class EVFleet:
     The fleet evaluates:
 
         individual availability
-                ↓
+                â†“
         available charging powers
-                ↓
+                â†“
         aggregate EV charging demand
-                ↓
+                â†“
         microgrid EV charging capacity constraint
     """
 
@@ -213,9 +198,6 @@ class EVFleet:
             dtype=float,
         )
 
-    # ========================================================
-    # BASIC PROPERTIES
-    # ========================================================
 
     @property
     def number_of_evs(self) -> int:
@@ -232,9 +214,6 @@ class EVFleet:
     def time_step_hours(self) -> float:
         return self.parameters.time_step_hours
 
-    # ========================================================
-    # VEHICLE MANAGEMENT
-    # ========================================================
 
     def set_vehicles(
         self,
@@ -272,9 +251,6 @@ class EVFleet:
                 "EV records have not been fully initialized."
             )
 
-    # ========================================================
-    # AVAILABILITY FUNCTION
-    # ========================================================
 
     @staticmethod
     def vehicle_is_available(
@@ -346,9 +322,6 @@ class EVFleet:
             np.sum(availability)
         )
 
-    # ========================================================
-    # INDIVIDUAL CHARGING POWER
-    # ========================================================
 
     def rated_charging_power_vector(
         self,
@@ -416,9 +389,6 @@ class EVFleet:
             ratings,
         )
 
-    # ========================================================
-    # AGGREGATED EV DEMAND
-    # ========================================================
 
     def unconstrained_aggregate_power(
         self,
@@ -518,9 +488,6 @@ class EVFleet:
             unconstrained
         )
 
-    # ========================================================
-    # MAIN ENVIRONMENT STEP
-    # ========================================================
 
     def step(
         self,
@@ -600,9 +567,6 @@ class EVFleet:
                 self.maximum_aggregate_charging_power_kw,
         }
 
-    # ========================================================
-    # STATE
-    # ========================================================
 
     def get_state(self) -> Dict[str, object]:
         """
@@ -632,9 +596,6 @@ class EVFleet:
                 self.maximum_aggregate_charging_power_kw,
         }
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(self) -> None:
         """
@@ -654,9 +615,6 @@ class EVFleet:
             dtype=float,
         )
 
-    # ========================================================
-    # REPRESENTATION
-    # ========================================================
 
     def __repr__(self) -> str:
         return (

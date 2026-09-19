@@ -1,4 +1,4 @@
-"""
+﻿"""
 Data preprocessing utilities for the FC-HMARL forecasting pipeline.
 
 Manuscript-supported preprocessing
@@ -45,9 +45,6 @@ import numpy as np
 import pandas as pd
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class PreprocessingConfig:
@@ -108,9 +105,6 @@ class PreprocessingConfig:
                 )
 
 
-# ============================================================
-# GENERAL VALIDATION
-# ============================================================
 
 def ensure_dataframe(
     data: pd.DataFrame,
@@ -149,9 +143,6 @@ def numeric_columns(
     )
 
 
-# ============================================================
-# TIMESTAMP PREPARATION
-# ============================================================
 
 def prepare_datetime_index(
     data: pd.DataFrame,
@@ -212,9 +203,6 @@ def prepare_datetime_index(
     return frame.sort_index()
 
 
-# ============================================================
-# HOURLY RESOLUTION
-# ============================================================
 
 def convert_to_hourly(
     data: pd.DataFrame,
@@ -268,7 +256,6 @@ def convert_to_hourly(
             f"Supported values are {sorted(supported)}."
         )
 
-    # Forecasting variables are numerical.
     columns = numeric_columns(
         frame
     )
@@ -306,9 +293,6 @@ def convert_to_hourly(
     return hourly
 
 
-# ============================================================
-# MISSING-DATA INTERPOLATION
-# ============================================================
 
 def interpolate_missing_values(
     data: pd.DataFrame,
@@ -347,9 +331,6 @@ def interpolate_missing_values(
     return result
 
 
-# ============================================================
-# THREE-SIGMA OUTLIER DETECTION
-# ============================================================
 
 def three_sigma_mask(
     data: pd.DataFrame,
@@ -432,8 +413,6 @@ def three_sigma_mask(
 
         mean = valid.mean()
 
-        # Population standard deviation is used here as a deterministic
-        # reconstruction convention.
         std = valid.std(
             ddof=0
         )
@@ -510,9 +489,9 @@ def filter_and_interpolate_outliers(
     Sequence:
 
         three-sigma detection
-                ↓
+                â†“
         abnormal value -> NaN
-                ↓
+                â†“
         linear interpolation
 
     This preserves the regular hourly timeline.
@@ -536,9 +515,6 @@ def filter_and_interpolate_outliers(
     return reconstructed, mask
 
 
-# ============================================================
-# MIN-MAX SCALER
-# ============================================================
 
 class DataFrameMinMaxScaler:
     """
@@ -775,9 +751,6 @@ class DataFrameMinMaxScaler:
         }
 
 
-# ============================================================
-# CHRONOLOGICAL 70 / 15 / 15 SPLIT
-# ============================================================
 
 def chronological_split(
     data: pd.DataFrame,
@@ -879,9 +852,6 @@ def chronological_split(
     )
 
 
-# ============================================================
-# COMPLETE PREPROCESSING PIPELINE
-# ============================================================
 
 def preprocess_forecasting_data(
     data: pd.DataFrame,
@@ -895,23 +865,23 @@ def preprocess_forecasting_data(
     Pipeline
     --------
     raw data
-        ↓
+        â†“
     datetime index
-        ↓
+        â†“
     hourly conversion
-        ↓
+        â†“
     linear interpolation of missing measurements
-        ↓
+        â†“
     three-sigma abnormal-sample detection
-        ↓
+        â†“
     abnormal values -> NaN
-        ↓
+        â†“
     linear interpolation
-        ↓
+        â†“
     chronological 70/15/15 split
-        ↓
+        â†“
     fit min-max scaler on training data
-        ↓
+        â†“
     transform train/validation/test
 
     Returns
@@ -935,9 +905,6 @@ def preprocess_forecasting_data(
 
     config.validate()
 
-    # --------------------------------------------------------
-    # HOURLY ALIGNMENT
-    # --------------------------------------------------------
 
     hourly = convert_to_hourly(
         data=data,
@@ -949,9 +916,6 @@ def preprocess_forecasting_data(
         ),
     )
 
-    # --------------------------------------------------------
-    # MISSING MEASUREMENTS
-    # --------------------------------------------------------
 
     hourly_interpolated = (
         interpolate_missing_values(
@@ -962,9 +926,6 @@ def preprocess_forecasting_data(
         )
     )
 
-    # --------------------------------------------------------
-    # THREE-SIGMA FILTER + INTERPOLATION
-    # --------------------------------------------------------
 
     cleaned, outlier_mask = (
         filter_and_interpolate_outliers(
@@ -978,9 +939,6 @@ def preprocess_forecasting_data(
         )
     )
 
-    # --------------------------------------------------------
-    # CHRONOLOGICAL SPLIT
-    # --------------------------------------------------------
 
     (
         train_raw,
@@ -999,9 +957,6 @@ def preprocess_forecasting_data(
         ),
     )
 
-    # --------------------------------------------------------
-    # MIN-MAX NORMALIZATION
-    # --------------------------------------------------------
 
     scaler = DataFrameMinMaxScaler()
 

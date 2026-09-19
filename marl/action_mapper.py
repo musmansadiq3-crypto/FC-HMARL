@@ -1,4 +1,4 @@
-"""
+﻿"""
 FC-HMARL normalized-action to physical-action mapper.
 
 This module converts SAC actions into physical commands used by
@@ -56,9 +56,6 @@ from marl.vpp_training_bridge import (
 )
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class ActionMapperConfig:
@@ -143,9 +140,6 @@ class ActionMapperConfig:
             )
 
 
-# ============================================================
-# BASIC HELPERS
-# ============================================================
 
 def _to_action_vector(
     action,
@@ -212,9 +206,6 @@ def _clip_normalized_action(
     )
 
 
-# ============================================================
-# BESS MAPPING
-# ============================================================
 
 def map_bess_action(
     normalized_action: float,
@@ -267,9 +258,6 @@ def map_bess_action(
     )
 
 
-# ============================================================
-# LOCAL SHARING MAPPING
-# ============================================================
 
 def build_local_sharing_matrix(
     local_actions,
@@ -385,9 +373,6 @@ def build_local_sharing_matrix(
                 )
             )
 
-            # Directional transfer cannot be negative.
-            #
-            # SAC output <= 0 means no transfer.
             positive_request = max(
                 normalized,
                 0.0,
@@ -428,9 +413,6 @@ def build_local_sharing_matrix(
     return matrix
 
 
-# ============================================================
-# COORDINATOR SHARING MODULATION
-# ============================================================
 
 def apply_coordinator_sharing_multiplier(
     sharing_matrix: np.ndarray,
@@ -490,9 +472,6 @@ def apply_coordinator_sharing_multiplier(
     return matrix
 
 
-# ============================================================
-# RESERVE ACTION
-# ============================================================
 
 def map_reserve_actions(
     coordinator_action,
@@ -625,9 +604,6 @@ def map_reserve_actions(
     return reserve
 
 
-# ============================================================
-# OPTIONAL GRID ACTION
-# ============================================================
 
 def map_grid_actions(
     coordinator_action,
@@ -697,9 +673,6 @@ def map_grid_actions(
     )
 
 
-# ============================================================
-# MAIN ACTION MAPPER
-# ============================================================
 
 class FCHMARLActionMapper:
     """
@@ -756,9 +729,6 @@ class FCHMARLActionMapper:
                 "number of microgrids."
             )
 
-        # ----------------------------------------------------
-        # LOCAL BESS ACTIONS
-        # ----------------------------------------------------
 
         bess_actions = np.zeros(
             environment.num_microgrids,
@@ -806,9 +776,6 @@ class FCHMARLActionMapper:
                 ),
             )
 
-        # ----------------------------------------------------
-        # LOCAL SHARING
-        # ----------------------------------------------------
 
         sharing_matrix = (
             build_local_sharing_matrix(
@@ -825,9 +792,6 @@ class FCHMARLActionMapper:
             )
         )
 
-        # ----------------------------------------------------
-        # COORDINATOR ACTION
-        # ----------------------------------------------------
 
         coordinator_action = (
             _to_action_vector(

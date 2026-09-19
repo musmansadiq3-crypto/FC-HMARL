@@ -1,37 +1,4 @@
-# ============================================================
-# FC-HMARL
-# STEP 7B - RIGOROUS REAL-DATA FORECASTING EVALUATION
-# ============================================================
-#
-# Uses the predictions already produced by Step 7A.
-#
-# No retraining is performed.
-#
-# Input:
-#   outputs/forecasting/
-#       real_forecasting_test_predictions.npz
-#
-# Output:
-#   outputs/forecasting/evaluation/
-#
-# Metrics:
-#   MAE
-#   RMSE
-#   MSE
-#   R2
-#   NMAE
-#   NRMSE
-#   CVRMSE
-#   MAPE
-#   sMAPE
-#
-# Additional evaluation:
-#   - daylight-only PV metrics
-#   - active-EV metrics
-#   - horizon-wise metrics h = 1,...,24
-#
-# ============================================================
-
+﻿
 
 from pathlib import Path
 
@@ -39,9 +6,6 @@ import numpy as np
 import pandas as pd
 
 
-# ============================================================
-# 1. PROJECT PATHS
-# ============================================================
 
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
@@ -82,9 +46,6 @@ SUMMARY_FILE = (
 )
 
 
-# ============================================================
-# 2. FEATURE DEFINITIONS
-# ============================================================
 
 FEATURE_NAMES = [
     "pv_power_kw",
@@ -94,24 +55,6 @@ FEATURE_NAMES = [
 ]
 
 
-# ============================================================
-# 3. SPECIAL THRESHOLDS
-# ============================================================
-#
-# PV:
-# Evaluate PV MAPE only when actual reference PV output is
-# clearly above zero.
-#
-# Since PV is represented using a 1-kW reference plant:
-# 0.05 kW = 5% of rated output.
-#
-# EV:
-# Evaluate active-EV percentage metrics when actual EV power
-# exceeds 1 kW.
-#
-# These thresholds are evaluation choices and are explicitly
-# documented. They are NOT claimed to be manuscript constants.
-# ============================================================
 
 PV_DAYLIGHT_THRESHOLD_KW = 0.05
 
@@ -120,9 +63,6 @@ EV_ACTIVE_THRESHOLD_KW = 1.0
 EPSILON = 1e-8
 
 
-# ============================================================
-# 4. PRINT HELPERS
-# ============================================================
 
 def section(title):
 
@@ -154,9 +94,6 @@ def subsection(title):
     )
 
 
-# ============================================================
-# 5. METRIC FUNCTIONS
-# ============================================================
 
 def mae(actual, predicted):
 
@@ -488,9 +425,6 @@ def calculate_metrics(
     }
 
 
-# ============================================================
-# 6. START
-# ============================================================
 
 section(
     "FC-HMARL - STEP 7B FORECASTING EVALUATION"
@@ -524,9 +458,6 @@ print(
 )
 
 
-# ============================================================
-# 7. LOAD PREDICTIONS
-# ============================================================
 
 section(
     "LOADING TEST PREDICTIONS"
@@ -628,9 +559,6 @@ print(
 )
 
 
-# ============================================================
-# 8. OVERALL METRICS
-# ============================================================
 
 section(
     "OVERALL TEST METRICS"
@@ -758,9 +686,6 @@ overall_df.to_csv(
 )
 
 
-# ============================================================
-# 9. SPECIAL PV EVALUATION
-# ============================================================
 
 section(
     "DAYLIGHT / ACTIVE-POWER EVALUATION"
@@ -770,9 +695,6 @@ section(
 special_rows = []
 
 
-# ------------------------------------------------------------
-# PV DAYLIGHT
-# ------------------------------------------------------------
 
 pv_actual = targets[
     :,
@@ -864,9 +786,6 @@ print(
 )
 
 
-# ------------------------------------------------------------
-# EV ACTIVE-CHARGING
-# ------------------------------------------------------------
 
 ev_actual = targets[
     :,
@@ -971,9 +890,6 @@ special_df.to_csv(
 )
 
 
-# ============================================================
-# 10. HORIZON-WISE METRICS
-# ============================================================
 
 section(
     "24-HOUR HORIZON-WISE EVALUATION"
@@ -1072,9 +988,6 @@ horizon_df.to_csv(
 )
 
 
-# ============================================================
-# 11. HORIZON SUMMARY
-# ============================================================
 
 subsection(
     "FIRST-HOUR VS 24TH-HOUR FORECAST"
@@ -1134,9 +1047,6 @@ for feature_name in FEATURE_NAMES:
     )
 
 
-# ============================================================
-# 12. CHECK NEGATIVE PREDICTIONS
-# ============================================================
 
 section(
     "PHYSICAL PREDICTION CHECK"
@@ -1168,9 +1078,6 @@ for feature_index, feature_name in enumerate(
     )
 
 
-# ============================================================
-# 13. SAVE TEXT SUMMARY
-# ============================================================
 
 summary_lines = []
 
@@ -1299,9 +1206,6 @@ SUMMARY_FILE.write_text(
 )
 
 
-# ============================================================
-# 14. OUTPUT FILES
-# ============================================================
 
 section(
     "SAVING STEP 7B RESULTS"
@@ -1335,9 +1239,6 @@ print(
 )
 
 
-# ============================================================
-# 15. COMPLETE
-# ============================================================
 
 section(
     "STEP 7B COMPLETE"

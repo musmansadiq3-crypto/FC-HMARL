@@ -1,0 +1,8 @@
+controller,training_seed,test_windows,transformer_violation_steps,soc_below_min_count,soc_above_max_count,all_transformers_feasible,all_soc_feasible
+passive_grid_only,,1268,0,0,0,True,True
+rule_based_bess_ems,,1268,0,0,0,True,True
+full_fc_hmarl,11,1268,0,0,0,True,True
+full_fc_hmarl,22,1268,0,0,0,True,True
+full_fc_hmarl,33,1268,0,0,0,True,True
+full_fc_hmarl,44,1268,0,0,0,True,True
+full_fc_hmarl,55,1268,0,0,0,True,True

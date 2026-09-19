@@ -1,4 +1,4 @@
-"""
+﻿"""
 State construction utilities for the FC-HMARL framework.
 
 This module connects:
@@ -49,12 +49,12 @@ For the default forecasting arrangement:
 
 the predictive vector contains:
 
-    24 * 4 = 96 elements.
+    24 * 5 = 120 elements.
 
 Therefore:
 
-    local state dimension       = 5 + 96 = 101
-    coordinator state dimension = 3 + 96 = 99
+    local state dimension       = 5 + 120 = 125
+    coordinator state dimension = 3 + 120 = 123
 
 for the default configuration.
 """
@@ -67,9 +67,6 @@ from typing import Dict, Iterable, List, Optional, Sequence
 import numpy as np
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class StateBuilderConfig:
@@ -81,7 +78,7 @@ class StateBuilderConfig:
 
     forecast_horizon: int = 24
 
-    forecast_features: int = 4
+    forecast_features: int = 5
 
     flatten_predictive_state: bool = True
 
@@ -180,9 +177,6 @@ class StateBuilderConfig:
         )
 
 
-# ============================================================
-# GENERAL VALIDATION
-# ============================================================
 
 def _validate_scalar(
     value,
@@ -232,9 +226,6 @@ def _resolve_dtype(
     )
 
 
-# ============================================================
-# PREDICTIVE STATE
-# ============================================================
 
 def validate_predictive_state(
     predictive_state,
@@ -360,9 +351,6 @@ def flatten_predictive_state(
     )
 
 
-# ============================================================
-# LOCAL MICROGRID STATE
-# ============================================================
 
 def build_local_state(
     soc,
@@ -467,9 +455,6 @@ def build_local_state(
     return state
 
 
-# ============================================================
-# COORDINATOR STATE
-# ============================================================
 
 def build_coordinator_state(
     vpp_power,
@@ -560,9 +545,6 @@ def build_coordinator_state(
     return state
 
 
-# ============================================================
-# GLOBAL HIERARCHICAL STATE
-# ============================================================
 
 def build_global_state(
     local_states: Sequence[
@@ -707,9 +689,6 @@ def build_global_state(
     return global_state
 
 
-# ============================================================
-# AGGREGATE VPP POWER
-# ============================================================
 
 def calculate_vpp_power(
     grid_exchanges,
@@ -757,9 +736,6 @@ def calculate_vpp_power(
     )
 
 
-# ============================================================
-# TOTAL ENERGY-SHARING ACTIVITY
-# ============================================================
 
 def calculate_total_sharing_activity(
     sharing_matrix,
@@ -837,9 +813,6 @@ def calculate_total_sharing_activity(
     )
 
 
-# ============================================================
-# COMPLETE STATE RESULT
-# ============================================================
 
 @dataclass
 class HierarchicalStateResult:
@@ -936,9 +909,6 @@ class HierarchicalStateResult:
         }
 
 
-# ============================================================
-# MAIN STATE BUILDER
-# ============================================================
 
 class HierarchicalStateBuilder:
     """

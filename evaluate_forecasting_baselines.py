@@ -1,36 +1,10 @@
-# ============================================================
-# FC-HMARL
-# STEP 7C - FORECASTING BASELINE COMPARISON
-# ============================================================
-#
-# Compares the trained Transformer against:
-#
-#   1. Persistence baseline
-#      Future 24 h = last observed value
-#
-#   2. Daily seasonal naive baseline
-#      Future hour h = value from same hour yesterday
-#
-#   3. Transformer raw predictions
-#
-#   4. Transformer physically clipped predictions
-#      PV >= 0
-#      Load >= 0
-#      EV >= 0
-#
-# No retraining is performed.
-#
-# ============================================================
-
+﻿
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 
-# ============================================================
-# 1. PATHS
-# ============================================================
 
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
@@ -83,9 +57,6 @@ FEATURE_NAMES = [
 EPSILON = 1e-8
 
 
-# ============================================================
-# 2. HELPERS
-# ============================================================
 
 def section(title):
 
@@ -190,9 +161,6 @@ def nrmse(actual, predicted):
     )
 
 
-# ============================================================
-# 3. START
-# ============================================================
 
 section(
     "FC-HMARL - STEP 7C BASELINE FORECAST COMPARISON"
@@ -218,9 +186,6 @@ OUTPUT_DIR.mkdir(
 )
 
 
-# ============================================================
-# 4. LOAD TEST WINDOWS
-# ============================================================
 
 sequences = np.load(
     SEQUENCE_FILE,
@@ -273,9 +238,6 @@ print(
 )
 
 
-# ============================================================
-# 5. LOAD SCALER
-# ============================================================
 
 scaler = pd.read_csv(
     SCALER_FILE
@@ -314,9 +276,6 @@ def inverse_feature(
     )
 
 
-# ============================================================
-# 6. INVERSE-SCALE INPUT HISTORY
-# ============================================================
 
 X_test = np.empty_like(
     X_test_norm,
@@ -344,12 +303,6 @@ for feature_index, feature_name in enumerate(
     )
 
 
-# ============================================================
-# 7. PERSISTENCE BASELINE
-# ============================================================
-#
-# Last observed value is repeated for all 24 forecast hours.
-# ============================================================
 
 last_observation = X_test[
     :,
@@ -372,15 +325,6 @@ persistence_prediction = np.repeat(
 )
 
 
-# ============================================================
-# 8. DAILY SEASONAL BASELINE
-# ============================================================
-#
-# The final 24 hours of the 168-hour historical window
-# correspond to the previous day.
-#
-# Use yesterday's 24-hour profile as tomorrow's forecast.
-# ============================================================
 
 seasonal_prediction = X_test[
     :,
@@ -396,16 +340,12 @@ if seasonal_prediction.shape != actual.shape:
     )
 
 
-# ============================================================
-# 9. PHYSICALLY CLIPPED TRANSFORMER
-# ============================================================
 
 transformer_clipped = (
     transformer_prediction.copy()
 )
 
 
-# PV cannot be negative
 
 transformer_clipped[
     :,
@@ -425,7 +365,6 @@ transformer_clipped[
 )
 
 
-# Load cannot be negative
 
 transformer_clipped[
     :,
@@ -445,8 +384,6 @@ transformer_clipped[
 )
 
 
-# EV charging demand cannot be negative
-# in the current forecasting target definition.
 
 transformer_clipped[
     :,
@@ -466,9 +403,6 @@ transformer_clipped[
 )
 
 
-# ============================================================
-# 10. MODELS TO COMPARE
-# ============================================================
 
 models = {
 
@@ -486,9 +420,6 @@ models = {
 }
 
 
-# ============================================================
-# 11. EVALUATE
-# ============================================================
 
 section(
     "BASELINE COMPARISON"
@@ -589,9 +520,6 @@ for model_name, prediction in models.items():
         )
 
 
-# ============================================================
-# 12. SAVE
-# ============================================================
 
 comparison = pd.DataFrame(
     rows
@@ -604,9 +532,6 @@ comparison.to_csv(
 )
 
 
-# ============================================================
-# 13. TRANSFORMER IMPROVEMENT VS DAILY SEASONAL
-# ============================================================
 
 section(
     "TRANSFORMER IMPROVEMENT VS DAILY-SEASONAL BASELINE"
@@ -696,9 +621,6 @@ for feature_name in FEATURE_NAMES:
     )
 
 
-# ============================================================
-# 14. NEGATIVE OUTPUT AFTER CLIPPING
-# ============================================================
 
 section(
     "PHYSICAL OUTPUT CHECK AFTER CLIPPING"
@@ -730,9 +652,6 @@ for feature_index, feature_name in enumerate(
     )
 
 
-# ============================================================
-# 15. COMPLETE
-# ============================================================
 
 section(
     "STEP 7C COMPLETE"

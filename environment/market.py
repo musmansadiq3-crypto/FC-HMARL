@@ -1,4 +1,4 @@
-"""
+﻿"""
 Market interaction model for the FC-HMARL VPP environment.
 
 This module reconstructs the manuscript's economic interaction with
@@ -31,9 +31,6 @@ from typing import Dict
 import numpy as np
 
 
-# ============================================================
-# MARKET PARAMETERS
-# ============================================================
 
 @dataclass
 class MarketParameters:
@@ -111,9 +108,6 @@ class MarketParameters:
             )
 
 
-# ============================================================
-# MARKET MODEL
-# ============================================================
 
 class ElectricityMarket:
     """
@@ -139,9 +133,6 @@ class ElectricityMarket:
         self.last_grid_sale_revenue = 0.0
         self.last_reserve_revenue = 0.0
 
-    # ========================================================
-    # BASIC PROPERTIES
-    # ========================================================
 
     @property
     def time_step_hours(self) -> float:
@@ -151,9 +142,6 @@ class ElectricityMarket:
     def reserve_price_usd_per_kwh(self) -> float:
         return self.parameters.reserve_price_usd_per_kwh
 
-    # ========================================================
-    # PRICE VALIDATION
-    # ========================================================
 
     def validate_buy_price(
         self,
@@ -211,9 +199,6 @@ class ElectricityMarket:
 
         return price
 
-    # ========================================================
-    # GRID PURCHASE
-    # ========================================================
 
     def grid_purchase_cost(
         self,
@@ -252,9 +237,6 @@ class ElectricityMarket:
             * buy_price
         )
 
-    # ========================================================
-    # GRID SALE
-    # ========================================================
 
     def grid_sale_revenue(
         self,
@@ -288,9 +270,6 @@ class ElectricityMarket:
             * sell_price
         )
 
-    # ========================================================
-    # RESERVE MARKET
-    # ========================================================
 
     def reserve_revenue(
         self,
@@ -328,9 +307,6 @@ class ElectricityMarket:
             * self.reserve_price_usd_per_kwh
         )
 
-    # ========================================================
-    # GRID INTERACTION
-    # ========================================================
 
     def evaluate_grid_interaction(
         self,
@@ -417,9 +393,6 @@ class ElectricityMarket:
                 net_grid_cost,
         }
 
-    # ========================================================
-    # COMPLETE MARKET STEP
-    # ========================================================
 
     def step(
         self,
@@ -518,9 +491,6 @@ class ElectricityMarket:
                 net_market_profit,
         }
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(self) -> None:
         """Reset stored market outputs."""
@@ -533,9 +503,6 @@ class ElectricityMarket:
         self.last_grid_sale_revenue = 0.0
         self.last_reserve_revenue = 0.0
 
-    # ========================================================
-    # REPRESENTATION
-    # ========================================================
 
     def __repr__(
         self,

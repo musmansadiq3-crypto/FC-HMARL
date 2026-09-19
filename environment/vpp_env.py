@@ -1,4 +1,4 @@
-"""
+﻿"""
 Five-microgrid Virtual Power Plant environment for FC-HMARL.
 
 This module integrates:
@@ -61,9 +61,6 @@ from environment.microgrid import Microgrid
 from environment.energy_sharing import EnergySharingNetwork
 
 
-# ============================================================
-# VPP ENVIRONMENT
-# ============================================================
 
 class VPPEnvironment:
     """
@@ -143,9 +140,6 @@ class VPPEnvironment:
 
         self.last_result: Dict[str, object] = {}
 
-    # ========================================================
-    # INPUT VALIDATION
-    # ========================================================
 
     def _vector(
         self,
@@ -213,9 +207,6 @@ class VPPEnvironment:
 
         return list(requests)
 
-    # ========================================================
-    # SHARING
-    # ========================================================
 
     def apply_sharing_actions(
         self,
@@ -251,9 +242,6 @@ class VPPEnvironment:
             dtype=float,
         )
 
-        # IMPORTANT:
-        # Physical receiving MG obtains sharing after
-        # the 98% transfer efficiency.
         incoming_received = np.array(
             [
                 self.energy_sharing_network
@@ -302,9 +290,6 @@ class VPPEnvironment:
                 .total_transfer_loss_kw(),
         }
 
-    # ========================================================
-    # ONE VPP STEP
-    # ========================================================
 
     def step(
         self,
@@ -418,15 +403,6 @@ class VPPEnvironment:
                 "Reserve actions cannot be negative."
             )
 
-        # ----------------------------------------------------
-        # RESERVE FEASIBILITY SAFETY LAYER
-        # ----------------------------------------------------
-        # The action mapper normally performs this clipping first.
-        # It is repeated here deliberately so direct callers of
-        # VPPEnvironment cannot bypass physical BESS reserve limits.
-        #
-        # Upward reserve shares both discharge-power capability and
-        # stored energy with the scheduled BESS operating point.
         requested_reserve_actions = (
             reserve_actions.copy()
         )
@@ -497,9 +473,6 @@ class VPPEnvironment:
             )
         )
 
-        # ----------------------------------------------------
-        # ENERGY SHARING
-        # ----------------------------------------------------
 
         sharing_result = (
             self.apply_sharing_actions(
@@ -515,9 +488,6 @@ class VPPEnvironment:
             "outgoing_power_kw"
         ]
 
-        # ----------------------------------------------------
-        # STEP EACH MICROGRID
-        # ----------------------------------------------------
 
         local_results = []
 
@@ -561,9 +531,6 @@ class VPPEnvironment:
                 result
             )
 
-        # ----------------------------------------------------
-        # SYSTEM-LEVEL AGGREGATION
-        # ----------------------------------------------------
 
         total_pv_kw = float(
             sum(
@@ -733,9 +700,6 @@ class VPPEnvironment:
             )
         )
 
-        # ----------------------------------------------------
-        # TIME UPDATE
-        # ----------------------------------------------------
 
         self.current_time = time
 
@@ -746,9 +710,6 @@ class VPPEnvironment:
             >= self.episode_length_hours
         )
 
-        # ----------------------------------------------------
-        # RESULT
-        # ----------------------------------------------------
 
         result = {
             "time":
@@ -856,9 +817,6 @@ class VPPEnvironment:
 
         return result
 
-    # ========================================================
-    # LOCAL STATES
-    # ========================================================
 
     def get_local_states(
         self,
@@ -875,9 +833,6 @@ class VPPEnvironment:
             for microgrid in self.microgrids
         ]
 
-    # ========================================================
-    # GLOBAL VPP STATE
-    # ========================================================
 
     def get_global_state(
         self,
@@ -914,9 +869,6 @@ class VPPEnvironment:
                 self.last_result,
         }
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -965,9 +917,6 @@ class VPPEnvironment:
 
         return self.get_global_state()
 
-    # ========================================================
-    # REPRESENTATION
-    # ========================================================
 
     def __repr__(
         self,

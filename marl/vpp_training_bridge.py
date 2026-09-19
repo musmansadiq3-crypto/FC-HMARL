@@ -39,6 +39,12 @@ from typing import Callable, Dict, Optional, Sequence
 
 import numpy as np
 
+from risk.risk_penalty import (
+    OperationalExposureConfig,
+    calculate_constraint_exposure,
+    calculate_operational_exposure,
+)
+
 from environment.vpp_env import VPPEnvironment
 
 from marl.environment_adapter import (
@@ -61,9 +67,6 @@ from marl.training_loop import (
 )
 
 
-# ============================================================
-# EXOGENOUS VPP INPUT
-# ============================================================
 
 @dataclass
 class VPPExogenousInput:
@@ -215,9 +218,6 @@ class VPPExogenousInput:
                 )
 
 
-# ============================================================
-# PHYSICAL ACTION COMMAND
-# ============================================================
 
 @dataclass
 class VPPPhysicalAction:
@@ -349,9 +349,6 @@ class VPPPhysicalAction:
                 )
 
 
-# ============================================================
-# BRIDGE CONFIGURATION
-# ============================================================
 
 @dataclass
 class VPPTrainingBridgeConfig:
@@ -388,6 +385,12 @@ class VPPTrainingBridgeConfig:
     timestep_hours: float = 1.0
 
     number_of_microgrids: int = 5
+
+    eta_market: float = 0.25
+    eta_bess: float = 0.25
+    eta_sharing: float = 0.25
+    eta_constraint: float = 0.25
+
 
     def validate(
         self,
@@ -480,9 +483,6 @@ class VPPTrainingBridgeConfig:
             )
 
 
-# ============================================================
-# CALLBACK TYPES
-# ============================================================
 
 ExogenousProvider = Callable[
     [int, int],
@@ -499,9 +499,6 @@ ActionMapper = Callable[
 ]
 
 
-# ============================================================
-# MAIN PRODUCTION BRIDGE
-# ============================================================
 
 class FCHMARLVPPTrainingBridge:
     """
@@ -609,9 +606,6 @@ class FCHMARLVPPTrainingBridge:
             HierarchicalRewardResult
         ] = None
 
-    # ========================================================
-    # LOCAL OBSERVATION CONVERSION
-    # ========================================================
 
     def _microgrid_observations(
         self,
@@ -667,9 +661,6 @@ class FCHMARLVPPTrainingBridge:
 
         return observations
 
-    # ========================================================
-    # HIERARCHICAL STATE
-    # ========================================================
 
     def _build_state(
         self,
@@ -719,9 +710,6 @@ class FCHMARLVPPTrainingBridge:
             ),
         )
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -785,15 +773,12 @@ class FCHMARLVPPTrainingBridge:
             state_result
         )
 
-    # ========================================================
-    # REWARD CONSTRUCTION
-    # ========================================================
 
     def _build_reward(
         self,
         physical_result:
         Dict[str, object],
-        confidence: float,
+        confidence,
     ) -> HierarchicalRewardResult:
 
         local_results = (
@@ -859,23 +844,6 @@ class FCHMARLVPPTrainingBridge:
                             ]
                         ),
 
-                    # Local feasibility credit assignment:
-                    #
-                    # The physical environment projects the requested
-                    # utility-grid exchange onto the feasible PCC region
-                    # before market settlement. If the post-projection
-                    # grid power were used here, the local grid-violation
-                    # term could become zero even when the local action
-                    # requested an infeasible PCC loading.
-                    #
-                    # The reconstructed PCC constraint is evaluated on:
-                    #
-                    #     |P_grid,requested + P_share,out|
-                    #
-                    # Therefore the EXISTING local grid-violation reward
-                    # receives the requested PCC loading magnitude. This
-                    # preserves the manuscript reward structure without
-                    # introducing an additional local imbalance-cost term.
                     "grid_exchange":
                         float(
                             abs(
@@ -892,9 +860,6 @@ class FCHMARLVPPTrainingBridge:
                             )
                         ),
 
-                    # Use the same active-power limit as the physical
-                    # transformer/PCC safety layer. This is important when
-                    # the reconstruction power factor is not 1.0.
                     "maximum_grid_exchange":
                         float(
                             result[
@@ -928,6 +893,160 @@ class FCHMARLVPPTrainingBridge:
             .imbalance_penalty_per_kw
         )
 
+        executed_bess_power = np.asarray(
+            [
+                float(result["bess_power_kw"])
+                for result in local_results
+            ],
+            dtype=np.float64,
+        )
+
+        maximum_bess_power = np.asarray(
+            [
+                float(
+                    microgrid.bess.parameters.rated_power_kw
+                )
+                for microgrid in self.environment.microgrids
+            ],
+            dtype=np.float64,
+        )
+
+        executed_sharing = np.asarray(
+            physical_result[
+                "sharing"
+            ][
+                "feasible_matrix_kw"
+            ],
+            dtype=np.float64,
+        )
+
+        maximum_market_power = float(
+            np.sum(
+                np.asarray(
+                    self.config.maximum_grid_exchanges_kw,
+                    dtype=np.float64,
+                )
+            )
+        )
+
+        actual_market_power = float(
+            np.sum(
+                [
+                    abs(
+                        float(
+                            result[
+                                "grid_power_kw"
+                            ]
+                        )
+                    )
+                    for result in local_results
+                ]
+            )
+        )
+
+        maximum_sharing_power = float(
+            np.sum(
+                np.asarray(
+                    [
+                        [
+                            0.0
+                            if i == j
+                            else float(
+                                self.environment
+                                .energy_sharing_network
+                                .maximum_power_matrix_kw[
+                                    i,
+                                    j
+                                ]
+                            )
+                            for j in range(
+                                self.config.number_of_microgrids
+                            )
+                        ]
+                        for i in range(
+                            self.config.number_of_microgrids
+                        )
+                    ],
+                    dtype=np.float64,
+                )
+            )
+        )
+
+        soc_values = np.asarray(
+            [
+                float(
+                    microgrid.bess.soc
+                )
+                for microgrid
+                in self.environment.microgrids
+            ],
+            dtype=np.float64,
+        )
+
+        minimum_socs = np.asarray(
+            [
+                float(
+                    microgrid
+                    .bess
+                    .parameters
+                    .minimum_soc
+                )
+                for microgrid
+                in self.environment.microgrids
+            ],
+            dtype=np.float64,
+        )
+
+        maximum_socs = np.asarray(
+            self.config.maximum_socs,
+            dtype=np.float64,
+        )
+
+        actual_grid_exchanges = np.asarray(
+            [
+                float(
+                    result[
+                        "grid_power_kw"
+                    ]
+                )
+                for result in local_results
+            ],
+            dtype=np.float64,
+        )
+
+        constraint_exposure = (
+            calculate_constraint_exposure(
+                soc_values=soc_values,
+                minimum_soc=minimum_socs,
+                maximum_soc=maximum_socs,
+                grid_exchange=actual_grid_exchanges,
+                maximum_grid_exchange=(
+                    self.config
+                    .maximum_grid_exchanges_kw
+                ),
+            )
+        )
+
+        exposure_config = OperationalExposureConfig(
+            eta_market=self.config.eta_market,
+            eta_bess=self.config.eta_bess,
+            eta_sharing=self.config.eta_sharing,
+            eta_constraint=self.config.eta_constraint,
+        )
+
+        exposure_result = (
+            calculate_operational_exposure(
+                market_power=actual_market_power,
+                maximum_market_power=maximum_market_power,
+                bess_power=executed_bess_power,
+                maximum_bess_power=maximum_bess_power,
+                executed_sharing_power=executed_sharing,
+                maximum_sharing_power=maximum_sharing_power,
+                constraint_exposure=constraint_exposure,
+                config=exposure_config,
+            )
+        )
+
         reward_result = (
             self.reward_builder.build(
                 local_reward_inputs=(
@@ -943,6 +1062,11 @@ class FCHMARLVPPTrainingBridge:
                 confidence=(
                     confidence
                 ),
+
+                exposure=(
+                    exposure_result
+                    .total_exposure
+                ),
             )
         )
 
@@ -952,9 +1076,6 @@ class FCHMARLVPPTrainingBridge:
 
         return reward_result
 
-    # ========================================================
-    # ONE TRAINING STEP
-    # ========================================================
 
     def step(
         self,
@@ -1099,9 +1220,6 @@ class FCHMARLVPPTrainingBridge:
             ]
         )
 
-        # ----------------------------------------------------
-        # NEXT OBSERVATION
-        # ----------------------------------------------------
 
         if done:
 
@@ -1207,9 +1325,6 @@ class FCHMARLVPPTrainingBridge:
             info=info,
         )
 
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     def summary(
         self,

@@ -1,0 +1,2 @@
+number_of_configurations,seeds_per_configuration,total_final_evaluations,seeds,evaluation_split,test_windows,checkpoint_episode,checkpoint_selection,deterministic_actions,gradient_updates_during_test,replay_writes_during_test,checkpoint_selection_on_test,statistical_unit,confidence_interval,paired_test
+7,5,35,"11,22,33,44,55",test,1268,5000,fixed_terminal_training_checkpoint,True,False,False,False,independently trained random seed,two-sided 95% Student-t interval across seeds,two-sided paired t-test using matched seeds

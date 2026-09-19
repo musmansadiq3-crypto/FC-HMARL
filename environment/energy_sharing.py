@@ -1,4 +1,4 @@
-"""
+﻿"""
 Inter-microgrid energy-sharing model for the FC-HMARL framework.
 
 Manuscript basis
@@ -41,9 +41,6 @@ from typing import Dict, Iterable, List, Tuple
 import numpy as np
 
 
-# ============================================================
-# PARAMETERS
-# ============================================================
 
 @dataclass
 class EnergySharingParameters:
@@ -96,9 +93,6 @@ class EnergySharingParameters:
             )
 
 
-# ============================================================
-# ENERGY SHARING NETWORK
-# ============================================================
 
 class EnergySharingNetwork:
     """
@@ -149,9 +143,6 @@ class EnergySharingNetwork:
             dtype=float,
         )
 
-    # ========================================================
-    # BASIC PROPERTIES
-    # ========================================================
 
     @property
     def number_of_microgrids(self) -> int:
@@ -165,9 +156,6 @@ class EnergySharingNetwork:
     def tolerance_kw(self) -> float:
         return self.parameters.tolerance_kw
 
-    # ========================================================
-    # NETWORK VALIDATION
-    # ========================================================
 
     def _validate_network(self) -> None:
         """Validate topology and sharing-capacity matrices."""
@@ -214,7 +202,6 @@ class EnergySharingNetwork:
                 "Maximum sharing powers cannot be negative."
             )
 
-        # No self-transfer.
         if np.any(
             np.diag(
                 self.connectivity_matrix
@@ -233,7 +220,6 @@ class EnergySharingNetwork:
                 "Diagonal maximum sharing powers must be zero."
             )
 
-        # Capacity must be zero where no connection exists.
         invalid_capacity = (
             (self.connectivity_matrix == 0)
             & (self.maximum_power_matrix_kw > 0)
@@ -247,9 +233,6 @@ class EnergySharingNetwork:
                 "connectivity is zero."
             )
 
-    # ========================================================
-    # CONNECTIVITY
-    # ========================================================
 
     def _validate_microgrid_index(
         self,
@@ -322,9 +305,6 @@ class EnergySharingNetwork:
             ]
         )
 
-    # ========================================================
-    # MANUSCRIPT SHARING CONSTRAINT
-    # ========================================================
 
     def constrain_transfer(
         self,
@@ -384,9 +364,6 @@ class EnergySharingNetwork:
             )
         )
 
-    # ========================================================
-    # SET ONE TRANSFER
-    # ========================================================
 
     def set_transfer(
         self,
@@ -441,9 +418,6 @@ class EnergySharingNetwork:
                 transfer_loss,
         }
 
-    # ========================================================
-    # CLEAR TRANSFER
-    # ========================================================
 
     def clear_transfer(
         self,
@@ -465,9 +439,6 @@ class EnergySharingNetwork:
             receiver,
         ] = 0.0
 
-    # ========================================================
-    # FULL ACTION MATRIX
-    # ========================================================
 
     def set_transfer_matrix(
         self,
@@ -535,9 +506,6 @@ class EnergySharingNetwork:
 
         return feasible.copy()
 
-    # ========================================================
-    # OUTGOING POWER
-    # ========================================================
 
     def outgoing_power_kw(
         self,
@@ -560,9 +528,6 @@ class EnergySharingNetwork:
             )
         )
 
-    # ========================================================
-    # INCOMING POWER
-    # ========================================================
 
     def incoming_scheduled_power_kw(
         self,
@@ -607,9 +572,6 @@ class EnergySharingNetwork:
             * self.efficiency
         )
 
-    # ========================================================
-    # TOTAL NETWORK SHARING
-    # ========================================================
 
     def total_scheduled_outgoing_kw(
         self,
@@ -663,9 +625,6 @@ class EnergySharingNetwork:
             - self.total_received_power_kw()
         )
 
-    # ========================================================
-    # CONSERVATION
-    # ========================================================
 
     def scheduled_power_is_conserved(
         self,
@@ -693,9 +652,6 @@ class EnergySharingNetwork:
             <= self.tolerance_kw
         )
 
-    # ========================================================
-    # SURPLUS CONSTRAINT
-    # ========================================================
 
     def constrain_outgoing_by_surplus(
         self,
@@ -790,9 +746,6 @@ class EnergySharingNetwork:
                 scaling_factor,
         }
 
-    # ========================================================
-    # NETWORK STATE
-    # ========================================================
 
     def get_state(
         self,
@@ -851,9 +804,6 @@ class EnergySharingNetwork:
                 self.scheduled_power_is_conserved(),
         }
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(self) -> None:
         """Reset all scheduled internal transfers to zero."""
@@ -862,9 +812,6 @@ class EnergySharingNetwork:
             0.0
         )
 
-    # ========================================================
-    # REPRESENTATION
-    # ========================================================
 
     def __repr__(
         self,

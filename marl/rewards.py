@@ -68,9 +68,6 @@ from typing import Dict, Optional, Sequence
 import numpy as np
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class RewardConfig:
@@ -140,9 +137,6 @@ class RewardConfig:
                 )
 
 
-# ============================================================
-# BASIC SCALAR VALIDATION
-# ============================================================
 
 def validate_finite_scalar(
     value,
@@ -200,9 +194,6 @@ def validate_nonnegative_scalar(
     return value
 
 
-# ============================================================
-# SOC VIOLATION
-# ============================================================
 
 def calculate_soc_violation(
     soc,
@@ -237,9 +228,6 @@ def calculate_soc_violation(
     )
 
 
-# ============================================================
-# GRID EXCHANGE VIOLATION
-# ============================================================
 
 def calculate_grid_violation(
     grid_exchange,
@@ -279,9 +267,6 @@ def calculate_grid_violation(
     )
 
 
-# ============================================================
-# OPERATIONAL VIOLATION COST
-# ============================================================
 
 def calculate_violation_cost(
     soc,
@@ -353,9 +338,6 @@ def calculate_violation_cost(
     )
 
 
-# ============================================================
-# LOCAL MICROGRID REWARD
-# ============================================================
 
 def calculate_local_reward(
     grid_cost,
@@ -409,9 +391,6 @@ def calculate_local_reward(
     )
 
 
-# ============================================================
-# COMPLETE LOCAL REWARD
-# ============================================================
 
 @dataclass
 class LocalRewardResult:
@@ -554,31 +533,49 @@ def calculate_complete_local_reward(
     )
 
 
-# ============================================================
-# FORECAST-CONFIDENCE RISK COST
-# ============================================================
 
 def calculate_confidence_risk_cost(
     confidence,
+    exposure: float = 1.0,
     risk_aversion: float = 1.0,
 ) -> float:
     """
-    Calculate manuscript confidence-based risk penalty.
+    Calculate the adaptive confidence-aware risk penalty:
 
-        C_risk =
-            rho * (1 - Phi)
+        C_risk(t) = rho * [1 - Phi_bar(t)] * Xi(t)
 
-    where:
-
-        Phi = forecast-confidence coefficient
-        rho = risk-aversion coefficient
+    where Xi(t) represents operational action/constraint exposure.
     """
 
-    confidence = (
-        validate_finite_scalar(
-            confidence,
-            "confidence",
+    confidence_array = np.asarray(
+        confidence,
+        dtype=np.float64,
+    ).reshape(-1)
+
+    if confidence_array.size == 0:
+        raise ValueError(
+            "confidence cannot be empty."
         )
+
+    if not np.isfinite(
+        confidence_array
+    ).all():
+        raise ValueError(
+            "confidence contains NaN or Inf."
+        )
+
+    if np.any(
+        confidence_array < 0.0
+    ) or np.any(
+        confidence_array > 1.0
+    ):
+        raise ValueError(
+            "confidence must lie in [0, 1]."
+        )
+
+    exposure = validate_nonnegative_scalar(
+        exposure,
+        "exposure",
     )
 
     risk_aversion = (
@@ -588,18 +585,19 @@ def calculate_confidence_risk_cost(
         )
     )
 
-    if not 0.0 <= confidence <= 1.0:
-
-        raise ValueError(
-            "confidence must lie in [0, 1]."
+    mean_confidence = float(
+        np.mean(
+            confidence_array
         )
+    )
 
     risk_cost = (
         risk_aversion
         * (
             1.0
-            - confidence
+            - mean_confidence
         )
+        * exposure
     )
 
     return float(
@@ -607,26 +605,18 @@ def calculate_confidence_risk_cost(
     )
 
 
-# ============================================================
-# COORDINATOR REWARD
-# ============================================================
-
 def calculate_coordinator_reward(
     profit,
     imbalance_cost,
     risk_cost,
 ) -> float:
     """
-    Calculate upper-level VPP coordinator reward.
+    Calculate upper-level VPP coordinator reward:
 
-    Manuscript formulation:
-
-        R_VPP =
-            Profit
-            -
-            C_imb
-            -
-            C_risk
+        R_VPP(t)
+        = Profit(t)
+        - C_imb(t)
+        - C_risk(t)
     """
 
     profit = validate_finite_scalar(
@@ -659,30 +649,18 @@ def calculate_coordinator_reward(
     )
 
 
-# ============================================================
-# COMPLETE COORDINATOR REWARD
-# ============================================================
-
 @dataclass
 class CoordinatorRewardResult:
-    """
-    Detailed coordinator reward result.
-    """
-
     profit: float
-
     imbalance_cost: float
-
     risk_cost: float
-
     confidence: float
-
+    exposure: float
     reward: float
 
     def summary(
         self,
     ) -> Dict[str, float]:
-
         return {
             "profit":
                 self.profit,
@@ -696,6 +674,9 @@ class CoordinatorRewardResult:
             "confidence":
                 self.confidence,
 
+            "exposure":
+                self.exposure,
+
             "reward":
                 self.reward,
         }
@@ -705,19 +686,18 @@ def calculate_complete_coordinator_reward(
     profit,
     imbalance_cost,
     confidence,
+    exposure: float = 1.0,
     config: Optional[
         RewardConfig
     ] = None,
 ) -> CoordinatorRewardResult:
     """
-    Calculate complete upper-level coordinator reward.
+    Calculate the complete upper-level coordinator reward using
+    sample/time forecast confidence and operational exposure.
     """
 
     if config is None:
-
-        config = (
-            RewardConfig()
-        )
+        config = RewardConfig()
 
     config.validate()
 
@@ -733,50 +713,77 @@ def calculate_complete_coordinator_reward(
         )
     )
 
-    confidence = (
-        validate_finite_scalar(
-            confidence,
-            "confidence",
+    confidence_array = np.asarray(
+        confidence,
+        dtype=np.float64,
+    ).reshape(-1)
+
+    if confidence_array.size == 0:
+        raise ValueError(
+            "confidence cannot be empty."
+        )
+
+    if not np.isfinite(
+        confidence_array
+    ).all():
+        raise ValueError(
+            "confidence contains NaN or Inf."
+        )
+
+    if np.any(
+        confidence_array < 0.0
+    ) or np.any(
+        confidence_array > 1.0
+    ):
+        raise ValueError(
+            "confidence must lie in [0, 1]."
+        )
+
+    mean_confidence = float(
+        np.mean(
+            confidence_array
+        )
+    )
+
+    exposure = (
+        validate_nonnegative_scalar(
+            exposure,
+            "exposure",
         )
     )
 
     risk_cost = (
         calculate_confidence_risk_cost(
-            confidence=confidence,
-            risk_aversion=(
-                config.risk_aversion
-            ),
+            confidence=
+                confidence_array,
+            exposure=
+                exposure,
+            risk_aversion=
+                config.risk_aversion,
         )
     )
 
     reward = (
         calculate_coordinator_reward(
             profit=profit,
-            imbalance_cost=(
-                imbalance_cost
-            ),
+            imbalance_cost=
+                imbalance_cost,
             risk_cost=risk_cost,
         )
     )
 
     return CoordinatorRewardResult(
         profit=profit,
-
-        imbalance_cost=(
-            imbalance_cost
-        ),
-
+        imbalance_cost=
+            imbalance_cost,
         risk_cost=risk_cost,
-
-        confidence=confidence,
-
+        confidence=
+            mean_confidence,
+        exposure=
+            exposure,
         reward=reward,
     )
 
-
-# ============================================================
-# TOTAL HIERARCHICAL REWARD
-# ============================================================
 
 def calculate_hierarchical_reward(
     local_rewards: Sequence[
@@ -839,9 +846,6 @@ def calculate_hierarchical_reward(
     )
 
 
-# ============================================================
-# HIERARCHICAL RESULT
-# ============================================================
 
 @dataclass
 class HierarchicalRewardResult:
@@ -937,9 +941,6 @@ class HierarchicalRewardResult:
         }
 
 
-# ============================================================
-# MAIN REWARD BUILDER
-# ============================================================
 
 class HierarchicalRewardBuilder:
     """
@@ -972,6 +973,7 @@ class HierarchicalRewardBuilder:
         profit,
         imbalance_cost,
         confidence,
+        exposure: float = 1.0,
     ) -> HierarchicalRewardResult:
         """
         Build all local rewards, coordinator reward,
@@ -1069,6 +1071,7 @@ class HierarchicalRewardBuilder:
                 profit=profit,
                 imbalance_cost=imbalance_cost,
                 confidence=confidence,
+                exposure=exposure,
                 config=self.config,
             )
         )

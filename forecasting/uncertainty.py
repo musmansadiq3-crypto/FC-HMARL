@@ -1,4 +1,4 @@
-"""
+﻿"""
 Forecast uncertainty estimation for the FC-HMARL framework.
 
 Purpose
@@ -49,9 +49,6 @@ from typing import Dict, Optional, Sequence
 import numpy as np
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class ForecastUncertaintyConfig:
@@ -98,9 +95,6 @@ class ForecastUncertaintyConfig:
             )
 
 
-# ============================================================
-# ARRAY VALIDATION
-# ============================================================
 
 def validate_forecast_arrays(
     actual,
@@ -164,9 +158,6 @@ def validate_forecast_arrays(
     return actual, forecast
 
 
-# ============================================================
-# RESIDUALS
-# ============================================================
 
 def calculate_forecast_residuals(
     actual,
@@ -188,9 +179,6 @@ def calculate_forecast_residuals(
     return actual - forecast
 
 
-# ============================================================
-# ERROR STATISTICS
-# ============================================================
 
 def calculate_residual_statistics(
     residuals: np.ndarray,
@@ -260,9 +248,6 @@ def calculate_residual_statistics(
     }
 
 
-# ============================================================
-# QUANTILE LEVELS
-# ============================================================
 
 def confidence_to_quantiles(
     confidence_level: float,
@@ -292,9 +277,6 @@ def confidence_to_quantiles(
     )
 
 
-# ============================================================
-# RESIDUAL QUANTILE MODEL
-# ============================================================
 
 @dataclass
 class ResidualQuantileModel:
@@ -378,9 +360,6 @@ class ResidualQuantileModel:
                 )
 
 
-# ============================================================
-# UNCERTAINTY RESULT
-# ============================================================
 
 @dataclass
 class ForecastUncertaintyResult:
@@ -547,9 +526,6 @@ class ForecastUncertaintyResult:
         }
 
 
-# ============================================================
-# MAIN ESTIMATOR
-# ============================================================
 
 class ForecastUncertaintyEstimator:
     """
@@ -576,9 +552,6 @@ class ForecastUncertaintyEstimator:
             ResidualQuantileModel
         ] = None
 
-    # ========================================================
-    # FIT
-    # ========================================================
 
     def fit(
         self,
@@ -631,9 +604,6 @@ class ForecastUncertaintyEstimator:
             )
         )
 
-        # ----------------------------------------------------
-        # FULL HORIZON + TARGET SPECIFIC MODEL
-        # ----------------------------------------------------
 
         if (
             self.config
@@ -665,9 +635,6 @@ class ForecastUncertaintyEstimator:
                 ddof=0,
             )
 
-        # ----------------------------------------------------
-        # TARGET SPECIFIC ONLY
-        # ----------------------------------------------------
 
         elif (
             not self.config
@@ -736,9 +703,6 @@ class ForecastUncertaintyEstimator:
                 ),
             )
 
-        # ----------------------------------------------------
-        # HORIZON SPECIFIC ONLY
-        # ----------------------------------------------------
 
         elif (
             self.config
@@ -815,9 +779,6 @@ class ForecastUncertaintyEstimator:
                 axis=1,
             )
 
-        # ----------------------------------------------------
-        # GLOBAL RESIDUAL MODEL
-        # ----------------------------------------------------
 
         else:
 
@@ -929,9 +890,6 @@ class ForecastUncertaintyEstimator:
 
         return self.model
 
-    # ========================================================
-    # PREDICT UNCERTAINTY
-    # ========================================================
 
     def transform(
         self,
@@ -1054,9 +1012,6 @@ class ForecastUncertaintyEstimator:
 
         return result
 
-    # ========================================================
-    # FIT + TRANSFORM
-    # ========================================================
 
     def fit_transform(
         self,
@@ -1082,9 +1037,6 @@ class ForecastUncertaintyEstimator:
         )
 
 
-# ============================================================
-# INTERVAL COVERAGE
-# ============================================================
 
 def calculate_interval_coverage(
     actual,
@@ -1159,9 +1111,6 @@ def calculate_interval_coverage(
     )
 
 
-# ============================================================
-# NORMALIZED UNCERTAINTY
-# ============================================================
 
 def normalize_uncertainty(
     uncertainty,

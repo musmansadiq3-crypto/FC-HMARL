@@ -1,4 +1,4 @@
-"""
+﻿"""
 Prediction utilities for the FC-HMARL forecasting module.
 
 The forecasting predictor performs inference after model training.
@@ -44,9 +44,6 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class ForecastPredictorConfig:
@@ -91,9 +88,6 @@ class ForecastPredictorConfig:
             )
 
 
-# ============================================================
-# DEVICE
-# ============================================================
 
 def resolve_prediction_device(
     requested_device: str = "auto",
@@ -143,9 +137,6 @@ def resolve_prediction_device(
     )
 
 
-# ============================================================
-# INPUT CONVERSION
-# ============================================================
 
 def to_float_tensor(
     values,
@@ -182,9 +173,6 @@ def to_float_tensor(
     return tensor
 
 
-# ============================================================
-# PREDICTION-ONLY DATASET
-# ============================================================
 
 class ForecastInputDataset(
     Dataset
@@ -282,11 +270,6 @@ class ForecastInputDataset(
             index
         ]
 
-        # ForecastWindowDataset returns:
-        #
-        #     X, y
-        #
-        # For inference we need only X.
         if (
             isinstance(
                 sample,
@@ -314,9 +297,6 @@ class ForecastInputDataset(
         return tensor
 
 
-# ============================================================
-# DATA LOADER
-# ============================================================
 
 def create_prediction_loader(
     data,
@@ -353,9 +333,6 @@ def create_prediction_loader(
     )
 
 
-# ============================================================
-# PREDICTION RESULT
-# ============================================================
 
 @dataclass
 class ForecastPredictionResult:
@@ -524,9 +501,6 @@ class ForecastPredictionResult:
         }
 
 
-# ============================================================
-# MAIN PREDICTOR
-# ============================================================
 
 class ForecastPredictor:
     """
@@ -573,9 +547,6 @@ class ForecastPredictor:
 
         self.model.eval()
 
-    # ========================================================
-    # CHECKPOINT
-    # ========================================================
 
     def load_checkpoint(
         self,
@@ -625,9 +596,6 @@ class ForecastPredictor:
 
         return checkpoint
 
-    # ========================================================
-    # SINGLE BATCH
-    # ========================================================
 
     @torch.no_grad()
     def predict_batch(
@@ -751,9 +719,6 @@ class ForecastPredictor:
             .numpy()
         )
 
-    # ========================================================
-    # DATASET PREDICTION
-    # ========================================================
 
     @torch.no_grad()
     def predict(
@@ -907,9 +872,6 @@ class ForecastPredictor:
 
         return result
 
-    # ========================================================
-    # VALIDATION
-    # ========================================================
 
     @staticmethod
     def _validate_prediction_tensor(
@@ -943,9 +905,6 @@ class ForecastPredictor:
             )
 
 
-# ============================================================
-# INVERSE SCALING
-# ============================================================
 
 def inverse_transform_predictions(
     predictions: np.ndarray,
@@ -1091,9 +1050,6 @@ def inverse_transform_predictions(
     )
 
 
-# ============================================================
-# RESULT TO DATAFRAME
-# ============================================================
 
 def forecast_to_dataframe(
     predictions: np.ndarray,
@@ -1172,9 +1128,6 @@ def forecast_to_dataframe(
     return dataframe
 
 
-# ============================================================
-# HIGH-LEVEL HELPER
-# ============================================================
 
 def predict_forecasting_model(
     model: nn.Module,

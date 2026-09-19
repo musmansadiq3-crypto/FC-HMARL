@@ -1,0 +1,8 @@
+configuration,n_seeds,transformer_violation_steps_sum,soc_below_min_count_sum,soc_above_max_count_sum,all_transformers_feasible_all_seeds,all_soc_feasible_all_seeds
+full,5,0,0,0,True,True
+no_confidence,5,0,0,0,True,True
+state_only,5,0,0,0,True,True
+reward_only,5,0,0,0,True,True
+concatenated,5,0,0,0,True,True
+multiplicative,5,0,0,0,True,True
+no_coordinator,5,0,0,0,True,True

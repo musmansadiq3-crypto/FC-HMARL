@@ -1,4 +1,4 @@
-"""
+﻿"""
 Local microgrid agent for the FC-HMARL framework.
 
 Each local microgrid agent uses the generic SACAgent learning
@@ -36,9 +36,6 @@ from agents.sac_agent import (
 )
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class LocalAgentConfig:
@@ -133,7 +130,6 @@ class LocalAgentConfig:
                 "action_dimension must be positive."
             )
 
-        # Reuse SAC validation for all learning settings.
         sac_config = self.to_sac_config()
 
         sac_config.validate()
@@ -200,9 +196,6 @@ class LocalAgentConfig:
         )
 
 
-# ============================================================
-# LOCAL ACTION RESULT
-# ============================================================
 
 @dataclass
 class LocalActionResult:
@@ -293,9 +286,6 @@ class LocalActionResult:
         }
 
 
-# ============================================================
-# LOCAL TRAINING RESULT
-# ============================================================
 
 @dataclass
 class LocalTrainingResult:
@@ -376,9 +366,6 @@ class LocalTrainingResult:
         return output
 
 
-# ============================================================
-# LOCAL MICROGRID AGENT
-# ============================================================
 
 class LocalAgent:
     """
@@ -419,9 +406,6 @@ class LocalAgent:
 
         self.total_training_updates = 0
 
-    # ========================================================
-    # BASIC PROPERTIES
-    # ========================================================
 
     @property
     def actor(
@@ -472,9 +456,6 @@ class LocalAgent:
 
         return self.config.action_dimension
 
-    # ========================================================
-    # STATE VALIDATION
-    # ========================================================
 
     def validate_state(
         self,
@@ -518,9 +499,6 @@ class LocalAgent:
 
         return array
 
-    # ========================================================
-    # ACTION VALIDATION
-    # ========================================================
 
     def validate_action(
         self,
@@ -586,9 +564,6 @@ class LocalAgent:
 
         return array
 
-    # ========================================================
-    # ACTION SELECTION
-    # ========================================================
 
     def select_action(
         self,
@@ -674,9 +649,6 @@ class LocalAgent:
 
         return result
 
-    # ========================================================
-    # EXPERIENCE STORAGE
-    # ========================================================
 
     def store_transition(
         self,
@@ -722,9 +694,6 @@ class LocalAgent:
 
         return index
 
-    # ========================================================
-    # TRAINING
-    # ========================================================
 
     def ready_to_update(
         self,
@@ -788,9 +757,6 @@ class LocalAgent:
 
         return result
 
-    # ========================================================
-    # TRAINING MODE
-    # ========================================================
 
     def set_training_mode(
         self,
@@ -828,9 +794,6 @@ class LocalAgent:
             False
         )
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -847,9 +810,6 @@ class LocalAgent:
 
         self.sac_agent.reset()
 
-    # ========================================================
-    # CHECKPOINTS
-    # ========================================================
 
     def save(
         self,
@@ -873,9 +833,6 @@ class LocalAgent:
             ),
         )
 
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     def summary(
         self,
@@ -919,9 +876,6 @@ class LocalAgent:
         }
 
 
-# ============================================================
-# FACTORY
-# ============================================================
 
 def build_local_agents(
     number_of_microgrids: int,

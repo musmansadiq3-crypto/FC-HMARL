@@ -1,58 +1,4 @@
-"""
-Forecast-confidence construction for the FC-HMARL framework.
-
-This module implements the confidence formulation described in
-the manuscript.
-
-The forecasting errors are grouped into:
-
-    Renewable/load uncertainty:
-        PV forecast error
-        Load forecast error
-
-    EV/market uncertainty:
-        EV charging forecast error
-        Electricity-price forecast error
-
-The manuscript formulation is reconstructed as:
-
-    epsilon_RL =
-        sqrt(e_PV^2 + e_Load^2)
-
-    omega_RL =
-        exp(-epsilon_RL)
-
-    epsilon_EM =
-        sqrt(e_EV^2 + e_Price^2)
-
-    Phi =
-        omega_RL * exp(-epsilon_EM)
-
-which is equivalent to:
-
-    Phi =
-        exp(-(epsilon_RL + epsilon_EM))
-
-The confidence coefficient Phi therefore satisfies:
-
-    0 < Phi <= 1
-
-for finite forecasting errors.
-
-Higher confidence:
-    smaller forecasting error
-
-Lower confidence:
-    larger forecasting error
-
-The predictive state is then confidence weighted:
-
-    S_pred = Phi * Z_hat
-
-where Z_hat represents future predictive operating information.
-"""
-
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Dict, Optional, Sequence
@@ -60,557 +6,622 @@ from typing import Dict, Optional, Sequence
 import numpy as np
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
-
 @dataclass
 class ForecastConfidenceConfig:
-    """
-    Configuration for forecast-confidence calculation.
-
-    error_scale
-    -----------
-    Default = 1.0.
-
-    The manuscript exponential formulation is recovered when
-    error_scale = 1.0.
-
-    A different value may be used only as an explicit
-    implementation/calibration choice.
-    """
-
-    error_scale: float = 1.0
-
+    delta: float = 1e-6
     minimum_confidence: float = 0.0
-
     maximum_confidence: float = 1.0
+    feature_weights: Sequence[float] = (
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+    )
+    normalization_epsilon: float = 1e-8
 
     def validate(self) -> None:
-        """Validate confidence configuration."""
+        if self.delta <= 0:
+            raise ValueError("delta must be positive.")
 
-        if not isinstance(
-            self.error_scale,
-            (int, float),
-        ):
-            raise TypeError(
-                "error_scale must be numeric."
-            )
-
-        if self.error_scale <= 0:
+        if self.normalization_epsilon <= 0:
             raise ValueError(
-                "error_scale must be positive."
+                "normalization_epsilon must be positive."
             )
 
-        if not isinstance(
-            self.minimum_confidence,
-            (int, float),
-        ):
-            raise TypeError(
-                "minimum_confidence must be numeric."
-            )
-
-        if not isinstance(
-            self.maximum_confidence,
-            (int, float),
-        ):
-            raise TypeError(
-                "maximum_confidence must be numeric."
-            )
-
-        if not (
-            0.0
-            <= self.minimum_confidence
-            <= 1.0
-        ):
+        if not 0.0 <= self.minimum_confidence <= 1.0:
             raise ValueError(
-                "minimum_confidence must lie "
-                "between 0 and 1."
+                "minimum_confidence must lie between 0 and 1."
             )
 
-        if not (
-            0.0
-            <= self.maximum_confidence
-            <= 1.0
-        ):
+        if not 0.0 <= self.maximum_confidence <= 1.0:
             raise ValueError(
-                "maximum_confidence must lie "
-                "between 0 and 1."
+                "maximum_confidence must lie between 0 and 1."
             )
 
-        if (
-            self.minimum_confidence
-            > self.maximum_confidence
-        ):
+        if self.minimum_confidence > self.maximum_confidence:
             raise ValueError(
-                "minimum_confidence cannot exceed "
-                "maximum_confidence."
+                "minimum_confidence cannot exceed maximum_confidence."
+            )
+
+        weights = np.asarray(
+            self.feature_weights,
+            dtype=np.float64,
+        )
+
+        if weights.shape != (4,):
+            raise ValueError(
+                "feature_weights must contain exactly four values "
+                "for PV, Load, EV, and Price."
+            )
+
+        if not np.isfinite(weights).all():
+            raise ValueError(
+                "feature_weights contains NaN or Inf."
+            )
+
+        if np.any(weights < 0):
+            raise ValueError(
+                "feature_weights cannot contain negative values."
+            )
+
+        if float(np.sum(weights)) <= 0:
+            raise ValueError(
+                "feature_weights must have a positive sum."
             )
 
 
-# ============================================================
-# BASIC VALIDATION
-# ============================================================
-
-def validate_error_array(
-    error,
-    name: str = "error",
+def validate_array(
+    array,
+    name: str,
 ) -> np.ndarray:
-    """
-    Validate one forecasting-error array.
-    """
-
-    error = np.asarray(
-        error,
+    array = np.asarray(
+        array,
         dtype=np.float64,
     )
 
-    if error.size == 0:
+    if array.size == 0:
         raise ValueError(
             f"{name} cannot be empty."
         )
 
-    if not np.isfinite(
-        error
-    ).all():
+    if not np.isfinite(array).all():
         raise ValueError(
             f"{name} contains NaN or Inf."
         )
 
-    return error
+    return array
 
 
 def validate_same_shapes(
     *arrays: np.ndarray,
 ) -> None:
-    """
-    Verify that all supplied arrays have identical shapes.
-    """
-
     if len(arrays) < 2:
         return
 
-    reference_shape = arrays[
-        0
-    ].shape
+    reference_shape = arrays[0].shape
 
-    for array in arrays[
-        1:
-    ]:
-
+    for array in arrays[1:]:
         if array.shape != reference_shape:
             raise ValueError(
-                "All forecasting-error arrays "
-                "must have identical shapes."
+                "All supplied arrays must have identical shapes."
             )
 
 
-# ============================================================
-# RENEWABLE + LOAD UNCERTAINTY
-# ============================================================
-
-def calculate_renewable_load_uncertainty(
-    pv_error,
-    load_error,
+def calculate_relative_interval_uncertainty(
+    forecast,
+    lower,
+    upper,
+    delta: float = 1e-6,
 ) -> np.ndarray:
-    """
-    Calculate renewable/load forecasting uncertainty.
-
-    Manuscript formulation:
-
-        epsilon_RL =
-            sqrt(
-                e_PV^2
-                +
-                e_Load^2
-            )
-    """
-
-    pv_error = validate_error_array(
-        pv_error,
-        "pv_error",
+    forecast = validate_array(
+        forecast,
+        "forecast",
     )
 
-    load_error = validate_error_array(
-        load_error,
-        "load_error",
+    lower = validate_array(
+        lower,
+        "lower",
+    )
+
+    upper = validate_array(
+        upper,
+        "upper",
     )
 
     validate_same_shapes(
-        pv_error,
-        load_error,
+        forecast,
+        lower,
+        upper,
     )
 
-    uncertainty = np.sqrt(
-        np.square(
-            pv_error
+    if delta <= 0:
+        raise ValueError(
+            "delta must be positive."
         )
-        +
-        np.square(
-            load_error
+
+    if np.any(upper < lower):
+        raise ValueError(
+            "upper prediction interval cannot be below lower interval."
         )
+
+    interval_width = upper - lower
+
+    denominator = (
+        2.0
+        * (
+            np.abs(forecast)
+            + float(delta)
+        )
+    )
+
+    uncertainty = (
+        interval_width
+        / denominator
     )
 
     return uncertainty
 
 
-# ============================================================
-# RENEWABLE + LOAD CONFIDENCE WEIGHT
-# ============================================================
-
-def calculate_renewable_load_confidence(
-    renewable_load_uncertainty,
-    error_scale: float = 1.0,
+def calculate_all_feature_uncertainties(
+    forecast,
+    lower,
+    upper,
+    delta: float = 1e-6,
 ) -> np.ndarray:
-    """
-    Convert renewable/load uncertainty into confidence.
-
-    Manuscript formulation:
-
-        omega_RL =
-            exp(-epsilon_RL)
-
-    With error_scale = 1.0 this is the manuscript form.
-    """
-
-    uncertainty = validate_error_array(
-        renewable_load_uncertainty,
-        "renewable_load_uncertainty",
+    forecast = validate_array(
+        forecast,
+        "forecast",
     )
 
-    if np.any(
-        uncertainty < 0
+    lower = validate_array(
+        lower,
+        "lower",
+    )
+
+    upper = validate_array(
+        upper,
+        "upper",
+    )
+
+    if forecast.ndim != 3:
+        raise ValueError(
+            "forecast must have shape "
+            "(samples, horizon, 4)."
+        )
+
+    if lower.ndim != 3:
+        raise ValueError(
+            "lower must have shape "
+            "(samples, horizon, 4)."
+        )
+
+    if upper.ndim != 3:
+        raise ValueError(
+            "upper must have shape "
+            "(samples, horizon, 4)."
+        )
+
+    validate_same_shapes(
+        forecast,
+        lower,
+        upper,
+    )
+
+    if forecast.shape[2] != 4:
+        raise ValueError(
+            "The confidence formulation requires exactly four "
+            "ordered variables: PV, Load, EV, and Price."
+        )
+
+    uncertainties = np.empty_like(
+        forecast,
+        dtype=np.float64,
+    )
+
+    for feature_index in range(4):
+        uncertainties[:, :, feature_index] = (
+            calculate_relative_interval_uncertainty(
+                forecast=forecast[:, :, feature_index],
+                lower=lower[:, :, feature_index],
+                upper=upper[:, :, feature_index],
+                delta=delta,
+            )
+        )
+
+    return uncertainties
+
+
+@dataclass
+class ConfidenceCalibration:
+    location: np.ndarray
+    scale: np.ndarray
+    feature_weights: np.ndarray
+
+    def validate(self) -> None:
+        self.location = np.asarray(
+            self.location,
+            dtype=np.float64,
+        )
+
+        self.scale = np.asarray(
+            self.scale,
+            dtype=np.float64,
+        )
+
+        self.feature_weights = np.asarray(
+            self.feature_weights,
+            dtype=np.float64,
+        )
+
+        if self.location.ndim != 2:
+            raise ValueError(
+                "location must have shape "
+                "(horizon, 4)."
+            )
+
+        if self.scale.ndim != 2:
+            raise ValueError(
+                "scale must have shape "
+                "(horizon, 4)."
+            )
+
+        if self.location.shape != self.scale.shape:
+            raise ValueError(
+                "location and scale must have identical shapes."
+            )
+
+        if self.location.shape[1] != 4:
+            raise ValueError(
+                "Calibration requires exactly four forecast variables."
+            )
+
+        if self.feature_weights.shape != (4,):
+            raise ValueError(
+                "feature_weights must contain four values."
+            )
+
+        if not np.isfinite(self.location).all():
+            raise ValueError(
+                "location contains NaN or Inf."
+            )
+
+        if not np.isfinite(self.scale).all():
+            raise ValueError(
+                "scale contains NaN or Inf."
+            )
+
+        if np.any(self.scale <= 0):
+            raise ValueError(
+                "scale must be strictly positive."
+            )
+
+        if not np.isfinite(
+            self.feature_weights
+        ).all():
+            raise ValueError(
+                "feature_weights contains NaN or Inf."
+            )
+
+        if np.any(self.feature_weights < 0):
+            raise ValueError(
+                "feature_weights cannot contain negative values."
+            )
+
+        if float(np.sum(self.feature_weights)) <= 0:
+            raise ValueError(
+                "feature_weights must have positive total weight."
+            )
+
+
+def fit_confidence_calibration(
+    validation_forecast,
+    validation_lower,
+    validation_upper,
+    config: Optional[
+        ForecastConfidenceConfig
+    ] = None,
+) -> ConfidenceCalibration:
+    if config is None:
+        config = ForecastConfidenceConfig()
+
+    config.validate()
+
+    validation_uncertainty = (
+        calculate_all_feature_uncertainties(
+            forecast=validation_forecast,
+            lower=validation_lower,
+            upper=validation_upper,
+            delta=config.delta,
+        )
+    )
+
+    location = np.median(
+        validation_uncertainty,
+        axis=0,
+    )
+
+    absolute_deviation = np.abs(
+        validation_uncertainty
+        - location[None, :, :]
+    )
+
+    scale = np.median(
+        absolute_deviation,
+        axis=0,
+    )
+
+    scale = np.maximum(
+        scale,
+        config.normalization_epsilon,
+    )
+
+    weights = np.asarray(
+        config.feature_weights,
+        dtype=np.float64,
+    )
+
+    weights = weights / np.sum(weights)
+
+    calibration = ConfidenceCalibration(
+        location=location,
+        scale=scale,
+        feature_weights=weights,
+    )
+
+    calibration.validate()
+
+    return calibration
+
+
+def normalize_uncertainties(
+    uncertainties,
+    calibration: ConfidenceCalibration,
+) -> np.ndarray:
+    uncertainties = validate_array(
+        uncertainties,
+        "uncertainties",
+    )
+
+    calibration.validate()
+
+    if uncertainties.ndim != 3:
+        raise ValueError(
+            "uncertainties must have shape "
+            "(samples, horizon, 4)."
+        )
+
+    if (
+        uncertainties.shape[1:]
+        != calibration.location.shape
     ):
         raise ValueError(
-            "renewable_load_uncertainty "
-            "cannot be negative."
+            "uncertainties horizon/features do not match calibration."
         )
 
-    if error_scale <= 0:
-        raise ValueError(
-            "error_scale must be positive."
-        )
-
-    confidence = np.exp(
-        -uncertainty
-        / float(
-            error_scale
+    normalized = (
+        uncertainties
+        / (
+            calibration.location[None, :, :]
+            + calibration.scale[None, :, :]
         )
     )
 
-    return confidence
+    normalized = np.maximum(
+        normalized,
+        0.0,
+    )
+
+    return normalized
 
 
-# ============================================================
-# EV + MARKET UNCERTAINTY
-# ============================================================
-
-def calculate_ev_market_uncertainty(
-    ev_error,
-    price_error,
+def calculate_aggregate_uncertainty(
+    normalized_uncertainties,
+    feature_weights,
 ) -> np.ndarray:
-    """
-    Calculate EV-demand and market-price uncertainty.
-
-    Manuscript formulation:
-
-        epsilon_EM =
-            sqrt(
-                e_EV^2
-                +
-                e_Price^2
-            )
-    """
-
-    ev_error = validate_error_array(
-        ev_error,
-        "ev_error",
+    normalized_uncertainties = validate_array(
+        normalized_uncertainties,
+        "normalized_uncertainties",
     )
 
-    price_error = validate_error_array(
-        price_error,
-        "price_error",
-    )
-
-    validate_same_shapes(
-        ev_error,
-        price_error,
-    )
-
-    uncertainty = np.sqrt(
-        np.square(
-            ev_error
+    if normalized_uncertainties.ndim != 3:
+        raise ValueError(
+            "normalized_uncertainties must have shape "
+            "(samples, horizon, 4)."
         )
-        +
-        np.square(
-            price_error
+
+    if normalized_uncertainties.shape[2] != 4:
+        raise ValueError(
+            "normalized_uncertainties must contain four features."
+        )
+
+    weights = np.asarray(
+        feature_weights,
+        dtype=np.float64,
+    )
+
+    if weights.shape != (4,):
+        raise ValueError(
+            "feature_weights must contain exactly four values."
+        )
+
+    if np.any(weights < 0):
+        raise ValueError(
+            "feature_weights cannot contain negative values."
+        )
+
+    if not np.isfinite(weights).all():
+        raise ValueError(
+            "feature_weights contains NaN or Inf."
+        )
+
+    weight_sum = float(
+        np.sum(weights)
+    )
+
+    if weight_sum <= 0:
+        raise ValueError(
+            "feature_weights must have positive total weight."
+        )
+
+    weights = weights / weight_sum
+
+    aggregate = np.sqrt(
+        np.sum(
+            weights[None, None, :]
+            * np.square(
+                normalized_uncertainties
+            ),
+            axis=2,
         )
     )
 
-    return uncertainty
+    return aggregate
 
 
-# ============================================================
-# GLOBAL CONFIDENCE
-# ============================================================
-
-def calculate_global_confidence(
-    renewable_load_confidence,
-    ev_market_uncertainty,
-    error_scale: float = 1.0,
+def calculate_adaptive_confidence(
+    aggregate_uncertainty,
     minimum_confidence: float = 0.0,
     maximum_confidence: float = 1.0,
 ) -> np.ndarray:
-    """
-    Construct global forecast-confidence coefficient.
-
-    Manuscript formulation:
-
-        Phi =
-            omega_RL
-            *
-            exp(-epsilon_EM)
-
-    With error_scale = 1.0 this reproduces the manuscript
-    exponential form.
-    """
-
-    renewable_load_confidence = (
-        validate_error_array(
-            renewable_load_confidence,
-            "renewable_load_confidence",
-        )
+    aggregate_uncertainty = validate_array(
+        aggregate_uncertainty,
+        "aggregate_uncertainty",
     )
 
-    ev_market_uncertainty = (
-        validate_error_array(
-            ev_market_uncertainty,
-            "ev_market_uncertainty",
+    if np.any(aggregate_uncertainty < 0):
+        raise ValueError(
+            "aggregate_uncertainty cannot be negative."
         )
+
+    confidence = np.exp(
+        -aggregate_uncertainty
     )
 
-    validate_same_shapes(
-        renewable_load_confidence,
-        ev_market_uncertainty,
-    )
-
-    if np.any(
-        renewable_load_confidence < 0
-    ):
-        raise ValueError(
-            "renewable_load_confidence cannot "
-            "be negative."
-        )
-
-    if np.any(
-        renewable_load_confidence > 1
-    ):
-        raise ValueError(
-            "renewable_load_confidence cannot "
-            "exceed 1."
-        )
-
-    if np.any(
-        ev_market_uncertainty < 0
-    ):
-        raise ValueError(
-            "ev_market_uncertainty cannot "
-            "be negative."
-        )
-
-    if error_scale <= 0:
-        raise ValueError(
-            "error_scale must be positive."
-        )
-
-    confidence = (
-        renewable_load_confidence
-        *
-        np.exp(
-            -ev_market_uncertainty
-            / float(
-                error_scale
-            )
-        )
-    )
-
-    return np.clip(
+    confidence = np.clip(
         confidence,
         minimum_confidence,
         maximum_confidence,
     )
 
+    return confidence
 
-# ============================================================
-# DIRECT GLOBAL FORMULATION
-# ============================================================
-
-def calculate_confidence_from_errors(
-    pv_error,
-    load_error,
-    ev_error,
-    price_error,
-    error_scale: float = 1.0,
-) -> np.ndarray:
-    """
-    Directly calculate Phi from all four forecasting errors.
-
-    Equivalent formulation:
-
-        Phi =
-            exp(
-                -(
-                    epsilon_RL
-                    +
-                    epsilon_EM
-                )
-            )
-
-    when error_scale = 1.
-    """
-
-    epsilon_rl = (
-        calculate_renewable_load_uncertainty(
-            pv_error,
-            load_error,
-        )
-    )
-
-    epsilon_em = (
-        calculate_ev_market_uncertainty(
-            ev_error,
-            price_error,
-        )
-    )
-
-    omega_rl = (
-        calculate_renewable_load_confidence(
-            epsilon_rl,
-            error_scale=error_scale,
-        )
-    )
-
-    return calculate_global_confidence(
-        renewable_load_confidence=omega_rl,
-        ev_market_uncertainty=epsilon_em,
-        error_scale=error_scale,
-    )
-
-
-# ============================================================
-# RESULT CONTAINER
-# ============================================================
 
 @dataclass
 class ForecastConfidenceResult:
-    """
-    Stores all confidence-related outputs.
-    """
-
-    pv_error: np.ndarray
-
-    load_error: np.ndarray
-
-    ev_error: np.ndarray
-
-    price_error: np.ndarray
-
-    renewable_load_uncertainty: np.ndarray
-
-    renewable_load_confidence: np.ndarray
-
-    ev_market_uncertainty: np.ndarray
-
+    feature_uncertainties: np.ndarray
+    normalized_uncertainties: np.ndarray
+    aggregate_uncertainty: np.ndarray
     global_confidence: np.ndarray
-
     target_names: Optional[
         list[str]
     ] = None
 
     def validate(self) -> None:
-        """Validate confidence result."""
+        self.feature_uncertainties = np.asarray(
+            self.feature_uncertainties,
+            dtype=np.float64,
+        )
+
+        self.normalized_uncertainties = np.asarray(
+            self.normalized_uncertainties,
+            dtype=np.float64,
+        )
+
+        self.aggregate_uncertainty = np.asarray(
+            self.aggregate_uncertainty,
+            dtype=np.float64,
+        )
+
+        self.global_confidence = np.asarray(
+            self.global_confidence,
+            dtype=np.float64,
+        )
+
+        if (
+            self.feature_uncertainties.shape
+            != self.normalized_uncertainties.shape
+        ):
+            raise ValueError(
+                "Feature uncertainty arrays must have identical shapes."
+            )
+
+        if self.feature_uncertainties.ndim != 3:
+            raise ValueError(
+                "feature_uncertainties must have shape "
+                "(samples, horizon, 4)."
+            )
+
+        expected_shape = (
+            self.feature_uncertainties.shape[0],
+            self.feature_uncertainties.shape[1],
+        )
+
+        if self.aggregate_uncertainty.shape != expected_shape:
+            raise ValueError(
+                "aggregate_uncertainty must have shape "
+                "(samples, horizon)."
+            )
+
+        if self.global_confidence.shape != expected_shape:
+            raise ValueError(
+                "global_confidence must have shape "
+                "(samples, horizon)."
+            )
 
         arrays = [
-            self.pv_error,
-            self.load_error,
-            self.ev_error,
-            self.price_error,
-            self.renewable_load_uncertainty,
-            self.renewable_load_confidence,
-            self.ev_market_uncertainty,
+            self.feature_uncertainties,
+            self.normalized_uncertainties,
+            self.aggregate_uncertainty,
             self.global_confidence,
         ]
 
-        arrays = [
-            np.asarray(
-                array,
-                dtype=np.float64,
-            )
-            for array in arrays
-        ]
-
-        validate_same_shapes(
-            *arrays
-        )
-
         for array in arrays:
-
-            if not np.isfinite(
-                array
-            ).all():
+            if not np.isfinite(array).all():
                 raise ValueError(
-                    "Confidence result contains "
-                    "NaN or Inf."
+                    "Confidence result contains NaN or Inf."
                 )
 
         if np.any(
-            self.renewable_load_uncertainty
-            < 0
+            self.feature_uncertainties < 0
         ):
             raise ValueError(
-                "renewable_load_uncertainty "
-                "cannot be negative."
+                "feature_uncertainties cannot be negative."
             )
 
         if np.any(
-            self.ev_market_uncertainty
-            < 0
+            self.normalized_uncertainties < 0
         ):
             raise ValueError(
-                "ev_market_uncertainty "
-                "cannot be negative."
+                "normalized_uncertainties cannot be negative."
+            )
+
+        if np.any(
+            self.aggregate_uncertainty < 0
+        ):
+            raise ValueError(
+                "aggregate_uncertainty cannot be negative."
             )
 
         if np.any(
             self.global_confidence < 0
         ):
-
             raise ValueError(
-                "global_confidence cannot "
-                "be negative."
+                "global_confidence cannot be negative."
             )
 
         if np.any(
             self.global_confidence > 1
         ):
-
             raise ValueError(
-                "global_confidence cannot "
-                "exceed 1."
+                "global_confidence cannot exceed 1."
             )
 
     @property
-    def shape(
-        self,
-    ):
-
+    def shape(self):
         return self.global_confidence.shape
 
     @property
-    def mean_confidence(
-        self,
-    ) -> float:
-
+    def mean_confidence(self) -> float:
         return float(
             np.mean(
                 self.global_confidence
@@ -618,10 +629,7 @@ class ForecastConfidenceResult:
         )
 
     @property
-    def minimum_confidence(
-        self,
-    ) -> float:
-
+    def minimum_confidence(self) -> float:
         return float(
             np.min(
                 self.global_confidence
@@ -629,163 +637,98 @@ class ForecastConfidenceResult:
         )
 
     @property
-    def maximum_confidence(
-        self,
-    ) -> float:
-
+    def maximum_confidence(self) -> float:
         return float(
             np.max(
                 self.global_confidence
             )
         )
 
-    def summary(
-        self,
-    ) -> Dict[str, object]:
-
+    def summary(self) -> Dict[str, object]:
         return {
             "shape":
                 self.shape,
-
             "mean_confidence":
                 self.mean_confidence,
-
             "minimum_confidence":
                 self.minimum_confidence,
-
             "maximum_confidence":
                 self.maximum_confidence,
-
             "target_names":
                 self.target_names,
         }
 
 
-# ============================================================
-# MAIN CONFIDENCE ESTIMATOR
-# ============================================================
-
 class ForecastConfidenceEstimator:
-    """
-    Main interface for calculating manuscript-based
-    forecast confidence.
-    """
-
     def __init__(
         self,
+        calibration: ConfidenceCalibration,
         config: Optional[
             ForecastConfidenceConfig
         ] = None,
     ) -> None:
-
         if config is None:
-
-            config = (
-                ForecastConfidenceConfig()
-            )
+            config = ForecastConfidenceConfig()
 
         config.validate()
+        calibration.validate()
 
         self.config = config
+        self.calibration = calibration
 
     def calculate(
         self,
-        pv_error,
-        load_error,
-        ev_error,
-        price_error,
+        forecast,
+        lower,
+        upper,
     ) -> ForecastConfidenceResult:
-        """
-        Calculate complete forecast-confidence information.
-        """
-
-        pv_error = validate_error_array(
-            pv_error,
-            "pv_error",
-        )
-
-        load_error = validate_error_array(
-            load_error,
-            "load_error",
-        )
-
-        ev_error = validate_error_array(
-            ev_error,
-            "ev_error",
-        )
-
-        price_error = validate_error_array(
-            price_error,
-            "price_error",
-        )
-
-        validate_same_shapes(
-            pv_error,
-            load_error,
-            ev_error,
-            price_error,
-        )
-
-        epsilon_rl = (
-            calculate_renewable_load_uncertainty(
-                pv_error,
-                load_error,
+        feature_uncertainties = (
+            calculate_all_feature_uncertainties(
+                forecast=forecast,
+                lower=lower,
+                upper=upper,
+                delta=self.config.delta,
             )
         )
 
-        omega_rl = (
-            calculate_renewable_load_confidence(
-                epsilon_rl,
-                error_scale=(
-                    self.config.error_scale
-                ),
+        normalized_uncertainties = (
+            normalize_uncertainties(
+                uncertainties=
+                    feature_uncertainties,
+                calibration=
+                    self.calibration,
             )
         )
 
-        epsilon_em = (
-            calculate_ev_market_uncertainty(
-                ev_error,
-                price_error,
+        aggregate_uncertainty = (
+            calculate_aggregate_uncertainty(
+                normalized_uncertainties=
+                    normalized_uncertainties,
+                feature_weights=
+                    self.calibration.feature_weights,
             )
         )
 
-        phi = calculate_global_confidence(
-            renewable_load_confidence=omega_rl,
-            ev_market_uncertainty=epsilon_em,
-            error_scale=(
-                self.config.error_scale
-            ),
-            minimum_confidence=(
-                self.config.minimum_confidence
-            ),
-            maximum_confidence=(
-                self.config.maximum_confidence
-            ),
+        global_confidence = (
+            calculate_adaptive_confidence(
+                aggregate_uncertainty=
+                    aggregate_uncertainty,
+                minimum_confidence=
+                    self.config.minimum_confidence,
+                maximum_confidence=
+                    self.config.maximum_confidence,
+            )
         )
 
         result = ForecastConfidenceResult(
-            pv_error=pv_error,
-
-            load_error=load_error,
-
-            ev_error=ev_error,
-
-            price_error=price_error,
-
-            renewable_load_uncertainty=(
-                epsilon_rl
-            ),
-
-            renewable_load_confidence=(
-                omega_rl
-            ),
-
-            ev_market_uncertainty=(
-                epsilon_em
-            ),
-
-            global_confidence=phi,
-
+            feature_uncertainties=
+                feature_uncertainties,
+            normalized_uncertainties=
+                normalized_uncertainties,
+            aggregate_uncertainty=
+                aggregate_uncertainty,
+            global_confidence=
+                global_confidence,
             target_names=[
                 "PV",
                 "Load",
@@ -799,187 +742,48 @@ class ForecastConfidenceEstimator:
         return result
 
 
-# ============================================================
-# CONFIDENCE FROM ACTUAL AND FORECAST ARRAYS
-# ============================================================
-
-def confidence_from_actual_forecast(
-    actual,
+def calculate_confidence_from_intervals(
     forecast,
+    lower,
+    upper,
+    calibration: ConfidenceCalibration,
     config: Optional[
         ForecastConfidenceConfig
     ] = None,
 ) -> ForecastConfidenceResult:
-    """
-    Calculate confidence directly from actual and forecast data.
-
-    Required shape:
-
-        (samples, horizon, 4)
-
-    Feature order:
-
-        0 = PV
-        1 = Load
-        2 = EV charging demand
-        3 = Electricity price
-
-    Forecast residual definition:
-
-        error = actual - forecast
-    """
-
-    actual = np.asarray(
-        actual,
-        dtype=np.float64,
-    )
-
-    forecast = np.asarray(
-        forecast,
-        dtype=np.float64,
-    )
-
-    if actual.ndim != 3:
-        raise ValueError(
-            "actual must have shape "
-            "(samples, horizon, 4)."
-        )
-
-    if forecast.ndim != 3:
-        raise ValueError(
-            "forecast must have shape "
-            "(samples, horizon, 4)."
-        )
-
-    if actual.shape != forecast.shape:
-        raise ValueError(
-            "actual and forecast must have "
-            "identical shapes."
-        )
-
-    if actual.shape[
-        2
-    ] != 4:
-        raise ValueError(
-            "The FC-HMARL confidence formulation "
-            "requires exactly four ordered variables: "
-            "PV, Load, EV, and Price."
-        )
-
-    if not np.isfinite(
-        actual
-    ).all():
-        raise ValueError(
-            "actual contains NaN or Inf."
-        )
-
-    if not np.isfinite(
-        forecast
-    ).all():
-        raise ValueError(
-            "forecast contains NaN or Inf."
-        )
-
-    residual = (
-        actual
-        - forecast
-    )
-
-    estimator = (
-        ForecastConfidenceEstimator(
-            config
-        )
+    estimator = ForecastConfidenceEstimator(
+        calibration=calibration,
+        config=config,
     )
 
     return estimator.calculate(
-        pv_error=residual[
-            :,
-            :,
-            0
-        ],
-
-        load_error=residual[
-            :,
-            :,
-            1
-        ],
-
-        ev_error=residual[
-            :,
-            :,
-            2
-        ],
-
-        price_error=residual[
-            :,
-            :,
-            3
-        ],
+        forecast=forecast,
+        lower=lower,
+        upper=upper,
     )
 
-
-# ============================================================
-# CONFIDENCE-AWARE PREDICTIVE STATE
-# ============================================================
 
 def build_confidence_aware_predictive_state(
     forecast,
     confidence,
 ) -> np.ndarray:
-    """
-    Build manuscript confidence-aware predictive state.
-
-    Manuscript concept:
-
-        S_pred(t+h)
-            =
-        Phi(t+h) * Z_hat(t+h)
-
-    Parameters
-    ----------
-    forecast:
-        Forecast information.
-
-        Typical shape:
-
-            (samples, horizon, features)
-
-    confidence:
-        Global confidence coefficient.
-
-        Accepted shapes:
-
-            (samples, horizon)
-
-        or
-
-            (samples, horizon, 1)
-
-    Returns
-    -------
-    np.ndarray
-        Confidence-weighted predictive information.
-    """
-
-    forecast = np.asarray(
+    forecast = validate_array(
         forecast,
-        dtype=np.float64,
+        "forecast",
     )
 
-    confidence = np.asarray(
+    confidence = validate_array(
         confidence,
-        dtype=np.float64,
+        "confidence",
     )
 
     if forecast.ndim != 3:
-
         raise ValueError(
             "forecast must have shape "
             "(samples, horizon, features)."
         )
 
     if confidence.ndim == 2:
-
         confidence = confidence[
             :,
             :,
@@ -987,56 +791,24 @@ def build_confidence_aware_predictive_state(
         ]
 
     elif confidence.ndim != 3:
-
         raise ValueError(
             "confidence must have shape "
             "(samples, horizon) or "
             "(samples, horizon, 1)."
         )
 
-    if confidence.shape[
-        2
-    ] != 1:
-
+    if confidence.shape[2] != 1:
         raise ValueError(
-            "confidence third dimension "
-            "must equal 1."
+            "confidence third dimension must equal 1."
         )
 
     if (
-        forecast.shape[
-            0
-        ]
-        != confidence.shape[
-            0
-        ]
-        or forecast.shape[
-            1
-        ]
-        != confidence.shape[
-            1
-        ]
+        forecast.shape[0] != confidence.shape[0]
+        or forecast.shape[1] != confidence.shape[1]
     ):
-
         raise ValueError(
-            "forecast and confidence sample/horizon "
-            "dimensions must match."
-        )
-
-    if not np.isfinite(
-        forecast
-    ).all():
-
-        raise ValueError(
-            "forecast contains NaN or Inf."
-        )
-
-    if not np.isfinite(
-        confidence
-    ).all():
-
-        raise ValueError(
-            "confidence contains NaN or Inf."
+            "forecast and confidence sample/horizon dimensions "
+            "must match."
         )
 
     if np.any(
@@ -1044,12 +816,16 @@ def build_confidence_aware_predictive_state(
     ) or np.any(
         confidence > 1
     ):
-
         raise ValueError(
             "confidence must lie in [0, 1]."
         )
 
-    return (
-        forecast
-        * confidence
+    predictive_state = np.concatenate(
+        [
+            forecast,
+            confidence,
+        ],
+        axis=2,
     )
+
+    return predictive_state

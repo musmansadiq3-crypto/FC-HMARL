@@ -1,0 +1,31 @@
+{
+    "purpose": "Post-hoc prediction-interval calibration and locked-test coverage evaluation for Reviewer 5.",
+    "interval_method": "Empirical validation residual quantiles.",
+    "residual_definition": "actual - forecast",
+    "nominal_coverage": 0.95,
+    "lower_residual_probability": 0.025,
+    "upper_residual_probability": 0.975,
+    "horizon_specific_quantiles": true,
+    "target_specific_quantiles": true,
+    "forecaster_selection_basis": "validation MAE only",
+    "interval_calibration_split": "validation only",
+    "test_used_for_forecaster_selection": false,
+    "test_used_for_interval_calibration": false,
+    "selected_methods": {
+        "pv_power_kw": "daily_seasonal",
+        "load_kw": "transformer",
+        "ev_power_kw": "transformer",
+        "price_usd_per_kwh": "daily_seasonal"
+    },
+    "validation_shape": [
+        1291,
+        24,
+        4
+    ],
+    "test_shape": [
+        1291,
+        24,
+        4
+    ],
+    "important_interpretation": "Prediction-interval coverage is a post-hoc forecast evaluation metric. It is distinct from the validation-derived causal confidence Phi used by FC-HMARL."
+}

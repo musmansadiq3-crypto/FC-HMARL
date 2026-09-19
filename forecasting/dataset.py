@@ -1,4 +1,4 @@
-"""
+﻿"""
 Dataset construction utilities for the FC-HMARL forecasting module.
 
 The forecasting dataset converts a continuous multivariate hourly
@@ -42,9 +42,6 @@ import numpy as np
 import pandas as pd
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class ForecastDatasetConfig:
@@ -87,9 +84,6 @@ class ForecastDatasetConfig:
             )
 
 
-# ============================================================
-# VALIDATION UTILITIES
-# ============================================================
 
 def validate_time_series(
     data: pd.DataFrame,
@@ -208,9 +202,6 @@ def resolve_columns(
     return selected
 
 
-# ============================================================
-# SAMPLE COUNT
-# ============================================================
 
 def calculate_number_of_samples(
     sequence_length: int,
@@ -272,9 +263,6 @@ def calculate_number_of_samples(
     ) + 1
 
 
-# ============================================================
-# WINDOW CREATION
-# ============================================================
 
 def create_forecasting_windows(
     data: pd.DataFrame,
@@ -414,9 +402,6 @@ def create_forecasting_windows(
     return X, y
 
 
-# ============================================================
-# TIMESTAMP WINDOWS
-# ============================================================
 
 def create_window_timestamps(
     data: pd.DataFrame,
@@ -508,9 +493,6 @@ def create_window_timestamps(
     return X_time, y_time
 
 
-# ============================================================
-# FORECAST DATASET CLASS
-# ============================================================
 
 class ForecastWindowDataset:
     """
@@ -753,9 +735,6 @@ class ForecastWindowDataset:
         )
 
 
-# ============================================================
-# TRAIN / VALIDATION / TEST DATASETS
-# ============================================================
 
 def build_forecasting_datasets(
     train_data: pd.DataFrame,

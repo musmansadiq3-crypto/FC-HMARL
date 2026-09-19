@@ -62,3 +62,7 @@ token.txt
 
 # Git temporary files
 *.orig
+
+# Local binary artifacts excluded from public release due to repository storage limits
+outputs/comment3_ablation/full/seed_*/checkpoints/
+outputs/forecasting/prediction_interval_evidence/locked_test_prediction_intervals.npz

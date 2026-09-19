@@ -1,4 +1,4 @@
-"""
+﻿"""
 Training utilities for the FC-HMARL forecasting module.
 
 This module trains the reconstructed multi-horizon forecasting model.
@@ -42,9 +42,6 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class ForecastTrainerConfig:
@@ -221,9 +218,6 @@ class ForecastTrainerConfig:
             )
 
 
-# ============================================================
-# REPRODUCIBILITY
-# ============================================================
 
 def set_random_seed(
     seed: int,
@@ -258,9 +252,6 @@ def set_random_seed(
         )
 
 
-# ============================================================
-# DEVICE
-# ============================================================
 
 def resolve_device(
     requested_device: str = "auto",
@@ -308,9 +299,6 @@ def resolve_device(
     )
 
 
-# ============================================================
-# DATASET ADAPTER
-# ============================================================
 
 class TorchForecastDataset(
     Dataset
@@ -409,9 +397,6 @@ class TorchForecastDataset(
         )
 
 
-# ============================================================
-# DATA LOADERS
-# ============================================================
 
 def create_data_loader(
     dataset,
@@ -448,9 +433,6 @@ def create_data_loader(
     )
 
 
-# ============================================================
-# LOSS FUNCTION
-# ============================================================
 
 def build_loss_function(
     loss_name: str,
@@ -479,9 +461,6 @@ def build_loss_function(
     )
 
 
-# ============================================================
-# OPTIMIZER
-# ============================================================
 
 def build_optimizer(
     model: nn.Module,
@@ -533,9 +512,6 @@ def build_optimizer(
     )
 
 
-# ============================================================
-# SCHEDULER
-# ============================================================
 
 def build_scheduler(
     optimizer: torch.optim.Optimizer,
@@ -579,9 +555,6 @@ def build_scheduler(
     )
 
 
-# ============================================================
-# TRAINING HISTORY
-# ============================================================
 
 @dataclass
 class ForecastTrainingHistory:
@@ -631,9 +604,6 @@ class ForecastTrainingHistory:
         }
 
 
-# ============================================================
-# TRAINER
-# ============================================================
 
 class ForecastTrainer:
     """
@@ -712,9 +682,6 @@ class ForecastTrainer:
             / config.checkpoint_filename
         )
 
-    # ========================================================
-    # SINGLE TRAINING EPOCH
-    # ========================================================
 
     def train_epoch(
         self,
@@ -815,9 +782,6 @@ class ForecastTrainer:
             / total_samples
         )
 
-    # ========================================================
-    # VALIDATION
-    # ========================================================
 
     @torch.no_grad()
     def validate_epoch(
@@ -895,9 +859,6 @@ class ForecastTrainer:
             / total_samples
         )
 
-    # ========================================================
-    # SAVE CHECKPOINT
-    # ========================================================
 
     def save_checkpoint(
         self,
@@ -970,9 +931,6 @@ class ForecastTrainer:
 
         return self.checkpoint_path
 
-    # ========================================================
-    # LOAD CHECKPOINT
-    # ========================================================
 
     def load_checkpoint(
         self,
@@ -1028,9 +986,6 @@ class ForecastTrainer:
 
         return checkpoint
 
-    # ========================================================
-    # TRAIN COMPLETE MODEL
-    # ========================================================
 
     def fit(
         self,
@@ -1208,8 +1163,6 @@ class ForecastTrainer:
                 "valid best checkpoint."
             )
 
-        # Restore the model weights associated with the
-        # best validation epoch.
         self.load_checkpoint(
             self.checkpoint_path,
             load_optimizer=False,
@@ -1217,9 +1170,6 @@ class ForecastTrainer:
 
         return self.history
 
-    # ========================================================
-    # HISTORY SAVE
-    # ========================================================
 
     def save_history(
         self,
@@ -1252,9 +1202,6 @@ class ForecastTrainer:
         return path
 
 
-# ============================================================
-# HIGH-LEVEL TRAINING HELPER
-# ============================================================
 
 def train_forecasting_model(
     model: nn.Module,

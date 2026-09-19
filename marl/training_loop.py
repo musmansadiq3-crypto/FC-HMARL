@@ -1,4 +1,4 @@
-"""
+﻿"""
 Offline FC-HMARL training loop.
 
 This module implements the training sequence described in
@@ -37,6 +37,7 @@ to the concrete VPPEnvironment in train.py.
 from __future__ import annotations
 
 import random
+import os
 import numpy as np
 import torch
 
@@ -62,9 +63,6 @@ from agents.coordinator_agent import (
 )
 
 
-# ============================================================
-# TRAINING CONFIGURATION
-# ============================================================
 
 @dataclass
 class TrainingLoopConfig:
@@ -179,9 +177,6 @@ class TrainingLoopConfig:
             )
 
 
-# ============================================================
-# OBSERVATION
-# ============================================================
 
 @dataclass
 class TrainingObservation:
@@ -267,9 +262,6 @@ class TrainingObservation:
             )
 
 
-# ============================================================
-# ENVIRONMENT STEP RESULT
-# ============================================================
 
 @dataclass
 class EnvironmentStepResult:
@@ -301,17 +293,11 @@ class EnvironmentStepResult:
         list[float] before performing the training-loop checks.
         """
 
-        # --------------------------------------------------------
-        # NEXT OBSERVATION
-        # --------------------------------------------------------
 
         self.next_observation.validate(
             expected_local_agents
         )
 
-        # --------------------------------------------------------
-        # NORMALIZE LOCAL REWARDS
-        # --------------------------------------------------------
 
         try:
             reward_array = np.asarray(
@@ -338,17 +324,12 @@ class EnvironmentStepResult:
                 "local_rewards must be one-dimensional."
             )
 
-        # Critical normalization:
-        # np.ndarray -> genuine Python list[float]
         self.local_rewards = [
             float(reward)
             for reward
             in reward_array.tolist()
         ]
 
-        # --------------------------------------------------------
-        # NUMBER OF LOCAL REWARDS
-        # --------------------------------------------------------
 
         if (
             expected_local_agents
@@ -366,9 +347,6 @@ class EnvironmentStepResult:
                 f"received {len(self.local_rewards)}."
             )
 
-        # --------------------------------------------------------
-        # FINITE LOCAL REWARDS
-        # --------------------------------------------------------
 
         for (
             index,
@@ -387,9 +365,6 @@ class EnvironmentStepResult:
                     "NaN or Inf."
                 )
 
-        # --------------------------------------------------------
-        # COORDINATOR REWARD
-        # --------------------------------------------------------
 
         try:
             self.coordinator_reward = float(
@@ -410,9 +385,6 @@ class EnvironmentStepResult:
                 "Coordinator reward contains NaN or Inf."
             )
 
-        # --------------------------------------------------------
-        # DONE FLAG
-        # --------------------------------------------------------
 
         if not isinstance(
             self.done,
@@ -429,9 +401,6 @@ class EnvironmentStepResult:
             self.done
         )
 
-        # --------------------------------------------------------
-        # INFO
-        # --------------------------------------------------------
 
         if not isinstance(
             self.info,
@@ -442,9 +411,6 @@ class EnvironmentStepResult:
             )
 
 
-# ============================================================
-# ACTION BUNDLE
-# ============================================================
 
 @dataclass
 class HierarchicalActionBundle:
@@ -512,9 +478,6 @@ class HierarchicalActionBundle:
             )
 
 
-# ============================================================
-# STEP STATISTICS
-# ============================================================
 
 @dataclass
 class TrainingStepStatistics:
@@ -539,9 +502,6 @@ class TrainingStepStatistics:
     done: bool
 
 
-# ============================================================
-# EPISODE STATISTICS
-# ============================================================
 
 @dataclass
 class EpisodeStatistics:
@@ -602,9 +562,6 @@ class EpisodeStatistics:
         }
 
 
-# ============================================================
-# TRAINING HISTORY
-# ============================================================
 
 @dataclass
 class TrainingHistory:
@@ -714,9 +671,6 @@ class TrainingHistory:
         }
 
 
-# ============================================================
-# CALLBACK TYPES
-# ============================================================
 
 ResetFunction = Callable[
     [int],
@@ -738,9 +692,6 @@ StopFunction = Callable[
 ]
 
 
-# ============================================================
-# FC-HMARL TRAINING LOOP
-# ============================================================
 
 class FCHMARLTrainingLoop:
     """
@@ -883,9 +834,6 @@ class FCHMARLTrainingLoop:
 
         self.global_step = 0
 
-    # ========================================================
-    # PROPERTIES
-    # ========================================================
 
     @property
     def number_of_local_agents(
@@ -896,9 +844,6 @@ class FCHMARLTrainingLoop:
             self.local_agents
         )
 
-    # ========================================================
-    # MODES
-    # ========================================================
 
     def set_training_mode(
         self,
@@ -925,9 +870,6 @@ class FCHMARLTrainingLoop:
 
         self.coordinator_agent.reset()
 
-    # ========================================================
-    # ACTION SELECTION
-    # ========================================================
 
     def select_actions(
         self,
@@ -959,16 +901,33 @@ class FCHMARLTrainingLoop:
                 ).copy()
             )
 
-        coordinator_action = (
-            self.coordinator_agent
-            .select_action(
-                observation.coordinator_state,
-                deterministic=(
-                    self.config
-                    .deterministic_actions
-                ),
+        if (
+            os.environ.get(
+                "FC_HMARL_ABLATION_VARIANT",
+                "full",
             )
-        )
+            == "no_coordinator"
+        ):
+            # Controlled Comment-3 no-coordinator ablation.
+            # No learned upper-level action participates.
+            #
+            # action[1] = -1 -> zero reserve participation
+            # action[2] = -1 -> zero sharing multiplier
+            coordinator_action = np.asarray(
+                [0.0, -1.0, -1.0],
+                dtype=np.float32,
+            )
+        else:
+            coordinator_action = (
+                self.coordinator_agent
+                .select_action(
+                    observation.coordinator_state,
+                    deterministic=(
+                        self.config
+                        .deterministic_actions
+                    ),
+                )
+            )
 
         bundle = HierarchicalActionBundle(
             local_actions=local_actions,
@@ -986,9 +945,6 @@ class FCHMARLTrainingLoop:
 
         return bundle
 
-    # ========================================================
-    # STORE EXPERIENCE
-    # ========================================================
 
     def store_transitions(
         self,
@@ -1046,6 +1002,16 @@ class FCHMARLTrainingLoop:
                 done=result.done,
             )
 
+        if (
+            os.environ.get(
+                "FC_HMARL_ABLATION_VARIANT",
+                "full",
+            )
+            == "no_coordinator"
+        ):
+            # Local replay remains active; coordinator replay is disabled.
+            return
+
         self.coordinator_agent.store_transition(
             state=(
                 observation
@@ -1071,9 +1037,6 @@ class FCHMARLTrainingLoop:
             done=result.done,
         )
 
-    # ========================================================
-    # NETWORK UPDATES
-    # ========================================================
 
     def update_agents(
         self,
@@ -1103,10 +1066,23 @@ class FCHMARLTrainingLoop:
                     result
                 )
 
-            coordinator_result = (
-                self.coordinator_agent
-                .update_if_ready()
-            )
+            if (
+                os.environ.get(
+                    "FC_HMARL_ABLATION_VARIANT",
+                    "full",
+                )
+                == "no_coordinator"
+            ):
+                coordinator_result = type(
+                    "_NoCoordinatorUpdate",
+                    (),
+                    {"updated": False},
+                )()
+            else:
+                coordinator_result = (
+                    self.coordinator_agent
+                    .update_if_ready()
+                )
 
             local_results = (
                 current_local_results
@@ -1122,9 +1098,6 @@ class FCHMARLTrainingLoop:
             coordinator_result,
         )
 
-    # ========================================================
-    # ONE TRAINING STEP
-    # ========================================================
 
     def run_step(
         self,
@@ -1239,9 +1212,6 @@ class FCHMARLTrainingLoop:
             statistics,
         )
 
-    # ========================================================
-    # ONE EPISODE
-    # ========================================================
 
     def run_episode(
         self,
@@ -1398,9 +1368,6 @@ class FCHMARLTrainingLoop:
 
         return episode_statistics
 
-    # ========================================================
-    # CHECKPOINTS
-    # ========================================================
 
     def save_checkpoint(
         self,
@@ -1438,9 +1405,6 @@ class FCHMARLTrainingLoop:
         saved_paths = {}
 
 
-        # ========================================================
-        # LOCAL AGENTS
-        # ========================================================
 
         for agent in self.local_agents:
 
@@ -1460,9 +1424,6 @@ class FCHMARLTrainingLoop:
             )
 
 
-        # ========================================================
-        # COORDINATOR
-        # ========================================================
 
         coordinator_path = (
             directory
@@ -1481,9 +1442,6 @@ class FCHMARLTrainingLoop:
         )
 
 
-        # ========================================================
-        # GLOBAL TRAINING STATE
-        # ========================================================
 
         training_state_path = (
             directory
@@ -1547,9 +1505,6 @@ class FCHMARLTrainingLoop:
 
         return saved_paths
 
-    # ========================================================
-    # FULL TRAINING
-    # ========================================================
 
     def train(
         self,
@@ -1660,9 +1615,6 @@ class FCHMARLTrainingLoop:
 
         return self.history
 
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     def summary(
         self,

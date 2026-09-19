@@ -1,4 +1,4 @@
-"""
+﻿"""
 Global VPP coordinator agent for the FC-HMARL framework.
 
 The coordinator represents the upper level of the hierarchical
@@ -43,9 +43,6 @@ from agents.sac_agent import (
 )
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class CoordinatorAgentConfig:
@@ -204,9 +201,6 @@ class CoordinatorAgentConfig:
         )
 
 
-# ============================================================
-# ACTION RESULT
-# ============================================================
 
 @dataclass
 class CoordinatorActionResult:
@@ -297,9 +291,6 @@ class CoordinatorActionResult:
         }
 
 
-# ============================================================
-# TRAINING RESULT
-# ============================================================
 
 @dataclass
 class CoordinatorTrainingResult:
@@ -380,9 +371,6 @@ class CoordinatorTrainingResult:
         return output
 
 
-# ============================================================
-# COORDINATOR AGENT
-# ============================================================
 
 class CoordinatorAgent:
     """
@@ -424,9 +412,6 @@ class CoordinatorAgent:
 
         self.total_training_updates = 0
 
-    # ========================================================
-    # PROPERTIES
-    # ========================================================
 
     @property
     def actor(
@@ -477,9 +462,6 @@ class CoordinatorAgent:
 
         return self.config.action_dimension
 
-    # ========================================================
-    # STATE VALIDATION
-    # ========================================================
 
     def validate_state(
         self,
@@ -522,9 +504,6 @@ class CoordinatorAgent:
 
         return array
 
-    # ========================================================
-    # ACTION VALIDATION
-    # ========================================================
 
     def validate_action(
         self,
@@ -587,9 +566,6 @@ class CoordinatorAgent:
 
         return array
 
-    # ========================================================
-    # ACTION SELECTION
-    # ========================================================
 
     def select_action(
         self,
@@ -673,9 +649,6 @@ class CoordinatorAgent:
 
         return result
 
-    # ========================================================
-    # TRANSITION STORAGE
-    # ========================================================
 
     def store_transition(
         self,
@@ -718,9 +691,6 @@ class CoordinatorAgent:
 
         return index
 
-    # ========================================================
-    # TRAINING
-    # ========================================================
 
     def ready_to_update(
         self,
@@ -779,9 +749,6 @@ class CoordinatorAgent:
 
         return result
 
-    # ========================================================
-    # TRAIN/EVAL MODES
-    # ========================================================
 
     def set_training_mode(
         self,
@@ -816,9 +783,6 @@ class CoordinatorAgent:
             False
         )
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -835,9 +799,6 @@ class CoordinatorAgent:
 
         self.sac_agent.reset()
 
-    # ========================================================
-    # CHECKPOINTS
-    # ========================================================
 
     def save(
         self,
@@ -861,9 +822,6 @@ class CoordinatorAgent:
             ),
         )
 
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     def summary(
         self,
@@ -907,9 +865,6 @@ class CoordinatorAgent:
         }
 
 
-# ============================================================
-# FACTORY
-# ============================================================
 
 def build_coordinator_agent(
     state_dimension: int,

@@ -5,7 +5,7 @@ Passed checks: 67
 Failed checks: 0
 
 Full software test result:
-993 passed, 22 warnings
+969 passed, 37 warnings
 
 Final model:
 FC-HMARL V3

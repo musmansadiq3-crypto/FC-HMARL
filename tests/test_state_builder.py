@@ -96,7 +96,7 @@ def test_default_forecast_features():
 
     config = StateBuilderConfig()
 
-    assert config.forecast_features == 4
+    assert config.forecast_features == 5
 
 
 def test_default_predictive_dimension():
@@ -105,7 +105,7 @@ def test_default_predictive_dimension():
 
     assert (
         config.predictive_state_dimension
-        == 96
+        == 120
     )
 
 
@@ -115,7 +115,7 @@ def test_default_local_dimension():
 
     assert (
         config.local_state_dimension
-        == 101
+        == 125
     )
 
 
@@ -125,7 +125,7 @@ def test_default_coordinator_dimension():
 
     assert (
         config.coordinator_state_dimension
-        == 99
+        == 123
     )
 
 
@@ -135,7 +135,7 @@ def test_default_global_dimension():
 
     assert (
         config.global_state_dimension
-        == 604
+        == 748
     )
 
 

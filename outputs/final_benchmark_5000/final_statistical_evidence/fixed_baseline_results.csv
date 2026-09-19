@@ -1,0 +1,3 @@
+controller,controller_type,test_windows,return,net_market_cost_usd,grid_import_kwh,grid_export_kwh,bess_throughput_kwh,sharing_scheduled_kwh,balance_violation_kw_per_step
+passive_grid_only,fixed_deterministic_baseline,1268,-18317.030234956917,9155.555160273974,48175.84315218219,42.90320268396615,0.0,0.0,0.0
+rule_based_bess_ems,fixed_deterministic_baseline,1268,-17832.25301578726,8897.807730415132,46849.00978090078,58.109075613067546,1424.1547980439989,0.0,0.0

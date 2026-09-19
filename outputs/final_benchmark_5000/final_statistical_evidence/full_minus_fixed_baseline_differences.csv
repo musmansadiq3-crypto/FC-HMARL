@@ -1,0 +1,15 @@
+comparison,metric,delta_definition,n_independent_full_training_seeds,fixed_baseline_value,mean_delta,sample_sd_of_delta,ci95_lower,ci95_upper
+full_fc_hmarl_minus_passive_grid_only,return,Full FC-HMARL - fixed baseline,5,-18317.030234956917,458.05797531723,142.28338335846234,281.3898206584024,634.7261299760576
+full_fc_hmarl_minus_passive_grid_only,net_market_cost_usd,Full FC-HMARL - fixed baseline,5,9155.555160273974,-417.28631051101985,36.85925626066415,-463.0531220104533,-371.5194990115864
+full_fc_hmarl_minus_passive_grid_only,grid_import_kwh,Full FC-HMARL - fixed baseline,5,48175.84315218219,-1276.49881415564,504.71597077715995,-1903.186464388104,-649.8111639231762
+full_fc_hmarl_minus_passive_grid_only,grid_export_kwh,Full FC-HMARL - fixed baseline,5,42.90320268396615,255.32671565664174,44.72779616714055,199.7898214369069,310.8636098763766
+full_fc_hmarl_minus_passive_grid_only,bess_throughput_kwh,Full FC-HMARL - fixed baseline,5,0.0,6007.458621174822,1878.3620101344138,3675.1641375972617,8339.753104752383
+full_fc_hmarl_minus_passive_grid_only,sharing_scheduled_kwh,Full FC-HMARL - fixed baseline,5,0.0,265.43874118385486,272.6135229910381,-73.05565573761191,603.9331381053216
+full_fc_hmarl_minus_passive_grid_only,balance_violation_kw_per_step,Full FC-HMARL - fixed baseline,5,0.0,0.034468233963355875,0.056332087851711135,-0.035477291465765594,0.10441375939247735
+full_fc_hmarl_minus_rule_based_bess_ems,return,Full FC-HMARL - fixed baseline,5,-17832.25301578726,-26.719243852426736,142.28338335846234,-203.38739851125433,149.94891080640087
+full_fc_hmarl_minus_rule_based_bess_ems,net_market_cost_usd,Full FC-HMARL - fixed baseline,5,8897.807730415132,-159.53888065217762,36.85925626066415,-205.30569215161108,-113.77206915274417
+full_fc_hmarl_minus_rule_based_bess_ems,grid_import_kwh,Full FC-HMARL - fixed baseline,5,46849.00978090078,50.3345571257727,504.71597077715995,-576.3530931066912,677.0222073582365
+full_fc_hmarl_minus_rule_based_bess_ems,grid_export_kwh,Full FC-HMARL - fixed baseline,5,58.109075613067546,240.12084272754038,44.727796167140546,184.58394850780556,295.6577369472752
+full_fc_hmarl_minus_rule_based_bess_ems,bess_throughput_kwh,Full FC-HMARL - fixed baseline,5,1424.1547980439989,4583.303823130822,1878.3620101344138,2251.0093395532617,6915.598306708382
+full_fc_hmarl_minus_rule_based_bess_ems,sharing_scheduled_kwh,Full FC-HMARL - fixed baseline,5,0.0,265.43874118385486,272.6135229910381,-73.05565573761191,603.9331381053216
+full_fc_hmarl_minus_rule_based_bess_ems,balance_violation_kw_per_step,Full FC-HMARL - fixed baseline,5,0.0,0.034468233963355875,0.056332087851711135,-0.035477291465765594,0.10441375939247735

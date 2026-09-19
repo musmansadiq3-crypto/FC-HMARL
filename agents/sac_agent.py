@@ -1,4 +1,4 @@
-"""
+﻿"""
 Soft Actor-Critic agent for the FC-HMARL framework.
 
 This module connects:
@@ -64,9 +64,6 @@ from agents.replay_buffer import (
 )
 
 
-# ============================================================
-# CONFIGURATION
-# ============================================================
 
 @dataclass
 class SACAgentConfig:
@@ -306,9 +303,6 @@ class SACAgentConfig:
             )
 
 
-# ============================================================
-# TRAINING RESULT
-# ============================================================
 
 @dataclass
 class SACUpdateResult:
@@ -391,9 +385,6 @@ class SACUpdateResult:
         }
 
 
-# ============================================================
-# HELPER FUNCTIONS
-# ============================================================
 
 def torch_dtype_from_name(
     dtype: str,
@@ -546,9 +537,6 @@ def unfreeze_network(
         )
 
 
-# ============================================================
-# SAC AGENT
-# ============================================================
 
 class SACAgent:
     """
@@ -707,9 +695,6 @@ class SACAgent:
 
         self.training = True
 
-    # ========================================================
-    # ARRAY / TENSOR CONVERSION
-    # ========================================================
 
     def _state_array(
         self,
@@ -807,9 +792,6 @@ class SACAgent:
             dones,
         )
 
-    # ========================================================
-    # ACTION BOUNDS
-    # ========================================================
 
     @property
     def action_low(
@@ -837,9 +819,6 @@ class SACAgent:
             .copy()
         )
 
-    # ========================================================
-    # ACTION SELECTION
-    # ========================================================
 
     @torch.no_grad()
     def select_action(
@@ -930,9 +909,6 @@ class SACAgent:
             copy=False,
         )
 
-    # ========================================================
-    # EXPERIENCE STORAGE
-    # ========================================================
 
     def store_transition(
         self,
@@ -955,9 +931,6 @@ class SACAgent:
 
         return index
 
-    # ========================================================
-    # SAMPLING
-    # ========================================================
 
     def ready_to_update(
         self,
@@ -967,9 +940,6 @@ class SACAgent:
             self.config.batch_size
         )
 
-    # ========================================================
-    # CRITIC TARGET
-    # ========================================================
 
     @torch.no_grad()
     def calculate_target_q(
@@ -1019,9 +989,6 @@ class SACAgent:
 
         return backup
 
-    # ========================================================
-    # CRITIC UPDATE
-    # ========================================================
 
     def update_critic(
         self,
@@ -1078,9 +1045,6 @@ class SACAgent:
             q2.detach(),
         )
 
-    # ========================================================
-    # ACTOR UPDATE
-    # ========================================================
 
     def update_actor(
         self,
@@ -1090,8 +1054,6 @@ class SACAgent:
         torch.Tensor,
     ]:
 
-        # Critic parameters are temporarily frozen so that actor
-        # optimization does not accumulate critic gradients.
         freeze_network(
             self.critic
         )
@@ -1150,9 +1112,6 @@ class SACAgent:
             log_probability.detach(),
         )
 
-    # ========================================================
-    # FULL UPDATE
-    # ========================================================
 
     def update(
         self,
@@ -1290,9 +1249,6 @@ class SACAgent:
 
         return result
 
-    # ========================================================
-    # EXPLORATION
-    # ========================================================
 
     def decay_exploration_noise(
         self,
@@ -1320,9 +1276,6 @@ class SACAgent:
             self.config.initial_exploration_noise
         )
 
-    # ========================================================
-    # TRAIN / EVAL MODES
-    # ========================================================
 
     def train_mode(
         self,
@@ -1359,7 +1312,6 @@ class SACAgent:
             False
         )
 
-    # Interface used by hierarchical_controller.py
     def set_training_mode(
         self,
         training: bool,
@@ -1369,9 +1321,6 @@ class SACAgent:
             training
         )
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -1384,9 +1333,6 @@ class SACAgent:
 
         self.reset_exploration_noise()
 
-    # ========================================================
-    # CHECKPOINT SAVE
-    # ========================================================
 
     def save(
         self,
@@ -1422,9 +1368,6 @@ class SACAgent:
             exist_ok=True,
         )
 
-        # --------------------------------------------------------
-        # Replay-buffer sidecar file
-        # --------------------------------------------------------
 
         replay_path = path.with_suffix(
             ".replay.npz"
@@ -1434,9 +1377,6 @@ class SACAgent:
             replay_path
         )
 
-        # --------------------------------------------------------
-        # RNG states
-        # --------------------------------------------------------
 
         agent_rng_state = None
 
@@ -1463,9 +1403,6 @@ class SACAgent:
             )
 
 
-        # --------------------------------------------------------
-        # Main SAC checkpoint
-        # --------------------------------------------------------
 
         checkpoint = {
 
@@ -1529,9 +1466,6 @@ class SACAgent:
 
         return path
 
-    # ========================================================
-    # CHECKPOINT LOAD
-    # ========================================================
 
     def load(
         self,
@@ -1570,9 +1504,6 @@ class SACAgent:
         )
 
 
-        # ========================================================
-        # NETWORKS
-        # ========================================================
 
         self.actor.load_state_dict(
             checkpoint[
@@ -1598,9 +1529,6 @@ class SACAgent:
         )
 
 
-        # ========================================================
-        # OPTIMIZERS
-        # ========================================================
 
         if load_optimizers:
 
@@ -1617,9 +1545,6 @@ class SACAgent:
             )
 
 
-        # ========================================================
-        # TRAINING COUNTERS
-        # ========================================================
 
         self.update_step = int(
             checkpoint.get(
@@ -1643,9 +1568,6 @@ class SACAgent:
         )
 
 
-        # ========================================================
-        # AGENT RNG STATE
-        # ========================================================
 
         agent_rng_state = checkpoint.get(
             "agent_rng_state",
@@ -1665,9 +1587,6 @@ class SACAgent:
             )
 
 
-        # ========================================================
-        # REPLAY MEMORY
-        # ========================================================
 
         replay_filename = checkpoint.get(
             "replay_buffer_file",
@@ -1697,9 +1616,6 @@ class SACAgent:
             )
 
 
-            # ----------------------------------------------------
-            # Restore replay-buffer RNG state
-            # ----------------------------------------------------
 
             replay_rng_state = checkpoint.get(
                 "replay_rng_state",
@@ -1720,22 +1636,9 @@ class SACAgent:
                 )
 
 
-        # ========================================================
-        # BACKWARD COMPATIBILITY
-        # ========================================================
-        #
-        # Existing episode-100 / episode-200 checkpoints were
-        # created before replay-buffer persistence was introduced.
-        #
-        # They will still load correctly, but replay memory will
-        # remain empty.
-        # ========================================================
 
         self.training = True
 
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     def summary(
         self,

@@ -1,58 +1,4 @@
-# ============================================================
-# FC-HMARL
-# STEP 7H
-# VALIDATION-BASED FORECAST SELECTION + CAUSAL CONFIDENCE
-# ============================================================
-#
-# PURPOSE
-# -------
-# 1. Generate validation predictions from the already-trained
-#    original Transformer checkpoint.
-#
-# 2. Compare three forecast candidates on VALIDATION only:
-#
-#       - daily seasonal
-#       - weekly seasonal
-#       - original Transformer
-#
-# 3. Select the best candidate independently for:
-#
-#       PV
-#       Load
-#       EV
-#       Price
-#
-#    using VALIDATION MAE.
-#
-# 4. Calculate horizon-dependent causal confidence:
-#
-#       ebar_PV,h
-#       ebar_Load,h
-#       ebar_EV,h
-#       ebar_Price,h
-#
-#       epsilon_RL,h =
-#           sqrt(ebar_PV,h^2 + ebar_Load,h^2)
-#
-#       omega_RL,h =
-#           exp(-epsilon_RL,h)
-#
-#       epsilon_EM,h =
-#           sqrt(ebar_EV,h^2 + ebar_Price,h^2)
-#
-#       Phi_h =
-#           exp(-(epsilon_RL,h + epsilon_EM,h))
-#
-# 5. Apply the VALIDATION-selected methods to TEST.
-#
-# IMPORTANT
-# ---------
-# Test data are NOT used to choose forecasting methods.
-#
-# No forecasting model is retrained in this script.
-#
-# ============================================================
-
+﻿
 from pathlib import Path
 import json
 
@@ -73,9 +19,6 @@ from forecasting.confidence import (
 )
 
 
-# ============================================================
-# 1. PATHS
-# ============================================================
 
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
@@ -166,9 +109,6 @@ METADATA_FILE = (
 )
 
 
-# ============================================================
-# 2. CONSTANTS
-# ============================================================
 
 FEATURE_NAMES = [
     "pv_power_kw",
@@ -186,9 +126,6 @@ PRICE_INDEX = 3
 EPS = 1e-12
 
 
-# ============================================================
-# 3. HELPERS
-# ============================================================
 
 def section(title):
 
@@ -394,7 +331,6 @@ def apply_physical_clipping(
         dtype=np.float64,
     ).copy()
 
-    # PV >= 0
 
     output[
         :,
@@ -413,7 +349,6 @@ def apply_physical_clipping(
     )
 
 
-    # Load >= 0
 
     output[
         :,
@@ -432,7 +367,6 @@ def apply_physical_clipping(
     )
 
 
-    # EV charging demand >= 0
 
     output[
         :,
@@ -451,14 +385,10 @@ def apply_physical_clipping(
     )
 
 
-    # Price is intentionally NOT clipped.
 
     return output
 
 
-# ============================================================
-# 4. CHECK FILES
-# ============================================================
 
 section(
     "FC-HMARL STEP 7H"
@@ -491,9 +421,6 @@ OUTPUT_DIR.mkdir(
 )
 
 
-# ============================================================
-# 5. LOAD PREPARED SEQUENCES
-# ============================================================
 
 data = np.load(
     SEQUENCE_FILE,
@@ -542,9 +469,6 @@ print(
 )
 
 
-# ============================================================
-# 6. LOAD SCALER
-# ============================================================
 
 scaler_df = pd.read_csv(
     SCALER_FILE
@@ -584,27 +508,6 @@ actual_test_original = inverse_scale_array(
 )
 
 
-# ============================================================
-# 7. DAILY AND WEEKLY SEASONAL BASELINES
-# ============================================================
-#
-# X shape:
-#
-#   [sample, 168 historical hours, 4 variables]
-#
-# Daily baseline:
-#
-#   last 24 h of history
-#
-# Weekly baseline:
-#
-#   first 24 h of 168 h history
-#
-# because:
-#
-#   168 h = 7 days
-#
-# ============================================================
 
 section(
     "BUILDING VALIDATION SEASONAL BASELINES"
@@ -675,9 +578,6 @@ weekly_test_original = inverse_scale_array(
 )
 
 
-# ============================================================
-# 8. BUILD ORIGINAL TRANSFORMER
-# ============================================================
 
 section(
     "LOADING BEST ORIGINAL TRANSFORMER CHECKPOINT"
@@ -721,9 +621,6 @@ checkpoint = torch.load(
 )
 
 
-# ------------------------------------------------------------
-# Robust checkpoint handling
-# ------------------------------------------------------------
 
 if isinstance(
     checkpoint,
@@ -744,7 +641,6 @@ if isinstance(
 
     else:
 
-        # May already be a plain state_dict.
 
         state_dict = checkpoint
 
@@ -768,9 +664,6 @@ print(
 )
 
 
-# ============================================================
-# 9. GENERATE VALIDATION TRANSFORMER FORECASTS
-# ============================================================
 
 section(
     "GENERATING VALIDATION TRANSFORMER FORECASTS"
@@ -832,9 +725,6 @@ print(
 )
 
 
-# ============================================================
-# 10. INVERSE-SCALE + CLIP VALIDATION TRANSFORMER
-# ============================================================
 
 transformer_val_original_raw = inverse_scale_array(
     transformer_val_norm_raw,
@@ -879,9 +769,6 @@ np.savez_compressed(
 )
 
 
-# ============================================================
-# 11. LOAD EXISTING TEST TRANSFORMER PREDICTIONS
-# ============================================================
 
 test_transformer_data = np.load(
     TEST_TRANSFORMER_FILE,
@@ -919,9 +806,6 @@ transformer_test_norm = normalize_array(
 )
 
 
-# ============================================================
-# 12. VALIDATION MODEL COMPARISON
-# ============================================================
 
 section(
     "VALIDATION-ONLY FORECAST MODEL COMPARISON"
@@ -1019,9 +903,6 @@ comparison_df.to_csv(
 )
 
 
-# ============================================================
-# 13. SELECT BEST FORECASTER ON VALIDATION
-# ============================================================
 
 section(
     "VALIDATION FORECASTER SELECTION"
@@ -1106,9 +987,6 @@ selection_df.to_csv(
 )
 
 
-# ============================================================
-# 14. BUILD VALIDATION-SELECTED HYBRID
-# ============================================================
 
 candidate_val_norm = {
 
@@ -1215,9 +1093,6 @@ for feature_index, feature_name in enumerate(
     ]
 
 
-# ============================================================
-# 15. VALIDATION FORECAST ERRORS
-# ============================================================
 
 section(
     "CALIBRATING CAUSAL CONFIDENCE FROM VALIDATION"
@@ -1230,15 +1105,6 @@ validation_absolute_error = np.abs(
 )
 
 
-# ------------------------------------------------------------
-# Mean absolute normalized error for each horizon.
-#
-# Shape:
-#
-#   [24, 4]
-#
-# No test actual values are used here.
-# ------------------------------------------------------------
 
 mean_error_by_horizon = np.mean(
     validation_absolute_error,
@@ -1270,9 +1136,6 @@ mean_price_error = mean_error_by_horizon[
 ]
 
 
-# ============================================================
-# 16. CAUSAL CONFIDENCE EQUATIONS
-# ============================================================
 
 epsilon_RL = (
     calculate_renewable_load_uncertainty(
@@ -1320,9 +1183,6 @@ Phi_causal = (
 )
 
 
-# ============================================================
-# 17. DIRECT EQUATION CHECK
-# ============================================================
 
 epsilon_RL_direct = np.sqrt(
     mean_pv_error ** 2
@@ -1369,9 +1229,6 @@ if not np.allclose(
     )
 
 
-# ============================================================
-# 18. SAVE 24-HOUR CAUSAL CONFIDENCE PROFILE
-# ============================================================
 
 confidence_df = pd.DataFrame(
     {
@@ -1450,17 +1307,6 @@ print(
 )
 
 
-# ============================================================
-# 19. TEST EVALUATION
-# ============================================================
-#
-# IMPORTANT:
-#
-# Forecast method selection has already finished.
-#
-# Test data are evaluated ONLY now.
-#
-# ============================================================
 
 section(
     "LEAKAGE-FREE FINAL TEST RESULTS"
@@ -1567,9 +1413,6 @@ test_metrics_df.to_csv(
 )
 
 
-# ============================================================
-# 20. SAVE FINAL LEAKAGE-FREE ARCHIVE
-# ============================================================
 
 np.savez_compressed(
 
@@ -1620,9 +1463,6 @@ np.savez_compressed(
 )
 
 
-# ============================================================
-# 21. SAVE METADATA
-# ============================================================
 
 metadata = {
 
@@ -1683,9 +1523,6 @@ with open(
     )
 
 
-# ============================================================
-# 22. FINAL VALIDATION
-# ============================================================
 
 section(
     "STEP 7H FINAL VALIDATION"
@@ -1777,9 +1614,6 @@ print(
 )
 
 
-# ============================================================
-# 23. OUTPUT LOCATIONS
-# ============================================================
 
 section(
     "STEP 7H COMPLETE"

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Environment adapter for the FC-HMARL framework.
 
 Purpose
@@ -63,9 +63,6 @@ from marl.training_loop import (
 )
 
 
-# ============================================================
-# TYPE ALIASES
-# ============================================================
 
 EnvironmentResetFunction = Callable[
     [int],
@@ -108,9 +105,6 @@ InfoExtractorFunction = Callable[
 ]
 
 
-# ============================================================
-# ADAPTER CONFIGURATION
-# ============================================================
 
 @dataclass
 class EnvironmentAdapterConfig:
@@ -168,9 +162,6 @@ class EnvironmentAdapterConfig:
                 )
 
 
-# ============================================================
-# REWARD OUTPUT
-# ============================================================
 
 @dataclass
 class RewardOutput:
@@ -254,9 +245,6 @@ class RewardOutput:
             )
 
 
-# ============================================================
-# ADAPTER STEP RECORD
-# ============================================================
 
 @dataclass
 class AdapterStepRecord:
@@ -277,9 +265,6 @@ class AdapterStepRecord:
     done: bool
 
 
-# ============================================================
-# ENVIRONMENT ADAPTER
-# ============================================================
 
 class FCHMARLEnvironmentAdapter:
     """
@@ -435,9 +420,6 @@ class FCHMARLEnvironmentAdapter:
 
         self.total_steps = 0
 
-    # ========================================================
-    # OBSERVATION VALIDATION
-    # ========================================================
 
     def _validate_observation(
         self,
@@ -464,9 +446,6 @@ class FCHMARLEnvironmentAdapter:
 
         return observation
 
-    # ========================================================
-    # RESET
-    # ========================================================
 
     def reset(
         self,
@@ -528,9 +507,6 @@ class FCHMARLEnvironmentAdapter:
 
         return observation
 
-    # ========================================================
-    # DONE
-    # ========================================================
 
     def _extract_done(
         self,
@@ -567,9 +543,6 @@ class FCHMARLEnvironmentAdapter:
             or horizon_done
         )
 
-    # ========================================================
-    # INFO
-    # ========================================================
 
     def _extract_info(
         self,
@@ -598,9 +571,6 @@ class FCHMARLEnvironmentAdapter:
             info
         )
 
-    # ========================================================
-    # STEP
-    # ========================================================
 
     def step(
         self,
@@ -805,9 +775,6 @@ class FCHMARLEnvironmentAdapter:
 
         return result
 
-    # ========================================================
-    # TRAINING-LOOP CALLBACKS
-    # ========================================================
 
     @property
     def reset_function(
@@ -829,9 +796,6 @@ class FCHMARLEnvironmentAdapter:
 
         return self.step
 
-    # ========================================================
-    # SUMMARY
-    # ========================================================
 
     def summary(
         self,

@@ -1,0 +1,2 @@
+evaluation_split,interval_calibration_split,nominal_coverage,PICP,coverage_percentage,coverage_error,absolute_coverage_error,MPIW_mixed_original_units,validation_samples,test_samples,forecast_horizon,number_of_targets,test_used_for_interval_calibration,test_used_for_forecaster_selection
+locked_test,validation_only,0.95,0.91872418022205,91.87241802220501,-0.03127581977794991,0.03127581977794991,5.523575797465241,1291,1291,24,4,False,False

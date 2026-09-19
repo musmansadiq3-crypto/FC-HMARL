@@ -1,21 +1,3 @@
-# ============================================================
-# FC-HMARL
-# FINAL V3
-# FINAL CORRECTED REAL-DATA HIERARCHICAL SAC TRAINING
-# ============================================================
-#
-# TRAINING DATA:
-#   outputs/rl_data/real_rl_training_archive.npz
-#
-# DATA SEPARATION:
-#   TRAIN      -> FC-HMARL learning
-#   VALIDATION -> forecast selection + confidence calibration
-#   TEST       -> final evaluation only
-#
-# IMPORTANT:
-# This script does NOT load the forecasting TEST archive.
-#
-# ============================================================
 
 from __future__ import annotations
 
@@ -28,9 +10,6 @@ import numpy as np
 import torch
 
 
-# ============================================================
-# EXISTING PROJECT MODULES
-# ============================================================
 
 from environment.bess import (
     BESSParameters,
@@ -95,9 +74,6 @@ from marl.training_loop import (
 )
 
 
-# ------------------------------------------------------------
-# Reuse already validated agent builders from train.py.
-# ------------------------------------------------------------
 
 from train import (
     build_local_agents,
@@ -110,9 +86,6 @@ from train import (
 )
 
 
-# ============================================================
-# 1. PROJECT PATHS
-# ============================================================
 
 PROJECT_ROOT = Path(
     r"D:\Molvi paper review\FC_HMARL"
@@ -154,9 +127,6 @@ SMOKE_CHECKPOINT_DIRECTORY = (
 )
 
 
-# ============================================================
-# 2. SYSTEM CONSTANTS
-# ============================================================
 
 NUMBER_OF_MICROGRIDS = 5
 
@@ -164,12 +134,9 @@ EPISODE_LENGTH = 24
 
 FORECAST_HORIZON = 24
 
-NUMBER_OF_FORECAST_FEATURES = 4
+NUMBER_OF_FORECAST_FEATURES = 5
 
 
-# ============================================================
-# 3. MANUSCRIPT MICROGRID PARAMETERS
-# ============================================================
 
 PV_CAPACITY_KW = np.asarray(
     [
@@ -238,9 +205,6 @@ TRANSFORMER_KVA = np.asarray(
 )
 
 
-# ============================================================
-# 4. PHYSICAL / MARKET PARAMETERS
-# ============================================================
 
 BESS_CHARGING_EFFICIENCY = 0.95
 BESS_DISCHARGING_EFFICIENCY = 0.95
@@ -249,26 +213,15 @@ BESS_SELF_DISCHARGE_RATE = 0.001
 BESS_MINIMUM_SOC = 0.20
 BESS_MAXIMUM_SOC = 0.95
 
-# Reconstruction choice because manuscript does not provide
-# one universal initial SOC.
 INITIAL_SOC = 0.60
 
 
-# ------------------------------------------------------------
-# EV reconstruction parameters
-# ------------------------------------------------------------
 
 EV_CHARGER_POWER_KW = 7.2
 
-# Reconstruction:
-# maximum simultaneous fraction used for converting the ACN
-# representative aggregate shape to manuscript-scale fleets.
 EV_SIMULTANEOUS_FRACTION = 0.25
 
 
-# ------------------------------------------------------------
-# Manuscript market limits
-# ------------------------------------------------------------
 
 MINIMUM_BUY_PRICE = 0.12
 MAXIMUM_BUY_PRICE = 0.32
@@ -279,42 +232,20 @@ MAXIMUM_SELL_PRICE = 0.24
 RESERVE_PRICE = 0.05
 
 
-# ------------------------------------------------------------
-# Physical sharing reconstruction
-# ------------------------------------------------------------
 
 SHARING_EFFICIENCY = 0.98
 
 MAXIMUM_PAIRWISE_SHARING_KW = 250.0
 
 
-# ------------------------------------------------------------
-# Manuscript degradation coefficient
-# ------------------------------------------------------------
 
 BATTERY_DEGRADATION_COST = 0.02
 
 
-# ------------------------------------------------------------
-# Reconstruction because exact manuscript imbalance penalty
-# coefficient is not recoverable.
-# ------------------------------------------------------------
 
 IMBALANCE_PENALTY_PER_KW = 1.0
 
 
-# ============================================================
-# 5. FIXED TRAINING-DATA SCALING
-# ============================================================
-#
-# These values come from the TRAINING scaler.
-#
-# We deliberately do NOT normalize using the maximum value
-# inside each 24-hour episode.
-#
-# Therefore episode-future information is not required to
-# scale the physical state.
-# ============================================================
 
 TRAIN_LOAD_MIN = 0.164380
 TRAIN_LOAD_MAX = 0.925029
@@ -326,9 +257,6 @@ TRAIN_PRICE_MIN = 0.008954
 TRAIN_PRICE_MAX = 0.056380
 
 
-# ============================================================
-# 6. UTILITY FUNCTIONS
-# ============================================================
 
 def section(title: str) -> None:
 
@@ -365,9 +293,6 @@ def safe_fraction(
     )
 
 
-# ============================================================
-# 7. PER-EV CHARGING REQUEST BUILDER
-# ============================================================
 
 def build_per_ev_charging_requests(
     aggregate_power_by_mg,
@@ -430,9 +355,6 @@ def build_per_ev_charging_requests(
     return requests_by_microgrid
 
 
-# ============================================================
-# 8. LOAD REAL RL TRAINING ARCHIVE
-# ============================================================
 
 class RealRLTrainingData:
 
@@ -570,7 +492,7 @@ class RealRLTrainingData:
         if self.predictive_state_matrix.shape != (
             n,
             24,
-            4,
+            5,
         ):
 
             raise RuntimeError(
@@ -580,7 +502,7 @@ class RealRLTrainingData:
 
         if self.predictive_state_flat.shape != (
             n,
-            96,
+            120,
         ):
 
             raise RuntimeError(
@@ -604,9 +526,6 @@ class RealRLTrainingData:
             )
 
 
-# ============================================================
-# 9. REAL TRAINING EXOGENOUS PROVIDER
-# ============================================================
 
 class RealTrainingExogenousProvider:
     """
@@ -637,14 +556,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # ----------------------------------------------------
-        # Valid start positions.
-        #
-        # Each episode needs:
-        #
-        #   start ... start + 23
-        #
-        # ----------------------------------------------------
 
         maximum_start = (
             data.number_of_samples
@@ -657,12 +568,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # ----------------------------------------------------
-        # Deterministic random episode schedule.
-        #
-        # Repeated cycles are shuffled independently when more
-        # episodes are requested than unique start positions.
-        # ----------------------------------------------------
 
         rng = np.random.default_rng(
             self.seed
@@ -697,7 +602,6 @@ class RealTrainingExogenousProvider:
         step: int,
     ) -> int:
 
-        # Training loop episodes are 1-based.
 
         episode_index = max(
             int(episode) - 1,
@@ -751,12 +655,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # Feature order:
-        #
-        # 0 = PV
-        # 1 = Load
-        # 2 = EV
-        # 3 = Price
 
         pv_reference = float(
             actual[0]
@@ -775,20 +673,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # ====================================================
-        # PV
-        # ====================================================
-        #
-        # Reference PV signal was constructed as:
-        #
-        #   PV_1kW = GHI / 1000
-        #
-        # therefore:
-        #
-        #   GHI = PV_1kW * 1000
-        #
-        # Fixed physical conversion; no episode look-ahead.
-        # ====================================================
 
         irradiance = float(
             np.clip(
@@ -806,9 +690,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # ====================================================
-        # LOAD
-        # ====================================================
 
         load_shape = safe_fraction(
             load_reference,
@@ -823,9 +704,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # ====================================================
-        # EV
-        # ====================================================
 
         ev_shape = safe_fraction(
             ev_reference,
@@ -854,9 +732,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # ====================================================
-        # MARKET PRICE
-        # ====================================================
 
         price_shape = safe_fraction(
             price_reference,
@@ -900,9 +775,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # ====================================================
-        # PREDICTIVE STATE
-        # ====================================================
 
         predictive_state = (
             self.data
@@ -913,23 +785,14 @@ class RealTrainingExogenousProvider:
         )
 
 
-        # ====================================================
-        # CAUSAL SCALAR CONFIDENCE
-        # ====================================================
-        #
-        # Reconstruction choice:
-        #
-        # Use horizon-1 Phi for the immediate coordinator
-        # action because every rolling decision acts on the
-        # immediate next control interval.
-        #
-        # The complete 24-h confidence information remains
-        # embedded in S_pred.
-        # ====================================================
+
+        sample_confidence_24h = np.asarray(
+            predictive_state[:, 4],
+            dtype=np.float32,
+        )
 
         scalar_confidence = float(
-            self.data
-            .causal_confidence_24h[0]
+            np.mean(sample_confidence_24h)
         )
 
 
@@ -956,11 +819,6 @@ class RealTrainingExogenousProvider:
             confidence=
                 scalar_confidence,
 
-            # Coordinator lambda state:
-            #
-            # Keep the actual benchmark market-price signal,
-            # rather than replacing it with the mapped retail
-            # settlement tariff.
             market_price=
                 price_reference,
 
@@ -969,9 +827,6 @@ class RealTrainingExogenousProvider:
         )
 
 
-# ============================================================
-# 10. BUILD PHYSICAL MICROGRID
-# ============================================================
 
 def build_real_microgrid(
     index: int,
@@ -982,9 +837,6 @@ def build_real_microgrid(
     name = f"MG{mg_number}"
 
 
-    # --------------------------------------------------------
-    # PV
-    # --------------------------------------------------------
 
     pv_parameters = PVParameters(
 
@@ -1014,9 +866,6 @@ def build_real_microgrid(
     )
 
 
-    # --------------------------------------------------------
-    # BESS
-    # --------------------------------------------------------
 
     bess_parameters = BESSParameters(
 
@@ -1067,9 +916,6 @@ def build_real_microgrid(
     )
 
 
-    # --------------------------------------------------------
-    # EV FLEET
-    # --------------------------------------------------------
 
     number_of_evs = int(
         EV_COUNTS[index]
@@ -1092,14 +938,6 @@ def build_real_microgrid(
     )
 
 
-    # Reconstruction for aggregate EV interface.
-    #
-    # ACN timing is represented in the aggregate time-varying
-    # demand profile. The individual placeholder records keep
-    # the tested EVFleet implementation operational.
-    #
-    # Do NOT describe these 0-24 availability records as
-    # observed ACN individual sessions.
 
     ev_records = [
 
@@ -1137,9 +975,6 @@ def build_real_microgrid(
     )
 
 
-    # --------------------------------------------------------
-    # MARKET
-    # --------------------------------------------------------
 
     market_parameters = MarketParameters(
 
@@ -1173,9 +1008,6 @@ def build_real_microgrid(
     )
 
 
-    # --------------------------------------------------------
-    # MICROGRID PARAMETERS
-    # --------------------------------------------------------
 
     parameters = MicrogridParameters(
 
@@ -1221,9 +1053,6 @@ def build_real_microgrid(
     )
 
 
-# ============================================================
-# 11. BUILD FIVE-MG VPP
-# ============================================================
 
 def build_real_vpp_environment():
 
@@ -1314,9 +1143,6 @@ def build_real_vpp_environment():
     return environment
 
 
-# ============================================================
-# 12. BUILD FC-HMARL BRIDGE
-# ============================================================
 
 def build_real_training_bridge(
     data,
@@ -1401,11 +1227,6 @@ def build_real_training_bridge(
             reserve_fraction_of_bess_rating=
                 1.0,
 
-            # Step 7R correction:
-            # Upward reserve must remain deliverable for one
-            # 1-hour simulation interval. This duration is an
-            # explicit reconstruction because the manuscript does
-            # not specify the ancillary-service duration.
             reserve_duration_hours=
                 1.0,
 
@@ -1466,9 +1287,6 @@ def build_real_training_bridge(
     return bridge
 
 
-# ============================================================
-# 12.5. LOAD COMPLETE TRAINING CHECKPOINT
-# ============================================================
 
 def load_complete_training_checkpoint(
     local_agents,
@@ -1506,9 +1324,6 @@ def load_complete_training_checkpoint(
 
     required_files = []
 
-    # ========================================================
-    # LOCAL AGENTS
-    # ========================================================
 
     local_checkpoint_paths = []
 
@@ -1538,9 +1353,6 @@ def load_complete_training_checkpoint(
             checkpoint_path
         )
 
-    # ========================================================
-    # COORDINATOR
-    # ========================================================
 
     coordinator_checkpoint_path = (
         checkpoint_directory
@@ -1563,9 +1375,6 @@ def load_complete_training_checkpoint(
         ]
     )
 
-    # ========================================================
-    # GLOBAL TRAINING STATE
-    # ========================================================
 
     training_state_path = (
         checkpoint_directory
@@ -1579,9 +1388,6 @@ def load_complete_training_checkpoint(
         training_state_path
     )
 
-    # ========================================================
-    # VALIDATE ALL REQUIRED FILES
-    # ========================================================
 
     missing_files = [
         path
@@ -1621,9 +1427,6 @@ def load_complete_training_checkpoint(
             "\n".join(message)
         )
 
-    # ========================================================
-    # LOAD LOCAL AGENTS
-    # ========================================================
 
     for (
         agent,
@@ -1638,18 +1441,12 @@ def load_complete_training_checkpoint(
             load_optimizers=True,
         )
 
-    # ========================================================
-    # LOAD COORDINATOR
-    # ========================================================
 
     coordinator_agent.load(
         coordinator_checkpoint_path,
         load_optimizers=True,
     )
 
-    # ========================================================
-    # LOAD GLOBAL TRAINING STATE
-    # ========================================================
 
     training_state = torch.load(
         training_state_path,
@@ -1688,9 +1485,6 @@ def load_complete_training_checkpoint(
             "does not match current configuration."
         )
 
-    # ========================================================
-    # RESTORE GLOBAL RNG STATES
-    # ========================================================
 
     python_random_state = (
         training_state.get(
@@ -1747,9 +1541,6 @@ def load_complete_training_checkpoint(
     return training_state
 
 
-# ============================================================
-# 13. COMMAND-LINE ARGUMENTS
-# ============================================================
 
 def parse_arguments():
 
@@ -1828,9 +1619,6 @@ def parse_arguments():
     return parser.parse_args()
 
 
-# ============================================================
-# 14. MAIN
-# ============================================================
 
 def main():
 
@@ -1842,9 +1630,6 @@ def main():
     )
 
 
-    # --------------------------------------------------------
-    # Number of episodes
-    # --------------------------------------------------------
 
     if args.episodes is not None:
 
@@ -1854,14 +1639,11 @@ def main():
 
     elif args.smoke_test:
 
-        # Two episodes are enough to exercise replay updates
-        # with the smoke-test batch size.
 
         maximum_episodes = 2
 
     else:
 
-        # Manuscript setting.
         maximum_episodes = 5000
 
 
@@ -1872,9 +1654,6 @@ def main():
         )
 
 
-    # ========================================================
-    # RUN-SPECIFIC OUTPUT DIRECTORIES
-    # ========================================================
 
     if args.smoke_test:
 
@@ -1907,20 +1686,6 @@ def main():
         )
 
 
-    # ========================================================
-    # FINAL V3 RUN PROTECTION / SAFE RESUME
-    # ========================================================
-    #
-    # Fresh run:
-    #     omit --resume-episode
-    #
-    # Exact continuation:
-    #     use --resume-episode N
-    #
-    # Resume is allowed ONLY from this launcher's FINAL V3
-    # checkpoint directory. Older reserve-only / pre-PCC runs
-    # are therefore isolated from the final corrected experiment.
-    # ========================================================
 
     if args.resume_episode is None:
 
@@ -2032,9 +1797,6 @@ def main():
     )
 
 
-    # ========================================================
-    # LOAD TRAINING ARCHIVE
-    # ========================================================
 
     section(
         "LOADING LEAKAGE-FREE RL TRAINING ARCHIVE"
@@ -2077,9 +1839,6 @@ def main():
     )
 
 
-    # ========================================================
-    # BUILD REAL PHYSICAL BRIDGE
-    # ========================================================
 
     section(
         "BUILDING REAL-DATA PHYSICAL VPP BRIDGE"
@@ -2099,7 +1858,6 @@ def main():
     )
 
 
-    # Validate observation once before training.
 
     initial_observation = bridge.reset(
         episode=1
@@ -2129,13 +1887,9 @@ def main():
     )
 
 
-    # Reset again when trainer begins episode 1.
     bridge.environment.reset()
 
 
-    # ========================================================
-    # BUILD AGENTS
-    # ========================================================
 
     section(
         "BUILDING FC-HMARL SAC AGENTS"
@@ -2180,9 +1934,6 @@ def main():
     )
 
 
-    # ========================================================
-    # FINAL V3 TRAINING INITIALIZATION
-    # ========================================================
 
     if args.resume_episode is None:
 
@@ -2255,9 +2006,6 @@ def main():
     )
 
 
-    # ========================================================
-    # TRAINING LOOP
-    # ========================================================
 
     checkpoint_interval = (
         100
@@ -2315,18 +2063,11 @@ def main():
         config=
             training_config,
 
-        # Manuscript states training proceeds until
-        # convergence but gives no numerical threshold.
-        #
-        # Therefore no invented early stopping rule.
         stop_function=
             None,
     )
 
 
-    # ========================================================
-    # TRAIN
-    # ========================================================
 
     section(
         "STARTING REAL-DATA FC-HMARL TRAINING"
@@ -2338,9 +2079,6 @@ def main():
     )
 
 
-    # ========================================================
-    # SAVE RESULTS
-    # ========================================================
 
     section(
         "SAVING REAL-DATA TRAINING RESULTS"
@@ -2379,9 +2117,6 @@ def main():
         )
 
 
-    # ========================================================
-    # TRAINER SUMMARY
-    # ========================================================
 
     trainer_summary = trainer.summary()
 
@@ -2423,19 +2158,19 @@ def main():
             device,
 
         "local_state_dimension":
-            101,
+            125,
 
         "local_action_dimension":
             5,
 
         "coordinator_state_dimension":
-            99,
+            123,
 
         "coordinator_action_dimension":
             3,
 
         "predictive_state_dimension":
-            96,
+            120,
 
         "lead_1_causal_confidence":
             float(
@@ -2584,7 +2319,7 @@ def main():
 
             (
                 "Full confidence-aware 24-hour forecast "
-                "remains embedded in the 96-dimensional "
+                "remains embedded in the 120-dimensional "
                 "predictive state."
             ),
         ],
@@ -2608,9 +2343,6 @@ def main():
         )
 
 
-    # ========================================================
-    # FINAL CONSOLE SUMMARY
-    # ========================================================
 
     section(
         "FINAL V3 CORRECTED TRAINING COMPLETE"
@@ -2725,9 +2457,6 @@ def main():
     )
 
 
-# ============================================================
-# ENTRY POINT
-# ============================================================
 
 if __name__ == "__main__":
 

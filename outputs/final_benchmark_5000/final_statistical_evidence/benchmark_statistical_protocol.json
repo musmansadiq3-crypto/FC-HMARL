@@ -1,0 +1,25 @@
+{
+    "evaluation_split": "locked_test",
+    "test_windows": 1268,
+    "episode_length_hours": 24,
+    "locked_checkpoint_episode": 5000,
+    "full_training_seeds": [
+        11,
+        22,
+        33,
+        44,
+        55
+    ],
+    "full_policy_count": 5,
+    "baseline_training_seed_variability": false,
+    "baseline_evaluation": "Each deterministic baseline was evaluated once on the same locked 1268 TEST windows.",
+    "statistical_unit_for_full": "independently trained FC-HMARL policy seed",
+    "baseline_uncertainty_treatment": "No artificial seed SD or CI assigned to fixed deterministic baselines.",
+    "difference_interval_definition": "Student-t 95% CI across five Full FC-HMARL training-seed differences relative to each fixed baseline.",
+    "window_level_independence_assumed": false,
+    "naive_window_level_p_values_reported": false,
+    "deterministic_actions": true,
+    "gradient_updates": false,
+    "replay_writes": false,
+    "test_checkpoint_selection": false
+}
