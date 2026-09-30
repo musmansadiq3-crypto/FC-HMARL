@@ -1,0 +1,37 @@
+FORECAST-CONFIDENCE RELIABILITY ANALYSIS
+======================================================================
+
+Locked TEST windows: 1291
+Forecast horizons: 24
+Forecast variables: 4
+Nominal PI coverage: 0.9500
+
+Confidence statistics
+Minimum: 0.816879
+Maximum: 0.841289
+Mean: 0.824174
+SD: 0.004827
+
+Confidence vs realized TEST error
+----------------------------------------------------------------------
+                            variable  spearman_rho  spearman_p  pearson_r  pearson_p  n_horizons
+          aggregate_normalized_error     -0.082609    0.701163  -0.291611   0.166788          24
+                         pv_power_kw      0.515822    0.009878   0.688700   0.000198          24
+                             load_kw      0.084348    0.695163   0.005051   0.981311          24
+                         ev_power_kw     -0.479130    0.017842  -0.616952   0.001322          24
+                   price_usd_per_kwh      0.453043    0.026202   0.543579   0.006044          24
+overall_prediction_interval_coverage     -0.023929    0.911629   0.085725   0.690422          24
+
+Confidence quintile analysis
+----------------------------------------------------------------------
+confidence_group  n_horizons  mean_confidence  min_confidence  max_confidence  mean_normalized_test_error  median_normalized_test_error  mean_picp
+       Q1_lowest           5         0.819233        0.816879        0.820671                    0.999995                      1.001285   0.921263
+              Q2           5         0.821668        0.820967        0.822701                    0.992713                      0.999418   0.917390
+              Q3           4         0.823780        0.823269        0.824205                    1.015994                      1.015696   0.913100
+              Q4           5         0.825588        0.825206        0.825986                    1.011127                      1.010612   0.919249
+      Q5_highest           5         0.830522        0.826157        0.841289                    0.983369                      0.980013   0.921495
+
+Confidence vs validation mean error
+----------------------------------------------------------------------
+Spearman rho = -0.998261
+p-value = 1.50424e-28

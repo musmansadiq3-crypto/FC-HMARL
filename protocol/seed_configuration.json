@@ -1,0 +1,22 @@
+﻿{
+  "seeds": [11, 22, 33, 44, 55],
+  "configurations": [
+    "full",
+    "no_confidence",
+    "state_only",
+    "reward_only",
+    "concatenated",
+    "multiplicative",
+    "no_coordinator"
+  ],
+  "number_of_configurations": 7,
+  "seeds_per_configuration": 5,
+  "total_runs": 35,
+  "training_episodes": 5000,
+  "locked_checkpoint_episode": 5000,
+  "test_windows_per_run": 1268,
+  "deterministic_test_actions": true,
+  "gradient_updates_during_test": false,
+  "replay_writes_during_test": false,
+  "checkpoint_comparison_on_test": false
+}

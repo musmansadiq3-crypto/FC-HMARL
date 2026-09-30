@@ -1,0 +1,42 @@
+﻿{
+    "release_name":  "FC_HMARL_FINAL_RELEASE",
+    "configurations":  [
+                           "full",
+                           "no_confidence",
+                           "state_only",
+                           "reward_only",
+                           "concatenated",
+                           "multiplicative",
+                           "no_coordinator"
+                       ],
+    "seeds":  [
+                  11,
+                  22,
+                  33,
+                  44,
+                  55
+              ],
+    "number_of_configurations":  7,
+    "seeds_per_configuration":  5,
+    "total_runs":  35,
+    "final_checkpoint_episode":  5000,
+    "checkpoint_selection_source":  "fixed_terminal_training_checkpoint",
+    "test_windows_per_run":  1268,
+    "evaluation_split":  "test",
+    "deterministic_actions":  true,
+    "gradient_updates_on_test":  false,
+    "replay_writes_on_test":  false,
+    "checkpoint_comparison_on_test":  false,
+    "checkpoint_reselection_on_test":  false,
+    "verified_checkpoint_sets":  35,
+    "verified_pt_artifacts":  245,
+    "verified_test_result_sets":  35,
+    "verified_core_test_artifacts":  140,
+    "superseded_checkpoint_reference":  200,
+    "superseded_test_count_references":  [
+                                             969,
+                                             993
+                                         ],
+    "final_reported_checkpoint":  5000,
+    "final_reported_test_windows":  1268
+}

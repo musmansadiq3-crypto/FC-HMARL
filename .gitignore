@@ -1,0 +1,25 @@
+﻿# Python cache
+__pycache__/
+*.py[cod]
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Local environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Trained model checkpoints - distributed separately as release asset
+checkpoints/

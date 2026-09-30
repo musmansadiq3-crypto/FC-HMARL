@@ -1,0 +1,2463 @@
+
+from __future__ import annotations
+
+import argparse
+import json
+import random
+from pathlib import Path
+
+import numpy as np
+import torch
+
+
+
+from environment.bess import (
+    BESSParameters,
+    BatteryEnergyStorageSystem,
+)
+
+from environment.ev_fleet import (
+    EVFleet,
+    EVFleetParameters,
+    EVRecord,
+)
+
+from environment.market import (
+    ElectricityMarket,
+    MarketParameters,
+)
+
+from environment.microgrid import (
+    Microgrid,
+    MicrogridParameters,
+)
+
+from environment.pv import (
+    PVParameters,
+    PhotovoltaicSystem,
+)
+
+from environment.energy_sharing import (
+    EnergySharingNetwork,
+    EnergySharingParameters,
+)
+
+from environment.vpp_env import (
+    VPPEnvironment,
+)
+
+
+from marl.action_mapper import (
+    ActionMapperConfig,
+    FCHMARLActionMapper,
+)
+
+from marl.state_builder import (
+    StateBuilderConfig,
+    HierarchicalStateBuilder,
+)
+
+from marl.rewards import (
+    RewardConfig,
+    HierarchicalRewardBuilder,
+)
+
+from marl.vpp_training_bridge import (
+    FCHMARLVPPTrainingBridge,
+    VPPTrainingBridgeConfig,
+    VPPExogenousInput,
+)
+
+from marl.training_loop import (
+    FCHMARLTrainingLoop,
+    TrainingLoopConfig,
+)
+
+
+
+from train import (
+    build_local_agents,
+    build_coordinator_agent,
+    make_reset_function,
+    make_step_function,
+    export_training_results,
+    resolve_device,
+    set_global_seed,
+)
+
+
+
+PROJECT_ROOT = Path(
+    r"D:\Molvi paper review\FC_HMARL"
+)
+
+RL_ARCHIVE_FILE = (
+    PROJECT_ROOT
+    / "outputs"
+    / "rl_data"
+    / "real_rl_training_archive.npz"
+)
+
+FULL_OUTPUT_DIRECTORY = (
+    PROJECT_ROOT
+    / "outputs"
+    / "results"
+    / "real_fc_hmarl_final_v3"
+)
+
+FULL_CHECKPOINT_DIRECTORY = (
+    PROJECT_ROOT
+    / "outputs"
+    / "checkpoints"
+    / "real_fc_hmarl_final_v3"
+)
+
+SMOKE_OUTPUT_DIRECTORY = (
+    PROJECT_ROOT
+    / "outputs"
+    / "results"
+    / "real_fc_hmarl_final_v3_smoke"
+)
+
+SMOKE_CHECKPOINT_DIRECTORY = (
+    PROJECT_ROOT
+    / "outputs"
+    / "checkpoints"
+    / "real_fc_hmarl_final_v3_smoke"
+)
+
+
+
+NUMBER_OF_MICROGRIDS = 5
+
+EPISODE_LENGTH = 24
+
+FORECAST_HORIZON = 24
+
+NUMBER_OF_FORECAST_FEATURES = 5
+
+
+
+PV_CAPACITY_KW = np.asarray(
+    [
+        500.0,
+        600.0,
+        450.0,
+        550.0,
+        700.0,
+    ],
+    dtype=float,
+)
+
+BESS_CAPACITY_KWH = np.asarray(
+    [
+        1000.0,
+        1200.0,
+        900.0,
+        1100.0,
+        1400.0,
+    ],
+    dtype=float,
+)
+
+BESS_POWER_KW = np.asarray(
+    [
+        250.0,
+        300.0,
+        250.0,
+        300.0,
+        350.0,
+    ],
+    dtype=float,
+)
+
+EV_COUNTS = np.asarray(
+    [
+        200,
+        250,
+        180,
+        220,
+        300,
+    ],
+    dtype=int,
+)
+
+PEAK_LOAD_KW = np.asarray(
+    [
+        750.0,
+        850.0,
+        700.0,
+        800.0,
+        950.0,
+    ],
+    dtype=float,
+)
+
+TRANSFORMER_KVA = np.asarray(
+    [
+        1000.0,
+        1250.0,
+        1000.0,
+        1250.0,
+        1500.0,
+    ],
+    dtype=float,
+)
+
+
+
+BESS_CHARGING_EFFICIENCY = 0.95
+BESS_DISCHARGING_EFFICIENCY = 0.95
+BESS_SELF_DISCHARGE_RATE = 0.001
+
+BESS_MINIMUM_SOC = 0.20
+BESS_MAXIMUM_SOC = 0.95
+
+INITIAL_SOC = 0.60
+
+
+
+EV_CHARGER_POWER_KW = 7.2
+
+EV_SIMULTANEOUS_FRACTION = 0.25
+
+
+
+MINIMUM_BUY_PRICE = 0.12
+MAXIMUM_BUY_PRICE = 0.32
+
+MINIMUM_SELL_PRICE = 0.08
+MAXIMUM_SELL_PRICE = 0.24
+
+RESERVE_PRICE = 0.05
+
+
+
+SHARING_EFFICIENCY = 0.98
+
+MAXIMUM_PAIRWISE_SHARING_KW = 250.0
+
+
+
+BATTERY_DEGRADATION_COST = 0.02
+
+
+
+IMBALANCE_PENALTY_PER_KW = 1.0
+
+
+
+TRAIN_LOAD_MIN = 0.164380
+TRAIN_LOAD_MAX = 0.925029
+
+TRAIN_EV_MIN = 0.0
+TRAIN_EV_MAX = 42.707362
+
+TRAIN_PRICE_MIN = 0.008954
+TRAIN_PRICE_MAX = 0.056380
+
+
+
+def section(title: str) -> None:
+
+    print()
+    print("=" * 80)
+    print(title)
+    print("=" * 80)
+
+
+def safe_fraction(
+    value: float,
+    minimum: float,
+    maximum: float,
+) -> float:
+
+    denominator = maximum - minimum
+
+    if denominator <= 0.0:
+
+        raise ValueError(
+            "Scaling maximum must exceed minimum."
+        )
+
+    result = (
+        float(value) - minimum
+    ) / denominator
+
+    return float(
+        np.clip(
+            result,
+            0.0,
+            1.0,
+        )
+    )
+
+
+
+def build_per_ev_charging_requests(
+    aggregate_power_by_mg,
+):
+
+    aggregate_power_by_mg = np.asarray(
+        aggregate_power_by_mg,
+        dtype=float,
+    )
+
+    requests_by_microgrid = []
+
+    for mg_index in range(
+        NUMBER_OF_MICROGRIDS
+    ):
+
+        number_of_evs = int(
+            EV_COUNTS[mg_index]
+        )
+
+        aggregate_request = max(
+            float(
+                aggregate_power_by_mg[
+                    mg_index
+                ]
+            ),
+            0.0,
+        )
+
+        maximum_power = (
+            number_of_evs
+            * EV_CHARGER_POWER_KW
+        )
+
+        aggregate_request = min(
+            aggregate_request,
+            maximum_power,
+        )
+
+        per_ev_request = (
+            aggregate_request
+            / number_of_evs
+        )
+
+        per_ev_request = min(
+            per_ev_request,
+            EV_CHARGER_POWER_KW,
+        )
+
+        requests = np.full(
+            number_of_evs,
+            per_ev_request,
+            dtype=float,
+        )
+
+        requests_by_microgrid.append(
+            requests
+        )
+
+    return requests_by_microgrid
+
+
+
+class RealRLTrainingData:
+
+    def __init__(
+        self,
+        archive_path: Path,
+    ):
+
+        if not archive_path.exists():
+
+            raise FileNotFoundError(
+                f"RL training archive not found:\n"
+                f"{archive_path}"
+            )
+
+        archive = np.load(
+            archive_path,
+            allow_pickle=True,
+        )
+
+        required = [
+            "current_actual_original",
+            "current_actual_normalized",
+            "forecast_original",
+            "forecast_normalized",
+            "predictive_state_matrix",
+            "predictive_state_flat",
+            "causal_confidence_24h",
+            "training_indices",
+        ]
+
+        for key in required:
+
+            if key not in archive.files:
+
+                raise RuntimeError(
+                    f"Missing RL archive key: {key}"
+                )
+
+
+        self.current_actual_original = (
+            np.asarray(
+                archive[
+                    "current_actual_original"
+                ],
+                dtype=np.float32,
+            )
+        )
+
+        self.current_actual_normalized = (
+            np.asarray(
+                archive[
+                    "current_actual_normalized"
+                ],
+                dtype=np.float32,
+            )
+        )
+
+        self.forecast_original = (
+            np.asarray(
+                archive[
+                    "forecast_original"
+                ],
+                dtype=np.float32,
+            )
+        )
+
+        self.forecast_normalized = (
+            np.asarray(
+                archive[
+                    "forecast_normalized"
+                ],
+                dtype=np.float32,
+            )
+        )
+
+        self.predictive_state_matrix = (
+            np.asarray(
+                archive[
+                    "predictive_state_matrix"
+                ],
+                dtype=np.float32,
+            )
+        )
+
+        self.predictive_state_flat = (
+            np.asarray(
+                archive[
+                    "predictive_state_flat"
+                ],
+                dtype=np.float32,
+            )
+        )
+
+        self.causal_confidence_24h = (
+            np.asarray(
+                archive[
+                    "causal_confidence_24h"
+                ],
+                dtype=np.float32,
+            )
+        )
+
+        self.training_indices = (
+            np.asarray(
+                archive[
+                    "training_indices"
+                ]
+            )
+        )
+
+
+        self.number_of_samples = len(
+            self.current_actual_original
+        )
+
+
+        self.validate()
+
+
+    def validate(self):
+
+        n = self.number_of_samples
+
+        if self.current_actual_original.shape != (
+            n,
+            4,
+        ):
+
+            raise RuntimeError(
+                "Unexpected current physical-data shape."
+            )
+
+
+        if self.predictive_state_matrix.shape != (
+            n,
+            24,
+            5,
+        ):
+
+            raise RuntimeError(
+                "Unexpected predictive-state shape."
+            )
+
+
+        if self.predictive_state_flat.shape != (
+            n,
+            120,
+        ):
+
+            raise RuntimeError(
+                "Unexpected flattened predictive-state shape."
+            )
+
+
+        if self.causal_confidence_24h.shape != (
+            24,
+        ):
+
+            raise RuntimeError(
+                "Expected 24 causal-confidence values."
+            )
+
+
+        if n < EPISODE_LENGTH:
+
+            raise RuntimeError(
+                "Not enough data for one 24-hour episode."
+            )
+
+
+
+class RealTrainingExogenousProvider:
+    """
+    Converts the leakage-free RL TRAIN archive into the
+    physical inputs expected by the tested VPP bridge.
+
+    Episode starting points are selected reproducibly from
+    valid locations in the TRAIN split.
+
+    No TEST data are loaded.
+    """
+
+    def __init__(
+        self,
+        data: RealRLTrainingData,
+        maximum_episodes: int,
+        seed: int,
+    ):
+
+        self.data = data
+
+        self.maximum_episodes = int(
+            maximum_episodes
+        )
+
+        self.seed = int(
+            seed
+        )
+
+
+
+        maximum_start = (
+            data.number_of_samples
+            - EPISODE_LENGTH
+        )
+
+        self.valid_starts = np.arange(
+            maximum_start + 1,
+            dtype=int,
+        )
+
+
+
+        rng = np.random.default_rng(
+            self.seed
+        )
+
+        episode_starts = []
+
+        while len(
+            episode_starts
+        ) < self.maximum_episodes:
+
+            shuffled = rng.permutation(
+                self.valid_starts
+            )
+
+            episode_starts.extend(
+                shuffled.tolist()
+            )
+
+
+        self.episode_starts = np.asarray(
+            episode_starts[
+                :self.maximum_episodes
+            ],
+            dtype=int,
+        )
+
+
+    def get_sample_index(
+        self,
+        episode: int,
+        step: int,
+    ) -> int:
+
+
+        episode_index = max(
+            int(episode) - 1,
+            0,
+        )
+
+        if episode_index >= len(
+            self.episode_starts
+        ):
+
+            raise IndexError(
+                "Episode exceeds prepared start schedule."
+            )
+
+
+        step = int(step)
+
+        if not 0 <= step < EPISODE_LENGTH:
+
+            raise IndexError(
+                f"Invalid episode step: {step}"
+            )
+
+
+        start = int(
+            self.episode_starts[
+                episode_index
+            ]
+        )
+
+        return start + step
+
+
+    def __call__(
+        self,
+        episode: int,
+        step: int,
+    ) -> VPPExogenousInput:
+
+        index = self.get_sample_index(
+            episode,
+            step,
+        )
+
+
+        actual = (
+            self.data
+            .current_actual_original[
+                index
+            ]
+        )
+
+
+
+        pv_reference = float(
+            actual[0]
+        )
+
+        load_reference = float(
+            actual[1]
+        )
+
+        ev_reference = float(
+            actual[2]
+        )
+
+        price_reference = float(
+            actual[3]
+        )
+
+
+
+        irradiance = float(
+            np.clip(
+                pv_reference * 1000.0,
+                0.0,
+                1000.0,
+            )
+        )
+
+
+        irradiances = np.full(
+            NUMBER_OF_MICROGRIDS,
+            irradiance,
+            dtype=float,
+        )
+
+
+
+        load_shape = safe_fraction(
+            load_reference,
+            0.0,
+            TRAIN_LOAD_MAX,
+        )
+
+
+        loads = (
+            PEAK_LOAD_KW
+            * load_shape
+        )
+
+
+
+        ev_shape = safe_fraction(
+            ev_reference,
+            TRAIN_EV_MIN,
+            TRAIN_EV_MAX,
+        )
+
+
+        maximum_ev_power = (
+            EV_COUNTS.astype(float)
+            * EV_CHARGER_POWER_KW
+            * EV_SIMULTANEOUS_FRACTION
+        )
+
+
+        aggregate_ev_requests = (
+            maximum_ev_power
+            * ev_shape
+        )
+
+
+        per_ev_requests = (
+            build_per_ev_charging_requests(
+                aggregate_ev_requests
+            )
+        )
+
+
+
+        price_shape = safe_fraction(
+            price_reference,
+            TRAIN_PRICE_MIN,
+            TRAIN_PRICE_MAX,
+        )
+
+
+        buy_price = (
+            MINIMUM_BUY_PRICE
+            +
+            price_shape
+            * (
+                MAXIMUM_BUY_PRICE
+                - MINIMUM_BUY_PRICE
+            )
+        )
+
+
+        sell_price = (
+            MINIMUM_SELL_PRICE
+            +
+            price_shape
+            * (
+                MAXIMUM_SELL_PRICE
+                - MINIMUM_SELL_PRICE
+            )
+        )
+
+
+        buy_prices = np.full(
+            NUMBER_OF_MICROGRIDS,
+            buy_price,
+            dtype=float,
+        )
+
+        sell_prices = np.full(
+            NUMBER_OF_MICROGRIDS,
+            sell_price,
+            dtype=float,
+        )
+
+
+
+        predictive_state = (
+            self.data
+            .predictive_state_matrix[
+                index
+            ]
+            .copy()
+        )
+
+
+
+        sample_confidence_24h = np.asarray(
+            predictive_state[:, 4],
+            dtype=np.float32,
+        )
+
+        scalar_confidence = float(
+            np.mean(sample_confidence_24h)
+        )
+
+
+        return VPPExogenousInput(
+
+            time=
+                float(step),
+
+            loads_kw=
+                loads,
+
+            irradiances_w_m2=
+                irradiances,
+
+            buy_prices_usd_per_kwh=
+                buy_prices,
+
+            sell_prices_usd_per_kwh=
+                sell_prices,
+
+            predictive_state=
+                predictive_state,
+
+            confidence=
+                scalar_confidence,
+
+            market_price=
+                price_reference,
+
+            ev_requested_charging_powers_kw=
+                per_ev_requests,
+        )
+
+
+
+def build_real_microgrid(
+    index: int,
+) -> Microgrid:
+
+    mg_number = index + 1
+
+    name = f"MG{mg_number}"
+
+
+
+    pv_parameters = PVParameters(
+
+        rated_capacity_kw=
+            float(
+                PV_CAPACITY_KW[index]
+            ),
+
+        efficiency=
+            1.0,
+
+        critical_irradiance_w_m2=
+            200.0,
+
+        stc_irradiance_w_m2=
+            1000.0,
+    )
+
+
+    pv_system = PhotovoltaicSystem(
+
+        parameters=
+            pv_parameters,
+
+        name=
+            f"{name}_PV",
+    )
+
+
+
+    bess_parameters = BESSParameters(
+
+        capacity_kwh=
+            float(
+                BESS_CAPACITY_KWH[
+                    index
+                ]
+            ),
+
+        rated_power_kw=
+            float(
+                BESS_POWER_KW[
+                    index
+                ]
+            ),
+
+        charging_efficiency=
+            BESS_CHARGING_EFFICIENCY,
+
+        discharging_efficiency=
+            BESS_DISCHARGING_EFFICIENCY,
+
+        self_discharge_rate=
+            BESS_SELF_DISCHARGE_RATE,
+
+        minimum_soc=
+            BESS_MINIMUM_SOC,
+
+        maximum_soc=
+            BESS_MAXIMUM_SOC,
+
+        time_step_hours=
+            1.0,
+    )
+
+
+    bess = BatteryEnergyStorageSystem(
+
+        parameters=
+            bess_parameters,
+
+        initial_soc=
+            INITIAL_SOC,
+
+        name=
+            f"{name}_BESS",
+    )
+
+
+
+    number_of_evs = int(
+        EV_COUNTS[index]
+    )
+
+
+    ev_parameters = EVFleetParameters(
+
+        number_of_evs=
+            number_of_evs,
+
+        maximum_aggregate_charging_power_kw=
+            (
+                number_of_evs
+                * EV_CHARGER_POWER_KW
+            ),
+
+        time_step_hours=
+            1.0,
+    )
+
+
+
+    ev_records = [
+
+        EVRecord(
+
+            arrival_time=
+                0.0,
+
+            departure_time=
+                24.0,
+
+            charging_power_kw=
+                EV_CHARGER_POWER_KW,
+
+            ev_id=
+                f"{name}_EV_{j + 1:04d}",
+        )
+
+        for j in range(
+            number_of_evs
+        )
+    ]
+
+
+    ev_fleet = EVFleet(
+
+        parameters=
+            ev_parameters,
+
+        vehicles=
+            ev_records,
+
+        name=
+            f"{name}_EV_Fleet",
+    )
+
+
+
+    market_parameters = MarketParameters(
+
+        minimum_buy_price_usd_per_kwh=
+            MINIMUM_BUY_PRICE,
+
+        maximum_buy_price_usd_per_kwh=
+            MAXIMUM_BUY_PRICE,
+
+        minimum_sell_price_usd_per_kwh=
+            MINIMUM_SELL_PRICE,
+
+        maximum_sell_price_usd_per_kwh=
+            MAXIMUM_SELL_PRICE,
+
+        reserve_price_usd_per_kwh=
+            RESERVE_PRICE,
+
+        time_step_hours=
+            1.0,
+    )
+
+
+    market = ElectricityMarket(
+
+        parameters=
+            market_parameters,
+
+        name=
+            f"{name}_Market",
+    )
+
+
+
+    parameters = MicrogridParameters(
+
+        name=
+            name,
+
+        peak_load_kw=
+            float(
+                PEAK_LOAD_KW[index]
+            ),
+
+        transformer_rating_kva=
+            float(
+                TRANSFORMER_KVA[
+                    index
+                ]
+            ),
+
+        power_factor=
+            1.0,
+
+        balance_tolerance_kw=
+            1e-6,
+    )
+
+
+    return Microgrid(
+
+        parameters=
+            parameters,
+
+        pv_system=
+            pv_system,
+
+        bess=
+            bess,
+
+        ev_fleet=
+            ev_fleet,
+
+        market=
+            market,
+    )
+
+
+
+def build_real_vpp_environment():
+
+    microgrids = [
+
+        build_real_microgrid(i)
+
+        for i in range(
+            NUMBER_OF_MICROGRIDS
+        )
+    ]
+
+
+    connectivity = np.ones(
+        (
+            NUMBER_OF_MICROGRIDS,
+            NUMBER_OF_MICROGRIDS,
+        ),
+        dtype=int,
+    )
+
+    np.fill_diagonal(
+        connectivity,
+        0,
+    )
+
+
+    maximum_power = np.full(
+        (
+            NUMBER_OF_MICROGRIDS,
+            NUMBER_OF_MICROGRIDS,
+        ),
+        MAXIMUM_PAIRWISE_SHARING_KW,
+        dtype=float,
+    )
+
+    np.fill_diagonal(
+        maximum_power,
+        0.0,
+    )
+
+
+    sharing_parameters = EnergySharingParameters(
+
+        number_of_microgrids=
+            NUMBER_OF_MICROGRIDS,
+
+        efficiency=
+            SHARING_EFFICIENCY,
+
+        tolerance_kw=
+            1e-6,
+    )
+
+
+    sharing_network = EnergySharingNetwork(
+
+        parameters=
+            sharing_parameters,
+
+        connectivity_matrix=
+            connectivity,
+
+        maximum_power_matrix_kw=
+            maximum_power,
+
+        name=
+            "FC_HMARL_Real_Energy_Sharing",
+    )
+
+
+    environment = VPPEnvironment(
+
+        microgrids=
+            microgrids,
+
+        energy_sharing_network=
+            sharing_network,
+
+        episode_length_hours=
+            EPISODE_LENGTH,
+
+        name=
+            "FC_HMARL_Real_Data_VPP",
+    )
+
+
+    return environment
+
+
+
+def build_real_training_bridge(
+    data,
+    maximum_episodes,
+    seed,
+):
+
+    environment = (
+        build_real_vpp_environment()
+    )
+
+
+    state_builder = HierarchicalStateBuilder(
+
+        StateBuilderConfig(
+
+            number_of_microgrids=
+                NUMBER_OF_MICROGRIDS,
+
+            forecast_horizon=
+                FORECAST_HORIZON,
+
+            forecast_features=
+                NUMBER_OF_FORECAST_FEATURES,
+
+            flatten_predictive_state=
+                True,
+
+            dtype=
+                "float32",
+        )
+    )
+
+
+    reward_builder = HierarchicalRewardBuilder(
+
+        RewardConfig(
+
+            beta_soc=
+                1.0,
+
+            beta_grid=
+                1.0,
+
+            risk_aversion=
+                1.0,
+        )
+    )
+
+
+    exogenous_provider = (
+        RealTrainingExogenousProvider(
+
+            data=
+                data,
+
+            maximum_episodes=
+                maximum_episodes,
+
+            seed=
+                seed,
+        )
+    )
+
+
+    action_mapper = FCHMARLActionMapper(
+
+        ActionMapperConfig(
+
+            use_dynamic_bess_feasibility=
+                True,
+
+            coordinator_controls_grid=
+                False,
+
+            coordinator_controls_reserve=
+                True,
+
+            coordinator_controls_sharing=
+                True,
+
+            reserve_fraction_of_bess_rating=
+                1.0,
+
+            reserve_duration_hours=
+                1.0,
+
+            action_tolerance=
+                1e-8,
+        )
+    )
+
+
+    bridge_config = VPPTrainingBridgeConfig(
+
+        maximum_socs=
+            np.full(
+                NUMBER_OF_MICROGRIDS,
+                BESS_MAXIMUM_SOC,
+                dtype=float,
+            ),
+
+        maximum_grid_exchanges_kw=
+            TRANSFORMER_KVA.copy(),
+
+        battery_degradation_cost_per_kwh=
+            BATTERY_DEGRADATION_COST,
+
+        imbalance_penalty_per_kw=
+            IMBALANCE_PENALTY_PER_KW,
+
+        timestep_hours=
+            1.0,
+
+        number_of_microgrids=
+            NUMBER_OF_MICROGRIDS,
+    )
+
+
+    bridge = FCHMARLVPPTrainingBridge(
+
+        environment=
+            environment,
+
+        state_builder=
+            state_builder,
+
+        reward_builder=
+            reward_builder,
+
+        exogenous_provider=
+            exogenous_provider,
+
+        action_mapper=
+            action_mapper,
+
+        config=
+            bridge_config,
+    )
+
+
+    return bridge
+
+
+
+def load_complete_training_checkpoint(
+    local_agents,
+    coordinator_agent,
+    checkpoint_directory,
+    resume_episode,
+    device,
+):
+    """
+    Restore a complete FC-HMARL training checkpoint.
+
+    Required files:
+        5 local-agent .pt files
+        5 local-agent replay .npz files
+        1 coordinator .pt file
+        1 coordinator replay .npz file
+        1 global training-state .pt file
+
+    Legacy checkpoints without replay sidecars are intentionally
+    rejected for exact-resume training.
+    """
+
+    checkpoint_directory = Path(
+        checkpoint_directory
+    )
+
+    resume_episode = int(
+        resume_episode
+    )
+
+    if resume_episode <= 0:
+        raise ValueError(
+            "resume_episode must be positive."
+        )
+
+    required_files = []
+
+
+    local_checkpoint_paths = []
+
+    for agent in local_agents:
+
+        checkpoint_path = (
+            checkpoint_directory
+            / (
+                f"local_agent_"
+                f"{agent.microgrid_id}_"
+                f"episode_{resume_episode}.pt"
+            )
+        )
+
+        replay_path = checkpoint_path.with_suffix(
+            ".replay.npz"
+        )
+
+        required_files.extend(
+            [
+                checkpoint_path,
+                replay_path,
+            ]
+        )
+
+        local_checkpoint_paths.append(
+            checkpoint_path
+        )
+
+
+    coordinator_checkpoint_path = (
+        checkpoint_directory
+        / (
+            "coordinator_"
+            f"episode_{resume_episode}.pt"
+        )
+    )
+
+    coordinator_replay_path = (
+        coordinator_checkpoint_path.with_suffix(
+            ".replay.npz"
+        )
+    )
+
+    required_files.extend(
+        [
+            coordinator_checkpoint_path,
+            coordinator_replay_path,
+        ]
+    )
+
+
+    training_state_path = (
+        checkpoint_directory
+        / (
+            "training_state_"
+            f"episode_{resume_episode}.pt"
+        )
+    )
+
+    required_files.append(
+        training_state_path
+    )
+
+
+    missing_files = [
+        path
+        for path in required_files
+        if not path.exists()
+    ]
+
+    if missing_files:
+
+        message = [
+            "",
+            "Exact resume is not possible.",
+            "",
+            "The following checkpoint files are missing:",
+        ]
+
+        message.extend(
+            [
+                f"  {path}"
+                for path in missing_files
+            ]
+        )
+
+        message.extend(
+            [
+                "",
+                "This usually means the checkpoint was created ",
+                "before replay-buffer persistence was added.",
+                "",
+                "Legacy checkpoints may still be evaluated, but ",
+                "they must not be presented as exact SAC resume ",
+                "checkpoints.",
+            ]
+        )
+
+        raise FileNotFoundError(
+            "\n".join(message)
+        )
+
+
+    for (
+        agent,
+        checkpoint_path,
+    ) in zip(
+        local_agents,
+        local_checkpoint_paths,
+    ):
+
+        agent.load(
+            checkpoint_path,
+            load_optimizers=True,
+        )
+
+
+    coordinator_agent.load(
+        coordinator_checkpoint_path,
+        load_optimizers=True,
+    )
+
+
+    training_state = torch.load(
+        training_state_path,
+        map_location=device,
+        weights_only=False,
+    )
+
+    saved_episode = int(
+        training_state.get(
+            "episode",
+            -1,
+        )
+    )
+
+    if saved_episode != resume_episode:
+
+        raise ValueError(
+            "Training-state episode mismatch: "
+            f"requested {resume_episode}, "
+            f"file contains {saved_episode}."
+        )
+
+    saved_number_of_local_agents = int(
+        training_state.get(
+            "number_of_local_agents",
+            len(local_agents),
+        )
+    )
+
+    if saved_number_of_local_agents != len(
+        local_agents
+    ):
+
+        raise ValueError(
+            "Number of local agents in checkpoint "
+            "does not match current configuration."
+        )
+
+
+    python_random_state = (
+        training_state.get(
+            "python_random_state",
+            None,
+        )
+    )
+
+    if python_random_state is not None:
+        random.setstate(
+            python_random_state
+        )
+
+    numpy_random_state = (
+        training_state.get(
+            "numpy_random_state",
+            None,
+        )
+    )
+
+    if numpy_random_state is not None:
+        np.random.set_state(
+            numpy_random_state
+        )
+
+    torch_cpu_rng_state = (
+        training_state.get(
+            "torch_cpu_rng_state",
+            None,
+        )
+    )
+
+    if torch_cpu_rng_state is not None:
+        torch.set_rng_state(
+            torch_cpu_rng_state
+        )
+
+    torch_cuda_rng_state_all = (
+        training_state.get(
+            "torch_cuda_rng_state_all",
+            None,
+        )
+    )
+
+    if (
+        torch_cuda_rng_state_all is not None
+        and torch.cuda.is_available()
+    ):
+
+        torch.cuda.set_rng_state_all(
+            torch_cuda_rng_state_all
+        )
+
+    return training_state
+
+
+
+def parse_arguments():
+
+    parser = argparse.ArgumentParser(
+
+        description=(
+            "Train FC-HMARL using the leakage-free "
+            "real-data training archive."
+        )
+    )
+
+
+    parser.add_argument(
+
+        "--smoke-test",
+
+        action="store_true",
+
+        help=(
+            "Run a short validation training session."
+        ),
+    )
+
+
+    parser.add_argument(
+
+        "--episodes",
+
+        type=int,
+
+        default=None,
+
+        help=(
+            "Override number of training episodes."
+        ),
+    )
+
+
+    parser.add_argument(
+
+        "--seed",
+
+        type=int,
+
+        default=42,
+    )
+
+
+    parser.add_argument(
+
+        "--device",
+
+        type=str,
+
+        default="cpu",
+
+        choices=[
+            "cpu",
+            "cuda",
+            "auto",
+        ],
+    )
+
+
+    parser.add_argument(
+        "--resume-episode",
+        type=int,
+        default=None,
+        help=(
+            "Reserved for future continuation of a corrected-model run. "
+            "The initial Step 7R-F run must start clean from episode 1."
+        ),
+    )
+
+
+    return parser.parse_args()
+
+
+
+def main():
+
+    args = parse_arguments()
+
+
+    section(
+        "FC-HMARL FINAL V3 - PHYSICALLY CORRECTED REAL-DATA TRAINING"
+    )
+
+
+
+    if args.episodes is not None:
+
+        maximum_episodes = int(
+            args.episodes
+        )
+
+    elif args.smoke_test:
+
+
+        maximum_episodes = 2
+
+    else:
+
+        maximum_episodes = 5000
+
+
+    if maximum_episodes <= 0:
+
+        raise ValueError(
+            "Episodes must be positive."
+        )
+
+
+
+    if args.smoke_test:
+
+        output_directory = (
+            SMOKE_OUTPUT_DIRECTORY
+        )
+
+        checkpoint_directory = (
+            SMOKE_CHECKPOINT_DIRECTORY
+        )
+
+        summary_file = (
+            output_directory
+            / "real_fc_hmarl_final_v3_smoke_summary.json"
+        )
+
+    else:
+
+        output_directory = (
+            FULL_OUTPUT_DIRECTORY
+        )
+
+        checkpoint_directory = (
+            FULL_CHECKPOINT_DIRECTORY
+        )
+
+        summary_file = (
+            output_directory
+            / "real_fc_hmarl_final_v3_training_summary.json"
+        )
+
+
+
+    if args.resume_episode is None:
+
+        if not args.smoke_test:
+
+            existing_final_artifacts = []
+
+            if checkpoint_directory.exists():
+                existing_final_artifacts.extend(
+                    path
+                    for path in checkpoint_directory.iterdir()
+                    if path.is_file()
+                )
+
+            if output_directory.exists():
+                existing_final_artifacts.extend(
+                    path
+                    for path in output_directory.iterdir()
+                    if path.is_file()
+                )
+
+            if existing_final_artifacts:
+
+                preview = "\n".join(
+                    f"  {path}"
+                    for path in existing_final_artifacts[:10]
+                )
+
+                raise FileExistsError(
+                    "FINAL V3 output/checkpoint folders already contain "
+                    "files. Refusing to overwrite a prior FINAL V3 run. "
+                    "Use --resume-episode to continue an exact FINAL V3 "
+                    "checkpoint, or archive/remove the existing FINAL V3 "
+                    "artifacts before starting a brand-new run.\n"
+                    + preview
+                )
+
+    else:
+
+        if args.smoke_test:
+            raise ValueError(
+                "--resume-episode is disabled for smoke-test mode."
+            )
+
+        if not checkpoint_directory.exists():
+            raise FileNotFoundError(
+                "FINAL V3 checkpoint directory does not exist:\n"
+                f"{checkpoint_directory}"
+            )
+
+
+    device = resolve_device(
+        args.device
+    )
+
+
+    set_global_seed(
+        args.seed
+    )
+
+
+    random.seed(
+        args.seed
+    )
+
+    np.random.seed(
+        args.seed
+    )
+
+    torch.manual_seed(
+        args.seed
+    )
+
+
+    print(
+        f"Mode                : "
+        f"{'SMOKE TEST' if args.smoke_test else 'FULL'}"
+    )
+
+    print(
+        f"Episodes            : "
+        f"{maximum_episodes}"
+    )
+
+    print(
+        f"Steps per episode   : "
+        f"{EPISODE_LENGTH}"
+    )
+
+    print(
+        f"Seed                : "
+        f"{args.seed}"
+    )
+
+    print(
+        f"Device              : "
+        f"{device}"
+    )
+
+
+    print(
+        f"Results directory   : "
+        f"{output_directory}"
+    )
+
+    print(
+        f"Checkpoint directory: "
+        f"{checkpoint_directory}"
+    )
+
+
+
+    section(
+        "LOADING LEAKAGE-FREE RL TRAINING ARCHIVE"
+    )
+
+
+    data = RealRLTrainingData(
+        RL_ARCHIVE_FILE
+    )
+
+
+    print(
+        f"Training samples           : "
+        f"{data.number_of_samples}"
+    )
+
+    print(
+        f"Predictive-state matrix    : "
+        f"{data.predictive_state_matrix.shape}"
+    )
+
+    print(
+        f"Predictive-state flat      : "
+        f"{data.predictive_state_flat.shape}"
+    )
+
+    print(
+        f"Causal confidence          : "
+        f"{data.causal_confidence_24h.shape}"
+    )
+
+    print(
+        f"Lead-1 causal Phi          : "
+        f"{data.causal_confidence_24h[0]:.8f}"
+    )
+
+    print(
+        f"Mean 24-h causal Phi       : "
+        f"{data.causal_confidence_24h.mean():.8f}"
+    )
+
+
+
+    section(
+        "BUILDING REAL-DATA PHYSICAL VPP BRIDGE"
+    )
+
+
+    bridge = build_real_training_bridge(
+
+        data=
+            data,
+
+        maximum_episodes=
+            maximum_episodes,
+
+        seed=
+            args.seed,
+    )
+
+
+
+    initial_observation = bridge.reset(
+        episode=1
+    )
+
+
+    print(
+        f"Local agents/states        : "
+        f"{len(initial_observation.local_states)}"
+    )
+
+
+    for i, local_state in enumerate(
+        initial_observation.local_states,
+        start=1,
+    ):
+
+        print(
+            f"MG{i} state dimension      : "
+            f"{np.asarray(local_state).shape}"
+        )
+
+
+    print(
+        f"Coordinator dimension      : "
+        f"{np.asarray(initial_observation.coordinator_state).shape}"
+    )
+
+
+    bridge.environment.reset()
+
+
+
+    section(
+        "BUILDING FC-HMARL SAC AGENTS"
+    )
+
+
+    local_agents = build_local_agents(
+
+        seed=
+            args.seed,
+
+        smoke_test=
+            args.smoke_test,
+
+        device=
+            device,
+    )
+
+
+    coordinator_agent = (
+        build_coordinator_agent(
+
+            seed=
+                args.seed,
+
+            smoke_test=
+                args.smoke_test,
+
+            device=
+                device,
+        )
+    )
+
+
+    print(
+        f"Local SAC agents           : "
+        f"{len(local_agents)}"
+    )
+
+    print(
+        "Coordinator SAC agents     : 1"
+    )
+
+
+
+    if args.resume_episode is None:
+
+        resume_episode = None
+        start_episode = 1
+
+        print(
+            "Training initialization     : fresh SAC weights/replay"
+        )
+
+        print(
+            "Old checkpoints reused     : False"
+        )
+
+    else:
+
+        resume_episode = int(
+            args.resume_episode
+        )
+
+        if resume_episode <= 0:
+            raise ValueError(
+                "--resume-episode must be positive."
+            )
+
+        if resume_episode >= maximum_episodes:
+            raise ValueError(
+                "--resume-episode must be smaller than --episodes "
+                "or the default maximum episode count."
+            )
+
+        section(
+            "LOADING COMPLETE FINAL V3 CHECKPOINT"
+        )
+
+        load_complete_training_checkpoint(
+            local_agents=local_agents,
+            coordinator_agent=coordinator_agent,
+            checkpoint_directory=checkpoint_directory,
+            resume_episode=resume_episode,
+            device=device,
+        )
+
+        start_episode = (
+            resume_episode + 1
+        )
+
+        print(
+            f"Resume checkpoint          : episode {resume_episode}"
+        )
+
+        print(
+            f"Resume start episode       : {start_episode}"
+        )
+
+        print(
+            "Exact resume               : True"
+        )
+
+    print(
+        "Reserve model              : corrected power + SOC/energy limits"
+    )
+
+    print(
+        "Transformer/PCC projection : corrected combined PCC constraint"
+    )
+
+    print(
+        "Local PCC reward signal    : requested pre-projection PCC loading"
+    )
+
+
+
+    checkpoint_interval = (
+        100
+    )
+
+
+    training_config = TrainingLoopConfig(
+
+        maximum_episodes=
+            maximum_episodes,
+
+        steps_per_episode=
+            EPISODE_LENGTH,
+
+        updates_per_step=
+            1,
+
+        checkpoint_interval=
+            checkpoint_interval,
+
+        enable_checkpointing=
+            not args.smoke_test,
+
+        checkpoint_directory=
+            str(
+                checkpoint_directory
+            ),
+
+        deterministic_actions=
+            False,
+
+        verbose=
+            True,
+    )
+
+
+    trainer = FCHMARLTrainingLoop(
+
+        local_agents=
+            local_agents,
+
+        coordinator_agent=
+            coordinator_agent,
+
+        reset_function=
+            make_reset_function(
+                bridge
+            ),
+
+        step_function=
+            make_step_function(
+                bridge
+            ),
+
+        config=
+            training_config,
+
+        stop_function=
+            None,
+    )
+
+
+
+    section(
+        "STARTING REAL-DATA FC-HMARL TRAINING"
+    )
+
+
+    history = trainer.train(
+        start_episode=start_episode
+    )
+
+
+
+    section(
+        "SAVING REAL-DATA TRAINING RESULTS"
+    )
+
+
+    output_directory.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+
+    result_paths = export_training_results(
+
+        history,
+
+        output_directory=
+            output_directory,
+
+        moving_average_window=
+            20,
+    )
+
+
+    print(
+        "Exported training outputs:"
+    )
+
+
+    for name, path in (
+        result_paths.items()
+    ):
+
+        print(
+            f"  {name}: {path}"
+        )
+
+
+
+    trainer_summary = trainer.summary()
+
+
+    summary = {
+
+        "mode":
+            (
+                "smoke_test"
+                if args.smoke_test
+                else "full_training"
+            ),
+
+        "requested_episodes":
+            maximum_episodes,
+
+        "completed_episodes_this_invocation":
+            len(
+                history.episodes
+            ),
+
+        "last_episode_number":
+            (
+                int(history.episodes[-1].episode)
+                if len(history.episodes) > 0
+                else int(resume_episode or 0)
+            ),
+
+        "steps_per_episode":
+            EPISODE_LENGTH,
+
+        "training_samples_available":
+            data.number_of_samples,
+
+        "seed":
+            args.seed,
+
+        "device":
+            device,
+
+        "local_state_dimension":
+            125,
+
+        "local_action_dimension":
+            5,
+
+        "coordinator_state_dimension":
+            123,
+
+        "coordinator_action_dimension":
+            3,
+
+        "predictive_state_dimension":
+            120,
+
+        "lead_1_causal_confidence":
+            float(
+                data.causal_confidence_24h[
+                    0
+                ]
+            ),
+
+        "mean_24h_causal_confidence":
+            float(
+                data.causal_confidence_24h.mean()
+            ),
+
+        "training_split":
+            "train",
+
+        "forecast_selection_split":
+            "validation",
+
+        "confidence_calibration_split":
+            "validation",
+
+        "test_data_used_during_training":
+            False,
+
+        "reserve_model":
+            "power_headroom_plus_soc_energy_feasibility",
+
+        "reserve_duration_hours":
+            1.0,
+
+        "transformer_pcc_projection":
+            "combined_grid_plus_outgoing_sharing_projection",
+
+        "local_pcc_credit_assignment":
+            "requested_pre_projection_pcc_loading_magnitude",
+
+        "transformer_power_factor":
+            1.0,
+
+        "transformer_power_factor_source":
+            "reconstruction",
+
+        "imbalance_penalty_per_kw":
+            IMBALANCE_PENALTY_PER_KW,
+
+        "imbalance_penalty_source":
+            "reconstruction",
+
+        "pre_correction_checkpoints_reused":
+            False,
+
+        "battery_degradation_cost_usd_per_kwh":
+            BATTERY_DEGRADATION_COST,
+
+        "initial_soc":
+            INITIAL_SOC,
+
+        "ev_charger_power_kw":
+            EV_CHARGER_POWER_KW,
+
+        "ev_simultaneous_fraction":
+            EV_SIMULTANEOUS_FRACTION,
+
+        "pairwise_sharing_capacity_kw":
+            MAXIMUM_PAIRWISE_SHARING_KW,
+
+        "resume_episode":
+            (
+                int(resume_episode)
+                if resume_episode is not None
+                else None
+            ),
+
+        "start_episode":
+            int(start_episode),
+
+        "exact_resume":
+            bool(
+                resume_episode is not None
+            ),
+
+        "notes": [
+
+            (
+                "FINAL V3 uses isolated output/checkpoint directories so "
+                "older reserve-only or pre-PCC experiments cannot be "
+                "accidentally mixed into the final corrected run."
+            ),
+
+            (
+                "The physical transformer/PCC safety layer constrains "
+                "combined grid exchange plus outgoing sharing."
+            ),
+
+            (
+                "The local grid-violation term receives requested "
+                "pre-projection PCC loading magnitude so projection does "
+                "not erase local feasibility credit."
+            ),
+
+            (
+                "Step 7R-F starts from fresh SAC weights and replay "
+                "buffers because pre-correction policies were trained "
+                "under physically inconsistent reserve economics."
+            ),
+
+            (
+                "Upward reserve is constrained by unused BESS "
+                "discharge-power headroom and energy available above "
+                "minimum SOC."
+            ),
+
+            (
+                "A one-hour reserve-delivery duration is an explicit "
+                "reconstruction choice because the recovered manuscript "
+                "does not specify the ancillary-service duration."
+            ),
+
+            (
+                "Initial SOC is a reconstruction choice."
+            ),
+
+            (
+                "EV per-vehicle availability records are "
+                "interface reconstruction records; the "
+                "time-varying aggregate demand originates "
+                "from the ACN-derived training profile."
+            ),
+
+            (
+                "EV simultaneous fraction is a "
+                "reconstruction choice."
+            ),
+
+            (
+                "Pairwise sharing capacity is a "
+                "reconstruction choice."
+            ),
+
+            (
+                "Lead-1 Phi is used as the scalar "
+                "coordinator risk confidence at each "
+                "rolling decision."
+            ),
+
+            (
+                "Full confidence-aware 24-hour forecast "
+                "remains embedded in the 120-dimensional "
+                "predictive state."
+            ),
+        ],
+
+        "trainer_summary":
+            trainer_summary,
+    }
+
+
+    with open(
+        summary_file,
+        "w",
+        encoding="utf-8",
+    ) as file:
+
+        json.dump(
+            summary,
+            file,
+            indent=4,
+            default=str,
+        )
+
+
+
+    section(
+        "FINAL V3 CORRECTED TRAINING COMPLETE"
+    )
+
+
+    print(
+        f"Episodes this run   : "
+        f"{len(history.episodes)}"
+    )
+
+
+    if len(history.episodes) > 0:
+
+        returns = np.asarray(
+            [
+                episode.total_return
+
+                for episode
+                in history.episodes
+            ],
+            dtype=float,
+        )
+
+
+        print(
+            f"First return       : "
+            f"{returns[0]:.6f}"
+        )
+
+        print(
+            f"Final return       : "
+            f"{returns[-1]:.6f}"
+        )
+
+        print(
+            f"Mean return        : "
+            f"{returns.mean():.6f}"
+        )
+
+
+        if len(returns) >= 2:
+
+            print(
+                f"Return std         : "
+                f"{returns.std():.6f}"
+            )
+
+
+    print()
+
+    print(
+        "[OK] Training used the RL TRAIN archive."
+    )
+
+    print(
+        "[OK] Forecast methods were selected "
+        "using VALIDATION."
+    )
+
+    print(
+        "[OK] Causal Phi was calibrated "
+        "using VALIDATION."
+    )
+
+    print(
+        "[OK] Final TEST split was not loaded "
+        "during FC-HMARL training."
+    )
+
+    print(
+        "[OK] Real forecast-derived S_pred "
+        "entered every hierarchical state."
+    )
+
+    print(
+        "[OK] Five manuscript-scale microgrids "
+        "were used."
+    )
+
+
+    print(
+        "[OK] Corrected BESS reserve power/SOC feasibility "
+        "was active during training."
+    )
+
+    print(
+        "[OK] FINAL V3 PCC/transformer projection was active."
+    )
+
+    print(
+        "[OK] Requested-PCC local credit assignment was active."
+    )
+
+    print(
+        "[OK] Only FINAL V3 checkpoints are eligible for resume."
+    )
+
+
+    print()
+
+    print(
+        f"Results directory:\n"
+        f"{output_directory}"
+    )
+
+    print()
+
+    print(
+        f"Training summary:\n"
+        f"{summary_file}"
+    )
+
+
+
+if __name__ == "__main__":
+
+    main()

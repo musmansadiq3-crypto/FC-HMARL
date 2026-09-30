@@ -1,0 +1,98 @@
+﻿FC-HMARL FINAL RELEASE - REPRODUCIBILITY COMMANDS
+==================================================
+
+FINAL EXPERIMENTAL DESIGN
+-------------------------
+Configurations:
+1. full
+2. no_confidence
+3. state_only
+4. reward_only
+5. concatenated
+6. multiplicative
+7. no_coordinator
+
+Random seeds:
+11, 22, 33, 44, 55
+
+Total independent runs:
+7 configurations x 5 seeds = 35 runs
+
+Training horizon:
+5000 episodes per run
+
+Final evaluation checkpoint:
+Episode 5000
+
+Final TEST windows:
+1268 per run
+
+TEST protocol:
+- deterministic actions = True
+- gradient updates = False
+- replay writes = False
+- checkpoint comparison on TEST = False
+- checkpoint reselection using TEST = False
+
+
+==================================================
+1. TRAIN A SINGLE CONFIGURATION / SEED
+==================================================
+
+Example:
+
+python code\train_comment3_ablation.py --ablation-variant full --seed 11 --device cpu
+
+
+==================================================
+2. RUN THE COMPLETE MULTI-SEED ABLATION
+==================================================
+
+python code\run_comment3_ablation.py
+
+
+==================================================
+3. FINAL FIXED-CHECKPOINT TEST EVALUATION
+==================================================
+
+Example for seed 11:
+
+python code\evaluate_final_v3_test_multiseed5000.py --seed 11 --device cpu
+
+
+==================================================
+4. AGGREGATE FIVE-SEED RESULTS
+==================================================
+
+python code\aggregate_final_5seed_results.py
+
+
+==================================================
+5. VERIFY FINAL RELEASE PROTOCOL
+==================================================
+
+python code\verify_final_release_protocol.py
+
+
+==================================================
+6. CONFIDENCE RELIABILITY ANALYSIS
+==================================================
+
+python code\run_confidence_reliability_analysis.py
+
+
+==================================================
+FINAL LOCKED PROTOCOL
+==================================================
+
+Checkpoint episode              : 5000
+TEST windows per run            : 1268
+Number of configurations        : 7
+Seeds per configuration         : 5
+Total runs                      : 35
+Checkpoint comparison on TEST   : False
+Gradient updates during TEST    : False
+Replay writes during TEST       : False
+
+The TEST split is used only for final fixed-policy evaluation.
+No checkpoint is selected, ranked, or re-selected using TEST results.
