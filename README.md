@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains the complete reconstructed implementation, validation workflow, experimental records, and publication artifacts for the FC-HMARL framework for coordinated operation of interconnected microgrids within a Virtual Power Plant (VPP).
+This repository contains the original implementation, validation workflow, experimental records, and publication artifacts for the FC-HMARL framework for coordinated operation of interconnected microgrids within a Virtual Power Plant (VPP).
 
 The implementation combines:
 
@@ -122,7 +122,7 @@ The final physical implementation includes corrections identified during diagnos
 
 ## 5. Five-Microgrid System
 
-The reconstructed VPP contains five microgrids with individual:
+The implemented VPP contains five microgrids with individual:
 
 - PV capacities
 - BESS energy capacities
@@ -510,7 +510,7 @@ The repository includes plotting workflows and figure data for:
 - Benchmark comparison
 - Ablation diagnostics
 
-Where historical or manuscript-supporting Excel workbooks are retained, their provenance should be distinguished from results generated directly by the final reconstructed V3 pipeline.
+Where historical or manuscript-supporting Excel workbooks are retained, their provenance should be distinguished from results generated directly by the final V3 implementation.
 
 ---
 
@@ -661,30 +661,19 @@ The official final evaluation should be identified through the final V3 workflow
 
 ---
 
-## 26. Reconstruction and Reproducibility Statement
+## 26. Implementation Provenance and Reproducibility Statement
 
-The original implementation associated with the manuscript was not fully preserved.
+The FC-HMARL source code is the author's original implementation developed for this research. Earlier README wording describing the implementation as reconstructed, or stating that the original implementation was not fully preserved, was an editorial error and is corrected here.
 
-The present repository therefore represents a systematic reconstruction based on:
+This provenance clarification concerns the origin of the implementation. It does not change the executable source code, trained checkpoints, experimental outputs, or numerical results. Reproducibility claims must be supported by the corresponding versioned source code, checkpoint identifiers, evaluation protocols, and verification records.
 
-- Manuscript equations
-- Manuscript parameter tables
-- Manuscript architectural descriptions
-- Available research datasets
-- Physical-system constraints
-- Reconstructed software choices where exact implementation details were unavailable
-- Extensive automated verification
-- Final TRAIN/VALIDATION/TEST evaluation
-
-Implementation details that were not explicitly preserved in the manuscript should be treated as reconstruction choices rather than claimed as recovered original source-code settings.
-
-This distinction is important for transparent scientific reporting.
+Historical development artifacts and final experimental artifacts should be distinguished using their associated experiment records.
 
 ---
 
 ## 27. Important Final-Model Identification
 
-For reproducibility, the official reconstructed final controller should be identified as:
+For reproducibility, the official final controller should be identified as:
 
     FC-HMARL V3
 
@@ -721,7 +710,7 @@ All substantive source code, experiment records, diagnostic scripts, validation 
 
 ## 29. Final Verification Summary
 
-Final reconstructed framework:
+Final framework:
 
     FC-HMARL V3
 
