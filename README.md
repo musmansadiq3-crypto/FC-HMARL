@@ -744,3 +744,14 @@ Software verification:
     993 tests passed
 
 The repository preserves the complete reconstructed implementation and its associated development, verification, evaluation, and publication workflow.
+
+## Pecan Street Dataport licensing and checkpoint redistribution
+
+Pecan Street Inc. Dataport is the documented upstream source for load measurements used in this study. Pecan Street's publicly posted Dataport terms require users to follow data-use restrictions in their individual data license; university license descriptions include no resale and no sublicensing. Public website terms do **not** by themselves establish permission to redistribute licensed raw measurements, derived time-series records, or trained model checkpoints. Applicable rights depend on the agreement that covered the actual dataset used.
+
+Official references:
+- [Dataport Terms of Service](https://www.pecanstreet.org/pecan-street-inc-dataport-website-terms-of-service/)
+- [Dataport Licenses and Pricing](https://www.pecanstreet.org/dataport/licenses/)
+- [Pecan Street licensing enquiries](https://www.pecanstreet.org/contact/)
+
+**Release policy:** No Pecan Street raw/processed data, reconstructable derived time series, or trained checkpoints containing or dependent on restricted licensed inputs are authorized for public redistribution by this README. Checkpoint weights remain withheld unless the actual governing license and, if necessary, written permission from Pecan Street explicitly permit their release. Academic publication of aggregate results does not itself confer dataset or checkpoint redistribution rights. For licensing clarification, use **licensing@pecanstreet.org** or **dataport@pecanstreet.org**. A public code repository and reproducibility records may be shared separately, subject to checks that their contents do not expose restricted records. **Adding this notice does not remove files from Git history or cure an earlier disclosure.**
